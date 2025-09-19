@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,4 +9,5 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-route::apiResource('/categories', CategoryController::class);
+route::apiResource('categories', CategoryController::class);
+route::apiResource('customer', CustomerController::class);

@@ -36,11 +36,16 @@ class CategoryController extends Controller
             'parent_id' => $request->parent_id
         ]);
 
-        return new CategoryResource(201, 'Success', $category);
+        return new CategoryResource(201, 'Data created successfully!', $category);
     }
     public function show($id)
     {
         $category = Category::findOrFail($id);
+
+        if($category == null)
+        {
+            return response()->json('Data does not exist', 200);
+        }
 
         return new CategoryResource(200, 'Success', $category);
     }
@@ -59,19 +64,30 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
 
+        if($category == null)
+        {
+            return response()->json('Data does not exist!', 200);
+        }
+
         $category->update([
             'name' => $request->name,
             'description' => $request->description,
             'parent_id' => $request->parent_id
         ]);
 
-        return new CategoryResource(201, 'Success', $category);
+        return new CategoryResource(201, 'Data updated Successfully!', $category);
     }
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
+
+        if($category == null)
+        {
+            return response()->json('Data does not exist!', 200);
+        }
+
         $category->delete();
 
-        return new CategoryResource(204, 'Deleted Success', null);
+        return new CategoryResource(204, 'Data deleted Successfully!', null);
     }
 }
