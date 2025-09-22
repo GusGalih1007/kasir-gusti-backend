@@ -67,8 +67,6 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = Customers::findOrFail($id);
-
         $validate = Validator::make($request->all(), [
             'name' => 'required',
             'alamat' => 'required',
@@ -76,11 +74,13 @@ class CustomerController extends Controller
             'email' => 'required|email',
             'is_member' => 'required|boolean'
         ]);
-
-        if ($validate->fails()) {
+        
+        if ($validate->fails())
+        {
             return response()->json($validate->errors(), 422);
         }
-
+        
+        $data = Customers::findOrFail($id);
         if ($data == null) {
             return response()->json('Data does not exist!', 200);
         }
