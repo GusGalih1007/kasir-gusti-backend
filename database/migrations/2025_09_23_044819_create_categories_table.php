@@ -16,8 +16,13 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description');
             $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
+            $table->foreign('created_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('parent_id')->references('category_id')->on('categories')->onDelete('cascade');
         });
     }
