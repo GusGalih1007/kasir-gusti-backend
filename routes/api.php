@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\api\CategoryController;
-use App\Http\Controllers\api\CustomerController;
-use App\Http\Controllers\api\RoleController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

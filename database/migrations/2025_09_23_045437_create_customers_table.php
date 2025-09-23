@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id('customer_id');
-            $table->string('name', 100);
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
             $table->text('alamat');
             $table->string('phone', 15);
             $table->string('email');
             $table->boolean('is_member')->default(false);
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            
+            $table->foreign('created_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_id')->references('user_id')->on('users')->onDelete('cascade');
         });
     }
 

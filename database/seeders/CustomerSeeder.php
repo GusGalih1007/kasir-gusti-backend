@@ -14,7 +14,8 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         Customers::create([
-            'name' => 'Customer 1',
+            'first_name' => 'John',
+            'last_name' => 'Smith',
             'alamat' => 'Jl. Mangga',
             'phone' => '8888888',
             'email' => 'email@gmail.com',

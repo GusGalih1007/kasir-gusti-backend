@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomerResource;
@@ -26,7 +26,8 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'alamat' => 'required',
             'phone' => 'required|numeric',
             'email' => 'required|email',
@@ -38,7 +39,8 @@ class CustomerController extends Controller
         }
 
         $data = Customers::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
@@ -68,7 +70,8 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'alamat' => 'required',
             'phone' => 'required|numeric',
             'email' => 'required|email',
@@ -86,7 +89,8 @@ class CustomerController extends Controller
         }
 
         $data->update([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
