@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 route::apiResource('categories', CategoryController::class);
 route::apiResource('customer', CustomerController::class);
 route::apiResource('role', RoleController::class);
+route::apiResource('user', UserController::class);

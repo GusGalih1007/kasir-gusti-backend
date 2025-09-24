@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('first_name', 50);
-            $table->string('last_name', 50);
+            $table->string('last_name', 50)->nullable();
             $table->string('phone', 20);
             $table->unsignedBigInteger('role_id');
             $table->string('status', 30);
@@ -27,8 +27,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('created_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
         });
     }

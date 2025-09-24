@@ -17,7 +17,12 @@ class RoleController extends Controller
     {
         $data = Role::latest()->paginate();
 
-        return new RoleResource(200, 'Success', $data);
+        if ($data == null)
+        {
+            return response()->json('Data does not exist!', 200);
+        }
+
+        return new RoleResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
