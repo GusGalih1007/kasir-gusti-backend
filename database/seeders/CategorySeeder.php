@@ -16,7 +16,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Category 1',
             'description' => 'Lorem Ipsum',
-            'parent_id' => '0'
+            'parent_id' => null
         ]);
     }
 }
