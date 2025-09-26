@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->string('page_code')->primary();
+            $table->string('page_code', 30)->primary();
             $table->string('page_name', 50);
             $table->string('action', 10);
             $table->softDeletes();

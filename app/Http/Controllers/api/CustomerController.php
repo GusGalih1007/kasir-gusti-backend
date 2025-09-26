@@ -26,9 +26,9 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'alamat' => 'required',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'nullable|string|max:100',
+            'alamat' => 'required|string|max:15',
             'phone' => 'required|numeric',
             'email' => 'required|email',
             'is_member' => 'required|boolean'
@@ -70,10 +70,10 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'alamat' => 'required',
-            'phone' => 'required|numeric',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'nullable|string|max:100',
+            'alamat' => 'required|string',
+            'phone' => 'required|numeric|max:15',
             'email' => 'required|email',
             'is_member' => 'required|boolean'
         ]);
