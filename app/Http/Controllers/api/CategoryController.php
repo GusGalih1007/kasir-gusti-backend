@@ -20,8 +20,8 @@ class CategoryController extends Controller
     public function store (Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => 'required|string|max:100',
+            'description' => 'required|string',
             'parent_id' => 'nullable|numeric',
         ]);
 
@@ -52,9 +52,9 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'parent_id' => 'nullable'
+            'name' => 'required|string|max:100',
+            'description' => 'required|string',
+            'parent_id' => 'nullable|numeric',
         ]);
 
         if($validator->fails())

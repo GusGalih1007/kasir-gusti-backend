@@ -29,5 +29,12 @@ class PageController extends Controller
     public function show(string $id)
     {
         $data = Page::findOrFail($id);
+
+        if ($data == null)
+        {
+            return response()->json('Data does not exist', 200);
+        }
+
+        return new PageResource(200, 'Success', $data);
     }
 }

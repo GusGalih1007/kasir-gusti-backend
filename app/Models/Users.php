@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -35,5 +36,19 @@ class Users extends Model
     public function getJwtCustomClaims()
     {
         return [];
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class,'role_id','role_id');
+    }
+
+    public function userCreator()
+    {
+        return $this->belongsTo(Users::class, 'created_by', 'user_id');
+    }
+
+    public function userUpdator()
+    {
+        return $this->belongsTo(Users::class, 'updated_by', 'user_id');
     }
 }

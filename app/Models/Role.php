@@ -12,4 +12,13 @@ class Role extends Model
     protected $primaryKey = 'role_id';
 
     protected $fillable = ['name'];
+
+    public function userRole()
+    {
+        return $this->hasMany(Users::class, 'role_id', 'role_id');
+    }
+    public function pageRoleActionRole()
+    {
+        return $this->hasMany(PageRoleAction::class, 'role_id', 'role_id');
+    }
 }

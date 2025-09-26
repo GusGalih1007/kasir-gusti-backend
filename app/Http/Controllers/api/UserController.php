@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = Users::latest()->paginate();
+        $data = Users::latest()->paginate(5);
 
         if ($data == null){
             return response()->json('No Data', 200);
@@ -37,7 +37,7 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|max:15',
             'role_id' => 'required|exists:Role,role_id',
             'status' => 'required|string'
         ]);
@@ -94,7 +94,7 @@ class UserController extends Controller
             'password' => 'nullable|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|max:15',
             'role_id' => 'required|exists:Role,role_id',
             'status' => 'required|string'
         ]);

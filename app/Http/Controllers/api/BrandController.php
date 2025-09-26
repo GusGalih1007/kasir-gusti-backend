@@ -3,26 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BrandResource;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Role;
-use App\Http\Resources\RoleResource;
 
-class RoleController extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = Role::latest()->paginate(5);
+        $data = Brand::latest()->paginate(5);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json('No Data', 200);
         }
 
-        return new RoleResource(status: 200, message: 'Success', resource: $data);
+        return new BrandResource(200, 'Success', $data);
     }
 
     /**
@@ -31,7 +31,8 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required|string|max:30'
+            'name' => 'required|string|max:100',
+            'description' => 'required|string'
         ]);
 
         if($validate->fails())
@@ -39,11 +40,12 @@ class RoleController extends Controller
             return response()->json($validate->errors(), 422);
         }
 
-        $data = Role::create([
-            'name' => $request->name
+        $data = Brand::create([
+            'name' => $request->name,
+            'description' => $request->description
         ]);
 
-        return new RoleResource(201, 'Data created successfully!', $data);
+        return new BrandResource(201, 'Data created successfully', $data);
     }
 
     /**
@@ -51,30 +53,29 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $data = Role::findOrFail($id);
+        $data = Brand::findOrFail($id);
 
-        if($data == null)
+        if ($data == null)
         {
             return response()->json('Data does not exist!', 200);
         }
 
-        return new RoleResource(200, 'Success', $data);
+        return new BrandResource(200, 'Success', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $data = Role::findOrFail($id);
+        $data = Brand::findOrFail($id);
 
-        if($data == null)
-        {
+        if ($data == null){
             return response()->json('Data does not exist!', 200);
         }
-
         $validate = Validator::make($request->all(), [
-            'name' => 'required|string|max:30'
+            'name' => 'required|string|max:100',
+            'description' => 'required|string'
         ]);
 
         if($validate->fails())
@@ -83,10 +84,11 @@ class RoleController extends Controller
         }
 
         $data->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'description' => $request->description
         ]);
 
-        return new RoleResource(201, 'Data updated Successfully', $data);
+        return new BrandResource(201, 'Data updated successfully', $data);
     }
 
     /**
@@ -94,15 +96,15 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $data = Role::findOrFail($id);
+        $data = Brand::findOrFail($id);
 
-        if($data == null)
+        if ($data == null)
         {
             return response()->json('Data does not exist!', 200);
         }
 
         $data->delete();
 
-        return new RoleResource(204, 'Data Deleted Successfully', null);
+        return new BrandResource(204, 'Data deleted Successfully', null);
     }
 }
