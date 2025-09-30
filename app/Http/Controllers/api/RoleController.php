@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Role;
-use App\Http\Resources\RoleResource;
+use App\Http\Resources\ApiResource;
 
 class RoleController extends Controller
 {
@@ -15,14 +15,14 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $data = Role::latest()->paginate(5);
+        $data = Role::latest()->paginate(perPage: 5);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        return new RoleResource(status: 200, message: 'Success', resource: $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -30,20 +30,20 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:30'
         ]);
 
         if($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data = Role::create([
+        $data = Role::create(attributes: [
             'name' => $request->name
         ]);
 
-        return new RoleResource(201, 'Data created successfully!', $data);
+        return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
     }
 
     /**
@@ -51,14 +51,14 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $data = Role::findOrFail($id);
+        $data = Role::findOrFail(id: $id);
 
         if($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        return new RoleResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -66,27 +66,27 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = Role::findOrFail($id);
+        $data = Role::findOrFail(id: $id);
 
         if($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:30'
         ]);
 
         if($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
         $data->update([
             'name' => $request->name
         ]);
 
-        return new RoleResource(201, 'Data updated Successfully', $data);
+        return new ApiResource(status: 201, message: 'Data updated Successfully', resource: $data);
     }
 
     /**
@@ -94,15 +94,15 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $data = Role::findOrFail($id);
+        $data = Role::findOrFail(id: $id);
 
         if($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
         $data->delete();
 
-        return new RoleResource(204, 'Data Deleted Successfully', null);
+        return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);
     }
 }

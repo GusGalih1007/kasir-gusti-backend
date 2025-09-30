@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PageResource;
+use App\Http\Resources\ApiResource;
 use App\Models\Page;
 use Illuminate\Http\Request;
 
@@ -14,13 +14,13 @@ class PageController extends Controller
      */
     public function index()
     {
-        $data = Page::latest()->paginate(5);
+        $data = Page::latest()->paginate(perPage: 5);
 
         if ($data == null){
-            return response()->json('No Data', 200);
+            return response()->json(data: 'No Data', status: 200);
         }
 
-        return new PageResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -28,13 +28,13 @@ class PageController extends Controller
      */
     public function show(string $id)
     {
-        $data = Page::findOrFail($id);
+        $data = Page::findOrFail(id: $id);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist', 200);
+            return response()->json(data: 'Data does not exist', status: 200);
         }
 
-        return new PageResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 }

@@ -15,6 +15,6 @@ class Page extends Model
 
     public function pageRoleActionCode()
     {
-        return $this->hasMany(PageRoleAction::class, 'page_code', 'page_code');
+        return $this->hasMany(related: PageRoleAction::class, foreignKey: 'page_code', localKey: 'page_code');
     }
 }

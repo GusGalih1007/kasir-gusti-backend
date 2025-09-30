@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PageRoleAction;
-use App\Http\Resources\PageRoleActionResource;
+use App\Http\Resources\ApiResource;
 use App\Models\Role;
 use App\Models\Page;
 
@@ -16,14 +16,14 @@ class PageRoleActionController extends Controller
      */
     public function index()
     {
-        $data = PageRoleAction::latest()->paginate();
+        $data = PageRoleAction::latest()->paginate(perPage: 5);
 
         if ($data == null)
         {
-            return response()->json('No Data', 200);
+            return response()->json(data: 'No Data', status: 200);
         }
 
-        return new PageRoleActionResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -31,31 +31,31 @@ class PageRoleActionController extends Controller
      */
     public function getByRole($id)
     {
-        $role = Role::findOrFail($id);
+        $role = Role::findOrFail(id: $id);
         if ($role == null)
         {
-            return response()->json('Role does not exist!', 200);
+            return response()->json(data: 'Role does not exist!', status: 200);
         }
 
-        $data = PageRoleAction::where('role_id', '=', $id);
+        $data = PageRoleAction::where(column: 'role_id', operator: '=', value: $id);
 
         if ($data == null)
         {
-            return response()->json('Role '. $role->role_name. ' have no access', 200);
+            return response()->json(data: 'Role '. $role->role_name. ' have no access', status: 200);
         }
 
-        return new PageRoleActionResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     public function getByPage(string $code)
     {
-        $page = Page::findOrFail($code);
+        $page = Page::findOrFail(id: $code);
 
         if($page == null)
         {
-            return response()->json('Page does not exist!', 200);
+            return response()->json(data: 'Page does not exist!', status: 200);
         }
 
-        return new PageRoleActionResource(200, 'Success', $page);
+        return new ApiResource(status: 200, message: 'Success', resource: $page);
     }
 }

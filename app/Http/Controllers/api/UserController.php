@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\ApiResource;
 use Illuminate\Bus\UpdatedBatchJobCounts;
 use Illuminate\Http\Request;
 use App\Models\Users;
@@ -20,10 +20,10 @@ class UserController extends Controller
         $data = Users::latest()->paginate(5);
 
         if ($data == null){
-            return response()->json('No Data', 200);
+            return response()->json(data: 'No Data', status: 200);
         }
 
-        return new UserResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -31,26 +31,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'username' => 'required|string',
             'email' => 'required|email',
             'password' => 'required|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
             'phone' => 'required|numeric|max:15',
-            'role_id' => 'required|exists:Role,role_id',
+            'role_id' => 'required|exists:roles,role_id',
             'status' => 'required|string'
         ]);
 
         if ($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data = Users::create([
+        $data = Users::create(attributes: [
             'username' => $request->username,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt(value: $request->password),
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone' => $request->phone,
@@ -58,7 +58,7 @@ class UserController extends Controller
             'status' => $request->status
         ]);
 
-        return new UserResource(201, 'Data Successfully created!', $data);
+        return new ApiResource(status: 201, message: 'Data Successfully created!', resource: $data);
     }
 
     /**
@@ -66,14 +66,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $data = Users::findOrFail($id);
+        $data = Users::findOrFail(id: $id);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        return new UserResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -81,14 +81,14 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = Users::findOrFail($id);
+        $data = Users::findOrFail(id: $id);
 
         if($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'username' => 'required|string',
             'email' => 'required|email',
             'password' => 'nullable|min:8',
@@ -101,7 +101,7 @@ class UserController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
         $field = [
@@ -114,14 +114,14 @@ class UserController extends Controller
             'status' => $request->status
         ];
 
-        if (filled($request->password))
+        if (filled(value: $request->password))
         {
-            $field['password'] = bcrypt($request->password);
+            $field['password'] = bcrypt(value: $request->password);
         }
 
-        $data->update($field);
+        $data->update(attributes: $field);
 
-        return new UserResource(201, 'Data updated successfully', $data);
+        return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
     }
 
     /**
@@ -129,15 +129,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $data = Users::findOrFail($id);
+        $data = Users::findOrFail(id: $id);
 
         if($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
         $data->delete();
 
-        return new UserResource(204, 'Data deleted successfully', null);
+        return new ApiResource(status: 204, message: 'Data deleted successfully', resource: null);
     }
 }

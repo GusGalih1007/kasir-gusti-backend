@@ -14,11 +14,11 @@ class PageRoleAction extends Model
 
     public function pageCode()
     {
-        return $this->belongsTo(Page::class, 'page_code', 'page_code');
+        return $this->belongsTo(related: Page::class, foreignKey: 'page_code', ownerKey: 'page_code');
     }
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+        return $this->belongsTo(related: Role::class, foreignKey: 'role_id', ownerKey: 'role_id');
     }
 }

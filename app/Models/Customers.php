@@ -15,11 +15,11 @@ class Customers extends Model
 
     public function userCreator()
     {
-        return $this->belongsTo(Users::class, 'created_by', 'user_id');
+        return $this->belongsTo(related: Users::class, foreignKey: 'created_by', ownerKey: 'user_id');
     }
 
     public function userUpdator()
     {
-        return $this->belongsTo(Users::class, 'updated_by', 'user_id');
+        return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
     }
 }

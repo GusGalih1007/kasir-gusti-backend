@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CustomerResource;
+use App\Http\Resources\ApiResource;
 use App\Models\Customers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,9 +15,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $data = Customers::latest()->paginate(5);
+        $data = Customers::latest()->paginate(perPage: 5);
 
-        return new CustomerResource(200, 'Success!', $data);
+        return new ApiResource(status: 200, message: 'Success!', resource: $data);
     }
 
     /**
@@ -25,7 +25,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'alamat' => 'required|string|max:15',
@@ -35,10 +35,10 @@ class CustomerController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data = Customers::create([
+        $data = Customers::create(attributes: [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'alamat' => $request->alamat,
@@ -47,7 +47,7 @@ class CustomerController extends Controller
             'is_member' => $request->is_member
         ]);
 
-        return new CustomerResource(201, 'Data created successfully!', $data);
+        return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
     }
 
     /**
@@ -55,13 +55,13 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $data = Customers::findOrFail($id);
+        $data = Customers::findOrFail(id: $id);
 
         if($data == null) {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        return new CustomerResource(200, 'Success!', $data);
+        return new ApiResource(status: 200, message: 'Success!', resource: $data);
     }
 
     /**
@@ -69,7 +69,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'alamat' => 'required|string',
@@ -80,15 +80,15 @@ class CustomerController extends Controller
         
         if ($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
         
-        $data = Customers::findOrFail($id);
+        $data = Customers::findOrFail(id: $id);
         if ($data == null) {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        $data->update([
+        $data->update(attributes: [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'alamat' => $request->alamat,
@@ -97,7 +97,7 @@ class CustomerController extends Controller
             'is_member' => $request->is_member
         ]);
 
-        return new CustomerResource(201, 'Data updated Successfully!', $data);
+        return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $data);
     }
 
     /**
@@ -105,14 +105,14 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $data = Customers::findOrFail($id);
+        $data = Customers::findOrFail(id: $id);
 
         if ($data == null) {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
         
         $data->delete();
 
-        return new CustomerResource(204, 'Data deleted Successfully!', null);
+        return new ApiResource(status: 204, message: 'Data deleted Successfully!', resource: null);
     }
 }
