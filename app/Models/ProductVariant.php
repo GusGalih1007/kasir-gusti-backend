@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class ProductVariant extends Model
 {
     use SoftDeletes;
-    protected $table = 'categories';
-    protected $primaryKey = 'category_id';
-    protected $fillable = ['name', 'description', 'parent_id', 'created_by', 'updated_by'];
+
+    protected $table = 'product_variants';
+    protected $primaryKey = 'variant_id';
+
+    protected $fillable = ['product_id', 'variant_name', 'price', 'sku', 'stock_qty', 'created_by', 'updated_by'];
 
     public function userCreator()
     {
@@ -20,5 +22,10 @@ class Category extends Model
     public function userUpdator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(related: Product::class, foreignKey: 'product_id', ownerKey: 'product_id');
     }
 }

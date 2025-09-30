@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BrandResource;
+use App\Http\Resources\ApiResource;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,14 +15,14 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::latest()->paginate(5);
+        $data = Brand::latest()->paginate(perPage: 5);
 
         if ($data == null)
         {
-            return response()->json('No Data', 200);
+            return response()->json(data: 'No Data', status: 200);
         }
 
-        return new BrandResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -30,22 +30,22 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
             'description' => 'required|string'
         ]);
 
         if($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data = Brand::create([
+        $data = Brand::create(attributes: [
             'name' => $request->name,
             'description' => $request->description
         ]);
 
-        return new BrandResource(201, 'Data created successfully', $data);
+        return new ApiResource(status: 201, message: 'Data created successfully', resource: $data);
     }
 
     /**
@@ -53,14 +53,14 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        $data = Brand::findOrFail($id);
+        $data = Brand::findOrFail(id: $id);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        return new BrandResource(200, 'Success', $data);
+        return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
     /**
@@ -68,27 +68,27 @@ class BrandController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = Brand::findOrFail($id);
+        $data = Brand::findOrFail(id: $id);
 
         if ($data == null){
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
-        $validate = Validator::make($request->all(), [
+        $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
             'description' => 'required|string'
         ]);
 
         if($validate->fails())
         {
-            return response()->json($validate->errors(), 422);
+            return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data->update([
+        $data->update(attributes: [
             'name' => $request->name,
             'description' => $request->description
         ]);
 
-        return new BrandResource(201, 'Data updated successfully', $data);
+        return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
     }
 
     /**
@@ -96,15 +96,15 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $data = Brand::findOrFail($id);
+        $data = Brand::findOrFail(id: $id);
 
         if ($data == null)
         {
-            return response()->json('Data does not exist!', 200);
+            return response()->json(data: 'Data does not exist!', status: 200);
         }
 
         $data->delete();
 
-        return new BrandResource(204, 'Data deleted Successfully', null);
+        return new ApiResource(status: 204, message: 'Data deleted Successfully', resource: null);
     }
 }
