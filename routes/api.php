@@ -23,7 +23,7 @@ route::post('login', [AuthController::class, 'login']);
 route::post('logout', [AuthController::class, 'logout']);
 
 //category
-route::apiResource('categories', CategoryController::class);
+route::apiResource('category', CategoryController::class);
 
 //customer
 route::apiResource('customer', CustomerController::class);
