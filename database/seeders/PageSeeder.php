@@ -64,7 +64,7 @@ class PageSeeder extends Seeder
         ]);
         Page::create([
             'page_code' => $randomRegexString,
-            'page_name' => 'Page ROle Action',
+            'page_name' => 'Page Role Action',
             'action'    => 'Read'
         ]);
     }

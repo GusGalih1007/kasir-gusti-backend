@@ -19,11 +19,14 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 //auth
-route::post('login', [AuthController::class, 'login']);
-route::post('logout', [AuthController::class, 'logout']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout']);
+Route::post('me', [AuthController::class, 'me']);
 
 //category
-route::apiResource('category', CategoryController::class);
+route::middleware('jwt')->group(function () {
+    route::apiResource('category', CategoryController::class);
+});
 
 //customer
 route::apiResource('customer', CustomerController::class);

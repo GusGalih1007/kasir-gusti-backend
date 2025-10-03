@@ -7,6 +7,7 @@ use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -45,9 +46,18 @@ class AuthController extends Controller
                                             'Error' => $e ], 500);
         }
 
+        return $this->respondWithToken($token);
+    }
+    public function me()
+    {
+        return response()->json(auth()->guard('api')->user());
+    }
+    public function respondWithToken($token)
+    {
         return new ApiResource(200, 'Login Success', [
             'user' => auth()->guard('api')->user(), 
             'access_token' => $token,
+            'token_type' => 'bearer',
         ]);
     }
 
