@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 //auth
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
-Route::post('me', [AuthController::class, 'me']);
+Route::get('me', [AuthController::class, 'me']);
 
 //category
 route::middleware('jwt')->group(function () {

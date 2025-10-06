@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use App\Http\Resources\ApiResource;
+use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
 class ProductVariantController extends Controller
@@ -49,6 +50,12 @@ class ProductVariantController extends Controller
             'price' => $request->price,
             'sku' => $request->sku,
             'stock_qty' => $request->stock_qty
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+
+        $product->update([
+            'is_available' => true
         ]);
 
         return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);

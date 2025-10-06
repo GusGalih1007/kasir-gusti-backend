@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Customers;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\ProductVariant;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +37,7 @@ class TransactionController extends Controller
         $validate = Validator::make($request->all(), [
             'customer_id' => 'nullable|exists:customers,customer_id',
             'payment_method' => 'required|string',
+            'currency' => 'required|max:3',
             'product' => 'required|array',
             'product.*.product_id' => 'required|exists:products,product_id',
             'product.*.variant_id' => 'required|exists:product_variants,variant_id',
@@ -71,6 +74,7 @@ class TransactionController extends Controller
                 'quantity' => $productData['qty'],
                 'price' => $product->price,
                 'total' => $product->price * $productData['qty'],
+                'variant_id' => $product->variant_id
             ];
         }
 
@@ -87,20 +91,50 @@ class TransactionController extends Controller
 
         foreach ($products as $p)
         {
-            OrderDetail::create([
+            $detail = OrderDetail::create([
                 'order_id' => $transaction->order_id,
                 'product_id' => $p['product_id'],
-                ''
+                'variant_id' => $p['variant_id'],
+                'quantity' => $p['quantity'],
+                'price_at_purchase'=> $p['price']
             ]);
+
+            $variantModel = ProductVariant::find($product['variant_id']);
+            $variantModel->stock -= $product['quantity'];
+            $variantModel->save();
         }
+
+        $payment = Payment::create([
+            'order_id' => $transaction->order_id,
+            'payment_method' => $request->payment_method,
+            'amount'         => $request->payment,
+            'currency'  => $request->currency,
+            'status' => 'complete',
+            // 'change'         => $request->change,
+            'payment_date'   => today(),
+            'created_by'       => auth()->guard('api')->id(),  // ID user yang menerima pembayaran
+        ]);
+
+        return new ApiResource(201, 'Data Successfully created!', [
+            'order' => $transaction,
+            'order detail' => $detail,
+            'payment' => $payment]);
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $transaction = Order::with('details.product', 'customer', 'payment', 'userId')->findOrFail($id);
+
+        if ($transaction == null)
+        {
+            return response()->json('Data does not exist!', 200);
+        }
+
+        return new ApiResource(200, 'success', $transaction);
     }
 
     /**
@@ -116,6 +150,13 @@ class TransactionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = Order::where('transaction_id', $id)->delete();
+
+        if ($data == null)
+        {
+            return response()->json('Data does not exist!', 200);
+        }
+
+        return new ApiResource(204, 'Data deleted Successfully!', null);
     }
 }

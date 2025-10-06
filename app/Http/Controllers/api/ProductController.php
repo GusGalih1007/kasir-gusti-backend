@@ -36,7 +36,8 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|decimal:2,2',
             'category' => 'required|exist:categories,category_id',
-            'supplier' => 'required|exist:supplier,supplier_id',
+            'brand' => 'required|exist:brands,brand_id',
+            'supplier' => 'required|exist:suppliers,supplier_id',
             'is_available' => 'required|boolean'
         ]);
 
@@ -50,6 +51,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'category_id' => $request->category,
+            'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
             'is_available' => $request->is_available
         ]);
