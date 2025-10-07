@@ -22,9 +22,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $data = Order::with(
-            'detail.product', 'customer', 'userId', 'payment',
-        )->orderBy('order_id', 'desc');
+        $data = Order::latest()->paginate(5);
 
         return new ApiResource(200, 'Success', $data);
     }
@@ -39,9 +37,9 @@ class TransactionController extends Controller
             'payment_method' => 'required|string',
             'currency' => 'required|max:3',
             'product' => 'required|array',
-            'product.*.product_id' => 'required|exists:products,product_id',
-            'product.*.variant_id' => 'required|exists:product_variants,variant_id',
-            'product.*.qty' => 'required|integer|min:1',
+            'product[product_id]' => 'required|exists:products,product_id',
+            'product[variant_id]' => 'required|exists:product_variants,variant_id',
+            'product[qty]' => 'required|integer|min:1',
             'payment' => 'required|numeric|min:0',
         ]);
 
@@ -60,9 +58,11 @@ class TransactionController extends Controller
 
         $totalPrice = 0;
 
+        $item = json_decode($request->product);
+
         $products = [];
-        $variants = [];
-        foreach ($request->product as $productData )
+        // $variants = [];
+        foreach ($item as $productData )
         {
             $product = Product::find($productData['product_id']);
 
@@ -74,19 +74,22 @@ class TransactionController extends Controller
                 'quantity' => $productData['qty'],
                 'price' => $product->price,
                 'total' => $product->price * $productData['qty'],
-                'variant_id' => $product->variant_id
+                'variant_id' => $productData['variant_id'],
             ];
         }
 
         $totalAfterDiscount = $totalPrice - $discount;
+        $change = $request->payment - $totalAfterDiscount;
 
         $transaction = Order::create([
             'user_id' => Auth::id(),
             'customer_id' => $request->customer_id,
             'total_amount' => $totalAfterDiscount,
             'discount' => $discount,
+            'change' => $change,
             'order_date' => today(),
-            'status' => 'completed'
+            'status' => 'completed',
+            'created_by' => auth()->guard()->id(),
         ]);
 
         foreach ($products as $p)
@@ -96,11 +99,12 @@ class TransactionController extends Controller
                 'product_id' => $p['product_id'],
                 'variant_id' => $p['variant_id'],
                 'quantity' => $p['quantity'],
-                'price_at_purchase'=> $p['price']
+                'price_at_purchase'=> $p['price'],
+                'total_price' => $p['total']
             ]);
 
-            $variantModel = ProductVariant::find($product['variant_id']);
-            $variantModel->stock -= $product['quantity'];
+            $variantModel = ProductVariant::find($p['variant_id']);
+            $variantModel->stock -= $p['quantity'];
             $variantModel->save();
         }
 
@@ -110,7 +114,7 @@ class TransactionController extends Controller
             'amount'         => $request->payment,
             'currency'  => $request->currency,
             'status' => 'complete',
-            // 'change'         => $request->change,
+            'change'         => $change,
             'payment_date'   => today(),
             'created_by'       => auth()->guard('api')->id(),  // ID user yang menerima pembayaran
         ]);

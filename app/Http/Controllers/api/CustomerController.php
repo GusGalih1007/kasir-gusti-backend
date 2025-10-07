@@ -28,10 +28,10 @@ class CustomerController extends Controller
         $validate = Validator::make(data: $request->all(), rules: [
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
-            'alamat' => 'required|string|max:15',
-            'phone' => 'required|numeric',
+            'alamat' => 'required|string',
+            'phone' => 'required|numeric|max_digits:15',
             'email' => 'required|email',
-            'is_member' => 'required|boolean'
+            'is_member' => 'nullable|boolean'
         ]);
 
         if ($validate->fails()) {
@@ -44,7 +44,7 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
-            'is_member' => $request->is_member
+            'is_member' => (!$request->is_member) ? false : $request->is_member
         ]);
 
         return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
@@ -73,9 +73,9 @@ class CustomerController extends Controller
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'alamat' => 'required|string',
-            'phone' => 'required|numeric|max:15',
+            'phone' => 'required|numeric|max_digits:15',
             'email' => 'required|email',
-            'is_member' => 'required|boolean'
+            'is_member' => 'nullable|boolean'
         ]);
         
         if ($validate->fails())
@@ -94,7 +94,7 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
-            'is_member' => $request->is_member
+            'is_member' => (!$request->is_member) ? false : $request->is_member
         ]);
 
         return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $data);

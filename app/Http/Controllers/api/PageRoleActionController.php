@@ -47,7 +47,7 @@ class PageRoleActionController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
-    public function getByPage(string $code)
+    public function getByPage($code)
     {
         $page = Page::findOrFail(id: $code);
 

@@ -52,11 +52,15 @@ class ProductVariantController extends Controller
             'stock_qty' => $request->stock_qty
         ]);
 
-        $product = Product::findOrFail($request->product_id);
+        if ($request->stock_qty !== null || $request->stock_qty > 0)
+        {
+            $product = Product::findOrFail($request->product_id);
+    
+            $product->update([
+                'is_available' => true
+            ]);
+        }
 
-        $product->update([
-            'is_available' => true
-        ]);
 
         return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
     }
@@ -99,6 +103,21 @@ class ProductVariantController extends Controller
         if ($validate->fails())
         {
             return response()->json(data: $validate->errors(), status: 422);
+        }
+
+        if (!$request->stock_quantity == 0)
+        {
+            $product = Product::findOrFail($request->product_id);
+
+            $product->update([
+                'is_available' => false
+            ]);
+        } else {
+            $product = Product::findOrFail($request->product_id);
+
+            $product->update([
+                'is_available' => true
+            ]);
         }
 
         $data->update(attributes: [

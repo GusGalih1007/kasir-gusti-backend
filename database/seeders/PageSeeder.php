@@ -16,54 +16,53 @@ class PageSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $randomRegexString = $faker->regexify('[A-Za-z0-9]{10}'); // Generates a random string matching the regex pattern
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Category',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Customer',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Brand',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Role',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Users',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Supplier',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Product',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Product Variant',
             'action'    => 'Create,Read,Update,Delete'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Page',
             'action'    => 'Read'
         ]);
         Page::create([
-            'page_code' => $randomRegexString,
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
             'page_name' => 'Page Role Action',
             'action'    => 'Read'
         ]);

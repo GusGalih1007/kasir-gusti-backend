@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('category_id');
             $table->string('name', 100);
             $table->text('description');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable()->default(null);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

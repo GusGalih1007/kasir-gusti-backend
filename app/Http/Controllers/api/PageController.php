@@ -26,9 +26,9 @@ class PageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $data = Page::findOrFail(id: $id);
+        $data = Page::findOrFail($id);
 
         if ($data == null)
         {
