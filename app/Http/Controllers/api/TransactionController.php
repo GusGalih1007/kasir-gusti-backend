@@ -32,14 +32,23 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $item = $request->product;
+        if (is_string($item)) {
+        $item = json_decode($item, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['error' => 'Invalid product JSON'], 422);
+            }
+        }
+
+        $validate = Validator::make(array_merge($request->all(), ['product' => $item]), [
             'customer_id' => 'nullable|exists:customers,customer_id',
-            'payment_method' => 'required|string',
-            'currency' => 'required|max:3',
-            'product' => 'required|array',
-            'product[product_id]' => 'required|exists:products,product_id',
-            'product[variant_id]' => 'required|exists:product_variants,variant_id',
-            'product[qty]' => 'required|integer|min:1',
+            'payment_method' => 'required|string|max:50',
+            'currency' => 'required|string|max:3|in:USD,EUR,IDR', // Example currencies
+            'product' => 'required|array|min:1',
+            'product.*.product_id' => 'required|exists:products,product_id',
+            'product.*.variant_id' => 'required|exists:product_variants,variant_id',
+            'product.*.qty' => 'required|integer|min:1',
+            'discount' => 'nullable|numeric|min:0', // Validate discount
             'payment' => 'required|numeric|min:0',
         ]);
 
@@ -48,38 +57,57 @@ class TransactionController extends Controller
             return response()->json($validate->errors(), 422);
         }
 
-        $customer = Customers::findOrFail($request->customer_id);
         $discount = 0;
-
+        $customer = Customers::findOrFail($request->customer_id);
+        
         if ($customer->is_member == true)
         {
             $discount = $request->discount;
         }
 
         $totalPrice = 0;
+        // $item = json_decode($request->product);
+        $apiUser = Auth::guard('api')->id(); // Standardize to API guard
 
-        $item = json_decode($request->product);
+        if (!$apiUser) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         $products = [];
         // $variants = [];
         foreach ($item as $productData )
         {
+            $variant = ProductVariant::with('product')->findOrFail($productData['variant_id']);
+
+            $price = $variant->price_at_purchase ?? $variant->product->price; // Use variant price if available
+            $itemTotal = $price * $productData['qty'];
+            $totalPrice += $itemTotal;
+
+            // Check stock before proceeding
+            if ($variant->stock_qty < $productData['qty']) {
+                return response()->json(['error' => "Insufficient stock for variant {$productData['variant_id']}"], 422);
+            }
+
             $product = Product::find($productData['product_id']);
 
-            $totalPrice += $product->price * $productData['qty'];
+            // $totalPrice += $product->price * $productData['qty'];
 
             // Simpan produk beserta kuantitas untuk TransactionDetails
             $products[] = [
-                'product_id' => $product->product_id,
+                'product_id' => $variant->product_id ?? $product->product_id,
                 'quantity' => $productData['qty'],
-                'price' => $product->price,
-                'total' => $product->price * $productData['qty'],
-                'variant_id' => $productData['variant_id'],
+                'price' => $price,
+                'total' => $itemTotal,
+                'variant_id' => $variant->variant_id,
             ];
         }
 
-        $totalAfterDiscount = $totalPrice - $discount;
+        $totalAfterDiscount = max(0 ,$totalPrice - $discount);
         $change = $request->payment - $totalAfterDiscount;
+
+        if ($change < 0) {
+            return response()->json(['error' => 'Payment amount is insufficient'], 422);
+        }
 
         $transaction = Order::create([
             'user_id' => Auth::id(),
@@ -89,7 +117,7 @@ class TransactionController extends Controller
             'change' => $change,
             'order_date' => today(),
             'status' => 'completed',
-            'created_by' => auth()->guard()->id(),
+            'created_by' => $apiUser,
         ]);
 
         foreach ($products as $p)
@@ -104,7 +132,7 @@ class TransactionController extends Controller
             ]);
 
             $variantModel = ProductVariant::find($p['variant_id']);
-            $variantModel->stock -= $p['quantity'];
+            $variantModel->stock_qty -= $p['quantity'];
             $variantModel->save();
         }
 
@@ -115,15 +143,14 @@ class TransactionController extends Controller
             'currency'  => $request->currency,
             'status' => 'complete',
             'change'         => $change,
-            'payment_date'   => today(),
-            'created_by'       => auth()->guard('api')->id(),  // ID user yang menerima pembayaran
+            'payment_date'   => now(),
+            'created_by'       => $apiUser,  // ID user yang menerima pembayaran
         ]);
 
         return new ApiResource(201, 'Data Successfully created!', [
             'order' => $transaction,
             'order detail' => $detail,
             'payment' => $payment]);
-
     }
 
     /**
@@ -131,7 +158,7 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        $transaction = Order::with('details.product', 'customer', 'payment', 'userId')->findOrFail($id);
+        $transaction = Order::with('detail.product', 'customer', 'payment', 'userId')->findOrFail($id);
 
         if ($transaction == null)
         {
@@ -154,12 +181,14 @@ class TransactionController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Order::where('transaction_id', $id)->delete();
+        $data = Order::where('transaction_id', $id);
 
         if ($data == null)
         {
             return response()->json('Data does not exist!', 200);
         }
+
+        $data->delete();
 
         return new ApiResource(204, 'Data deleted Successfully!', null);
     }

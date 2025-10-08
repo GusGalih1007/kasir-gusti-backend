@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class JwtMiddleware
@@ -19,7 +20,7 @@ class JwtMiddleware
     {
         try
 		{
-			$user = JWTAuth::parseToken()->authenticate();
+			$validate = JWTAuth::parseToken()->authenticate();
 		}
 		catch (Exception $e) {
 			if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
@@ -30,6 +31,13 @@ class JwtMiddleware
 				return response()->json(['status' => 'Authorization Token not found']);
 			}
 		}
+		// $user = Auth::user();
+        // // Adjust this based on your DB structure
+        // if ($user->role !== $role) {
+        //     return response()->json([
+        //         'message' => 'Access Denied!'
+        //     ], 403);
+        // }
 		return $next($request);
     }
 }
