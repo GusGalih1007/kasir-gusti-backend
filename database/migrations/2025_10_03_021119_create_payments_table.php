@@ -11,19 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id('category_id');
-            $table->string('name', 100);
-            $table->text('description');
-            $table->unsignedBigInteger('parent_id')->nullable()->default(null);
+        Schema::create('payments', function (Blueprint $table) {
+            $table->id('payment_id');
+            $table->unsignedBigInteger('order_id');
+            $table->string('payment_method', 50);
+            $table->decimal('amount', 15, 2);
+            $table->string('currency', 3);
+            $table->string('status');
+            $table->date('payment_date');
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('parent_id')->references('category_id')->on('categories')->onDelete('cascade');
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
         });
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('payments');
     }
 };

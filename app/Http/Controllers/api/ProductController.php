@@ -32,13 +32,21 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make(data: $request->all(), rules: [
-            'product_name' => 'requred|max:150|string',
+            'product_name' => 'required|max:150|string',
             'description' => 'required|string',
             'price' => 'required|decimal:2,2',
-            'category' => 'required|exist:categories,category_id',
-            'supplier' => 'required|exist:supplier,supplier_id',
-            'is_available' => 'required|boolean'
+            'category' => 'required|exists:categories,category_id',
+            'brand' => 'required|exists:brands,brand_id',
+            'supplier' => 'required|exists:suppliers,supplier_id',
+            'is_available' => 'nullable|boolean'
         ]);
+
+        $available = false;
+
+        if (!$request->is_available == null)
+        {
+            $available = $request->is_available;
+        }
 
         if ($validate->fails())
         {
@@ -50,8 +58,9 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'category_id' => $request->category,
+            'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
-            'is_available' => $request->is_available
+            'is_available' => $available
         ]);
 
         return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
@@ -85,13 +94,21 @@ class ProductController extends Controller
         }
 
         $validate = Validator::make(data: $request->all(), rules: [
-            'product_name' => 'requred|max:150|string',
+            'product_name' => 'required|max:150|string',
             'description' => 'required|string',
             'price' => 'required|decimal:2,2',
-            'category' => 'required|exist:categories,category_id',
-            'supplier' => 'required|exist:supplier,supplier_id',
-            'is_available' => 'required|boolean'
+            'category' => 'required|exists:categories,category_id',
+            'brand' => 'required|exists:brands,brand_id',
+            'supplier' => 'required|exists:suppliers,supplier_id',
+            'is_available' => 'nullable|boolean'
         ]);
+
+        $available = false;
+
+        if (!$request->is_available == null)
+        {
+            $available = $request->is_available;
+        }
 
         if ($validate->fails())
         {
@@ -103,8 +120,9 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'category_id' => $request->category,
+            'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
-            'is_available' => $request->is_available
+            'is_available' => $available
         ]);
 
         return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);

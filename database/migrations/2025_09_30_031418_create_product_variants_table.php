@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('variant_name', 100);
             $table->decimal('price', 15,2);
             $table->string('sku', 50);
-            $table->integer('stock_qty');
+            $table->integer('stock_qty')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Supplier;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,10 @@ class SupplierSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Supplier::create([
+            'name' => 'supplier 1',
+            'description' => 'Lorem Ipsum',
+            'alamat' => 'Depok'
+        ]);
     }
 }

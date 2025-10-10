@@ -13,7 +13,21 @@ use App\Models\Role;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/user",
+     *     tags={"Users"},
+     *     summary="Get list of users",
+     *     description="Returns list of users",
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
      */
     public function index()
     {
@@ -27,7 +41,28 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/user",
+     *     tags={"Users"},
+     *     summary="Create a new user",
+     *     description="Create a new user in the system",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", example="john@example.com")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User created successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -37,7 +72,7 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
-            'phone' => 'required|numeric|max:15',
+            'phone' => 'required|numeric|max_digits:15',
             'role_id' => 'required|exists:roles,role_id',
             'status' => 'required|string'
         ]);
@@ -94,8 +129,8 @@ class UserController extends Controller
             'password' => 'nullable|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
-            'phone' => 'required|numeric|max:15',
-            'role_id' => 'required|exists:Role,role_id',
+            'phone' => 'required|numeric|max_digits:15',
+            'role_id' => 'required|exists:roles,role_id',
             'status' => 'required|string'
         ]);
 

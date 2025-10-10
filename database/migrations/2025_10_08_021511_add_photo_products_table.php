@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pages', function (Blueprint $table) {
-            $table->string('page_code', 30)->primary();
-            $table->string('page_name', 50);
-            $table->string('action', 30);
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->decimal('change', 20, 2)->nullable();
         });
     }
 
@@ -25,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pages');
+        //
     }
 };
