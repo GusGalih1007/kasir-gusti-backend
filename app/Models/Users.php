@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\HasName;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Users extends Authenticatable implements JWTSubject
+class Users extends Authenticatable implements JWTSubject, HasName
 {
     use HasFactory, Notifiable, SoftDeletes;
 
@@ -53,5 +54,9 @@ class Users extends Authenticatable implements JWTSubject
     public function userUpdator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
+    }
+    public function getFilamentName(): string
+    {
+        return $this->username;
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -33,7 +34,8 @@ class CategoryController extends Controller
         $category = Category::create(attributes: [
             'name' => $request->name,
             'description' => $request->description,
-            'parent_id' => $request->parent_id
+            'parent_id' => $request->parent_id,
+            'created_by' => auth()->guard('api')->id()
         ]);
 
         return new ApiResource(status: 201, message: 'Data created successfully!', resource: $category);
