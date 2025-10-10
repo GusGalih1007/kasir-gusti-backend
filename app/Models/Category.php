@@ -21,4 +21,9 @@ class Category extends Model
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
     }
+
+    public function parentId()
+    {
+        return $this->belongsTo(related: Category::class, foreignKey: 'parent_id');
+    }
 }

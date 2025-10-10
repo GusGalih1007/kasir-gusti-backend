@@ -20,4 +20,14 @@ class EditCategory extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    // Override this method to redirect to Index after create
+      protected function getRedirectUrl(): string
+      {
+          return $this->getResource()::getUrl('index'); // Redirects to /admin/categories
+      }
+      protected function getCreatedNotificationTitle(): ?string
+      {
+          return 'Category created'; // Optional: Customize success message
+      }
 }

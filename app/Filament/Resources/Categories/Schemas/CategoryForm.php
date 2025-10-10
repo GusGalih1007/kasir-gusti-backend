@@ -18,6 +18,7 @@ class CategoryForm
                 TextInput::make('name')
                     ->required()
                     ->maxLength(100)
+                    // ->columnSpanFull()
                     ->string(),
                 Select::make('parent_id')
                     ->label('Category Parent')
