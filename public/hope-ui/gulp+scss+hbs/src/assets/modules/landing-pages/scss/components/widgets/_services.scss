@@ -1,0 +1,117 @@
+.services-box{
+    padding: 6.813rem 1.813rem 2.063rem 1.813rem;
+    &.card{
+        background: $white;
+        &:hover{
+            background: $primary;
+            color: $white;
+            transition: all 400ms ease;
+            h4, h5, a{
+                color: $white;
+            }
+            svg{
+                color: $white !important;
+                transition: all 400ms ease;
+            }
+        }
+    }
+}
+
+.services-box-1{
+    padding:8.25rem 1.813rem 2.5rem 1.813rem;
+    &.card{
+        background: $white;
+        a{
+            font-weight: 500;
+        }
+        &:hover{
+            background: $primary;
+            color: $white;
+            transition: all 400ms ease;
+            h5, a{
+                color: $white !important;
+                transition: all 400ms ease;
+            }
+        }
+    }
+}
+.star-icon{
+    height: 25px;
+}
+.top-feature {
+    padding-bottom: 4rem;
+}
+.slider-circle-btn{
+    position: relative;
+    .swiper-button{
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        &.swiper-button-next {
+            right: 0.2rem;
+            left:auto;
+            top: 45%;
+            background: var(--#{$variable-prefix}primary);
+            border-radius: 5rem;
+            &:after {
+                content: 'next';
+                font-size:  0.75rem;;
+                color: $white;
+            }
+        }
+        &.swiper-button-prev {
+            &:after {
+                content: 'prev';
+                font-size:  0.75rem;;
+                color: $white;
+            }
+            right:auto;
+            left: 0.2rem;
+            top: 45%;
+            background: var(--#{$variable-prefix}primary);
+            border-radius: 5rem;
+        }
+    }
+}
+
+.team-image{
+    &:hover{
+        background: $primary;
+        color: $white;
+        transition: all 400ms ease;
+        h6{
+            color: $white;
+            transition: all 400ms ease;
+        }
+        p{
+            color: $white !important;
+            transition: all 400ms ease;
+        }
+        svg{
+            color: $white !important;
+            transition: all 400ms ease; 
+        }
+    }
+}
+.services {
+    height: 80px;
+    width: 80px;
+    line-height: 80px;
+}
+.workbox{
+    position: relative;
+    z-index: 1;
+    h2 {
+        position: absolute;
+        color: $body-bg;
+        font-size: 128px;
+        font-weight: 800;
+        text-transform: capitalize;
+        left: 23px;
+        z-index: -1;
+    }
+}
+.app-img-box{
+    padding: 0px 60px;
+
+}

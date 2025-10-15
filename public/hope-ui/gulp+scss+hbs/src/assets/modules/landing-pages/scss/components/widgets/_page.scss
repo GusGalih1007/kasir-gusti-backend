@@ -1,0 +1,186 @@
+.about-icon-box{
+    span{
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+}
+
+.contact-detail{
+    text-align: right;
+}
+.contact-detail-card{
+    &.card{
+        .services{
+            background: rgba($primary, .2);
+        }
+    }
+    &:hover{
+        &.card{
+            .services{
+                background: $white;
+                transition: all 400ms ease;
+             }
+            background: $primary;
+            transition: all 400ms ease;
+            h5,p{
+                color:$white;
+                transition: all 400ms ease;
+
+            }
+        }
+    }
+}
+.client-box{
+    position: relative;
+    margin-top: -70px;
+}
+
+@keyframes translateinfinite {
+	100% { transform:translateX(calc(-180px * 12));  }
+}
+.client-list {
+    overflow-x: hidden;
+	ul.client-mrquee {
+        white-space: nowrap;
+		li.client-list-img {
+			animation:translateinfinite 25s linear infinite;
+		}
+	}
+}
+
+.faq{
+    .accordion-button{
+        &.h5{
+            font-size: 1.75rem;
+        }
+    }
+}
+
+//feature start//
+.feature-card{
+  &:hover{
+        &.card{
+            background:$primary;
+            transition: all 400ms ease;
+            .services{
+                    color: $white;
+                    background-color: rgba($white,.1) !important;
+            }
+            svg{
+                path{
+                    fill: $white;
+                }
+            }
+            h6,p,a{
+                color: $white;
+            }
+        }
+  }
+}
+//feature end//
+//pricing start//
+.pricing-card{
+    &:hover{
+        transition: all 400ms ease;
+        background: $primary;
+        .border{
+            border-color: $body-bg;
+        }
+        p,h4,h6{
+            color: $white !important;
+            transition: all 400ms ease;
+        }
+        li{
+            color: $white;
+            transition: all 400ms ease;
+            svg{
+                color: $white !important;
+                transition: all 400ms ease;
+            }  
+        }
+    
+        .btn {
+            &.btn-primary{
+                background:$white !important;
+                color: $black;
+            }
+
+        }
+    }
+   
+}
+//pricing end//
+.contact-box{
+    .form-control{
+        background: transparent;
+        border-color: rgba($white,.1);
+    }
+    .form-check-input{
+        background: transparent;
+        border-color: rgba($white,.1);
+    }
+}
+//blog start//
+
+.iq-col-masonry{
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+}
+.iq-blog-experience{
+    height: 25rem;
+}
+.iq-recent-post{
+    height: 17rem;
+}
+
+.iq-blog-adventure{
+    color: $gray-600;
+    &:hover{
+        color: var(--#{$variable-prefix}primary) !important;
+    }
+}
+.iq-blog-categories{
+    .iq-categories-name{
+        width: 40%;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    .iq-categories-indicator {
+        border-bottom: 1px solid $gray-500;
+        line-height: 0;
+    }
+}
+
+//Media Query
+@include media-breakpoint-down(xl) {
+    .iq-incoming-blogs{
+        > img{
+            width: 26rem;
+        }
+    }
+}
+@include media-breakpoint-down(lg) {
+    .iq-top-categories{
+        height: 15rem;
+    }
+}
+
+//blog end//
+@include media-breakpoint-down(xl) {
+    .client-box{
+        position: relative;
+        margin-top: 0px;
+    }
+    .custom-icon {
+        &.custom-box {
+            margin-top: 0rem;
+        }
+    }
+}
+@media screen and (max-width: 992px) {
+    .contact-detail{
+        text-align: center;
+    }
+
+}

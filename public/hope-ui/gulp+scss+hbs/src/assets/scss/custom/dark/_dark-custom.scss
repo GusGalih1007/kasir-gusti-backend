@@ -1,0 +1,48 @@
+[data-bs-theme=dark] {
+    .credit-card-widget {
+        .primary-gradient-card {
+            background: linear-gradient(117.76deg, rgba(0, 0, 0, 0.5) -7.21%, rgba(0, 0, 0, 0.01) 118.08%);
+        }
+    }
+
+    .border-white {
+        border-color: var(--bs-border-color) !important;
+    }
+
+    .text-dark {
+        color: var(--bs-white) !important;
+    }
+
+    .text-black {
+        color: var(--bs-white) !important;
+    }
+
+    .bg-white {
+        background: var(--bs-gray-900) !important;
+    }
+
+    .table thead tr th {
+        background-color: #151824;
+    }
+
+    .table-striped {
+        >tbody {
+            >tr {
+                &:nth-of-type(even) {
+                    >* {
+                        --bs-table-accent-bg: #151824;
+                    }
+                }
+            }
+        }
+    }
+    .bg-light {
+        background: var(--bs-body-bg) !important;
+    }
+
+    .card {
+        box-shadow: 0 0.625rem 1.875rem rgba(255,255,255,.03);
+    }
+   
+
+}
