@@ -1,0 +1,33 @@
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="{{ path }}assets/images/favicon.ico">
+
+<!-- Library / Plugin Css Build -->
+<link rel="stylesheet" href="{{ path }}assets/css/core/libs.min.css">
+
+{{#compare animation '==' 'true'}}
+<!-- Aos Animation Css -->
+<link rel="stylesheet" href="{{ path }}assets/vendor/aos/dist/aos.css">
+{{/compare}}
+
+<!-- Hope Ui Design System Css -->
+<link rel="stylesheet" href="{{ path }}assets/css/hope-ui.min.css?v={{version}}">
+
+<!-- Custom Css -->
+<link rel="stylesheet" href="{{ path }}assets/css/custom.min.css?v={{version}}">
+
+<!-- Customizer Css -->
+<link rel="stylesheet" href="{{ path }}assets/css/customizer.min.css?v={{version}}">
+
+<!-- RTL Css -->
+<link rel="stylesheet" href="{{ path }}assets/css/rtl.min.css?v={{version}}">
+
+{{#compare isFlatpickr '==' 'true'}}
+<!-- Flatpickr css -->
+<link rel="stylesheet" href="{{ path }}assets/vendor/flatpickr/dist/flatpickr.min.css">
+{{/compare}}
+
+{{#compare isSwiperSlider '==' 'true'}}
+<!-- SwiperSlider css -->
+<link rel="stylesheet" href="{{path}}assets/vendor/swiperSlider/swiper-bundle.min.css">
+{{/compare}}

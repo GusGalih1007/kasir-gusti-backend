@@ -1,0 +1,51 @@
+.features-card {
+    margin-top: -310px;
+}
+.sub-header {
+    background-image: url(../images/top-header.webp);
+    background-repeat: no-repeat;
+    padding: 100px 0px;
+    background-color: $primary;
+    background-size: cover;
+    color: $white;
+}
+
+.features-card {
+    padding: 7.5rem 0rem 5.5rem 0rem;
+}
+
+
+.star-box {
+    h6 {
+        font-size: 19.128px;
+        font-weight: 400;
+        span {
+            font-weight: 700;
+        }
+    }
+}
+
+
+@include media-breakpoint-down(xl) {
+
+    .features-card {
+        margin-top: -260px;
+        padding: 3.75rem 0rem 0.344rem 0rem;
+    }
+}
+@include media-breakpoint-down(lg) {
+    .image-position {
+        display: grid;
+        justify-content: center;
+    }
+    .banner-one-app {
+        padding: 3.25rem 0rem 3.125rem 0.675rem;
+    }
+    .features-card {
+        margin-top: 0px;
+        padding: 40px 0px 50px 0px;
+    }
+    .features-card {
+        margin-top: 0px;
+    }
+}

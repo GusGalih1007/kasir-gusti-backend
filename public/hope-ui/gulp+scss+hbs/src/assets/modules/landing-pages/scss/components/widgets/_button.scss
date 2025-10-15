@@ -1,0 +1,19 @@
+.custom-btn{
+    &.btn-white{
+        background:$white;
+        color: $black;
+        &:hover{
+            background: $body-bg;
+            transition: all 400ms ease;
+        }
+    }
+    &.btn{
+        &.btn-outline-light{
+            &:hover{
+                background: $white;
+                transition: all 400ms ease;
+            }
+        }
+    }
+
+}

@@ -1,0 +1,170 @@
+.landing-pages {
+    h1 {
+        font-size: 4rem;
+    }
+
+    h2 {
+        font-size: 3.25rem;
+    }
+
+    h3 {
+        font-size: 2.875rem;
+    }
+
+    h4 {
+        font-size: 2.375rem;
+    }
+
+    h5 {
+        font-size: 1.75rem;
+    }
+
+    h6 {
+        font-size: 1.375rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    small {
+        font-size: 0.875rem;
+    }
+
+    .section-padding {
+        padding: 7.5rem 0rem;
+    }
+
+    .body-bg {
+        background: #ffffff;
+    }
+
+    .page-bg {
+        background: #F9F9F9;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-weight: 600;
+    }
+
+    h4,
+    h5,
+    h6 {
+        font-weight: 500;
+    }
+
+    .section-card-padding {
+        padding: 7.5rem 0rem 5.5rem 0rem;
+    }
+
+    .inner-card-box {
+        padding: 5.625rem 0rem 3.625rem 0rem;
+    }
+
+    .inner-box {
+        padding: 5.625rem 0rem;
+    }
+
+    .title-top {
+        margin-top: 64px;
+    }
+
+    .sub-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .border-color-light {
+        border-color: rgba(255, 255, 255, .2) !important;
+    }
+    .line-count-1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+      }
+    .line-count-2 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+      .line-count-3 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+      }
+      .heading-title{
+          margin-bottom: 2rem;
+      }
+      .title-text{
+          margin-bottom: 2.5rem;
+      }
+      .heading-main-title{
+          margin-bottom: 4rem;
+      }
+}
+
+@media screen and (max-width: 1025px) {
+    .landing-pages {
+        .section-padding {
+            padding: 3.75rem 0rem;
+        }
+
+        .inner-box {
+            padding: 2.813rem 0rem;
+        }
+
+        .section-card-padding {
+            padding: 3.75rem 0rem 2.75rem 0rem;
+        }
+
+        .inner-card-box {
+            padding: 2.8125rem 0rem 1.8125rem 0rem;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .landing-pages {
+        h1 {
+            line-height: 55px;
+            font-size: 50px;
+        }
+
+        h2 {
+            line-height: 42px;
+            font-size: 32px;
+        }
+
+        h3 {
+            line-height: 38px;
+            font-size: 28px;
+        }
+
+        h4 {
+            line-height: 32px;
+            font-size: 22px;
+        }
+
+        h5 {
+            line-height: 28px;
+            font-size: 18px;
+        }
+
+        h6 {
+            line-height: 26px;
+            font-size: 16px;
+        }
+
+        .title-top {
+            margin-top: 24px;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+.iq-qty-btn{
+    .btn{
+        &:focus{
+            box-shadow: unset;
+        }
+    }
+    .input-display{
+        width: 2.6rem;
+        cursor: text;
+        color: $input-focus-color;
+        &:hover{
+            color: $input-focus-color !important;
+            background: transparent !important;
+        }
+    }
+}
