@@ -13,9 +13,18 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $category = Category::latest()->paginate(perPage: 5);
+        // $category = Category::latest()->paginate(perPage: 5);
 
-        return new ApiResource(status: 200, message: 'Success', resource: $category);
+        $data = Category::get();
+
+        return view('category.index', compact('data'));
+
+        // return new ApiResource(status: 200, message: 'Success', resource: $category);
+    }
+
+    public function create()
+    {
+        return view('category.create');
     }
 
     public function store (Request $request)
@@ -28,14 +37,15 @@ class CategoryController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect(route('category.create'))->with('validate', 'Data Invalid');
         }
 
         $category = Category::create(attributes: [
             'name' => $request->name,
             'description' => $request->description,
             'parent_id' => $request->parent_id,
-            'created_by' => auth()->guard('api')->id()
+            // 'created_by' => auth()->guard('api')->id()
         ]);
 
         return new ApiResource(status: 201, message: 'Data created successfully!', resource: $category);
