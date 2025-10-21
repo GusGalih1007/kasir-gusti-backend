@@ -61,6 +61,16 @@ class RoleController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
+    public function getUserRole()
+    {
+        if (auth()->guard('web')->check()) {
+            $user = auth()->guard('web')->user();
+            return $user->role ?? 'No Role';
+        }
+
+        return 'No Role';
+    }
+
     /**
      * Update the specified resource in storage.
      */
