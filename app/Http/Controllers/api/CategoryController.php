@@ -24,7 +24,11 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return view('category.create');
+        $parent = Category::get();
+
+        $category = null;
+
+        return view('category.form', compact('parent', 'category'));
     }
 
     public function store (Request $request)
@@ -38,7 +42,7 @@ class CategoryController extends Controller
         if ($validate->fails())
         {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect(route('category.create'))->with('validate', 'Data Invalid');
+            return redirect()->back()->withErrors($validate)->withInput();
         }
 
         $category = Category::create(attributes: [
@@ -48,7 +52,7 @@ class CategoryController extends Controller
             // 'created_by' => auth()->guard('api')->id()
         ]);
 
-        return new ApiResource(status: 201, message: 'Data created successfully!', resource: $category);
+        return redirect()->route('category.index')->with('Success', 'Data Created Successfully!');
     }
     public function show($id)
     {
@@ -61,6 +65,14 @@ class CategoryController extends Controller
 
         return new ApiResource(status: 200, message: 'Success', resource: $category);
     }
+    public function edit($id)
+    {
+        $parent = Category::get();
+
+        $category = Category::findOrFail($id);
+
+        return view('category.form', compact('parent', 'category'));
+    }
     public function update(Request $request, $id)
     {
         $validator = Validator::make(data: $request->all(), rules: [
@@ -71,7 +83,8 @@ class CategoryController extends Controller
 
         if($validator->fails())
         {
-            return response()->json(data: $validator->errors(), status: 422);
+            return redirect()->back()->withErrors($validator)->withInput();
+            // return response()->json(data: $validator->errors(), status: 422);
         }
 
         $category = Category::findOrFail(id: $id);
@@ -87,7 +100,8 @@ class CategoryController extends Controller
             'parent_id' => $request->parent_id
         ]);
 
-        return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $category);
+        return redirect()->route('category.index')->with('Success', 'Data Updated Successfully!');
+        // return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $category);
     }
     public function destroy($id)
     {
