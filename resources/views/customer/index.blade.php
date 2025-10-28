@@ -5,10 +5,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Categories</h4>
+                        <h4 class="card-title">Customer</h4>
                     </div>
                     <div style="text-align: right;">
-                        <a href="{{ route('category.create') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.create') }}" class="btn btn-primary">
                             Create
                         </a>
                     </div>
@@ -21,24 +21,31 @@
                         <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Parent Category</th>
+                                    <th>Full Name</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Alamat</th>
+                                    <th>Phone</th>
+                                    <th>E-Mail</th>
+                                    <th>Membership</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="table-light">
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ $item->description }}</td>
-                                        <td>{{ $item->parentId->name ?? 'N/A' }}</td>
+                                        <td>{{ $item->first_name . ' ' . $item->last_name }}</td>
+                                        <td>{{ $item->first_name }}</td>
+                                        <td>{{ $item->last_name }}</td>
+                                        <td>{{ $item->alamat }}</td>
+                                        <td>{{ $item->phone }}</td>
+                                        <td>{{ $item->email }}</td>
+                                        <td>{{ $item->is_member ? 'Yes' : 'No' }}</td>
                                         <td>
-                                            <form action="{{ route('category.destroy', $item->category_id) }}"
-                                                method="POST">
+                                            <form action="{{ route('customer.destroy', $item->customer_id) }}" method="POST">
                                                 {{ csrf_field() }}
                                                 @method('DELETE')
-                                                <a href="{{ route('category.edit', $item->category_id) }}"
+                                                <a href="{{ route('customer.edit', $item->customer_id) }}"
                                                     class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                         viewBox="0 0 24 24" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +84,7 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <th colspan="3">Total Data</th>
+                                    <th colspan="7">Total Data</th>
                                     <th>{{ count($data) }}</th>
                                 </tr>
                             </tfoot>

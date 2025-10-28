@@ -5,10 +5,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Categories</h4>
+                        <h4 class="card-title">Supplier</h4>
                     </div>
                     <div style="text-align: right;">
-                        <a href="{{ route('category.create') }}" class="btn btn-primary">
+                        <a href="{{ route('supplier.create') }}" class="btn btn-primary">
                             Create
                         </a>
                     </div>
@@ -23,7 +23,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    <th>Parent Category</th>
+                                    <th>Alamat</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -32,13 +32,13 @@
                                     <tr>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->description }}</td>
-                                        <td>{{ $item->parentId->name ?? 'N/A' }}</td>
+                                        <td>{{ $item->alamat }}</td>
                                         <td>
-                                            <form action="{{ route('category.destroy', $item->category_id) }}"
+                                            <form action="{{ route('supplier.destroy', $item->supplier_id) }}"
                                                 method="POST">
                                                 {{ csrf_field() }}
                                                 @method('DELETE')
-                                                <a href="{{ route('category.edit', $item->category_id) }}"
+                                                <a href="{{ route('supplier.edit', $item->supplier_id) }}"
                                                     class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                         viewBox="0 0 24 24" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
