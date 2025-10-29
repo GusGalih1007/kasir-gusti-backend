@@ -15,14 +15,22 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $data = Supplier::latest()->paginate(perPage: 5);
+        $data = Supplier::get();
 
-        if ($data == null)
-        {
-            return response()->json(data: 'No Data', status: 200);
-        }
+        // if ($data == null)
+        // {
+        //     return response()->json(data: 'No Data', status: 200);
+        // }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+        // return new ApiResource(status: 200, message: 'Success', resource: $data);
+        return view('supplier.index', compact('data'));
+    }
+
+    public function create()
+    {
+        $supplier = null;
+
+        return view('supplier.form', compact('supplier'));
     }
 
     /**
@@ -38,16 +46,18 @@ class SupplierController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
-
+        
         $data = Supplier::create(attributes: [
             'name' => $request->name,
             'description' => $request->description,
             'alamat' => $request->alamat
         ]);
 
-        return new ApiResource(status: 201, message: 'Data created successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data created successfully', resource: $data);
+        return redirect()->route('supplier.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -65,6 +75,19 @@ class SupplierController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
+    public function edit($id)
+    {
+        $supplier = Supplier::findOrFail($id);
+
+        if ($supplier == null)
+        {
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+        }
+
+        return view('supplier.form', compact('supplier'));
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -74,7 +97,8 @@ class SupplierController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
 
         $validate = Validator::make(data: $request->all(), rules: [
@@ -85,7 +109,8 @@ class SupplierController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            // return response()->json(data: $validate->errors(), status: 422);
         }
 
         $data->update([
@@ -94,7 +119,8 @@ class SupplierController extends Controller
             'alamat' => $request->alamat
         ]);
 
-        return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        return redirect()->route('supplier.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -106,11 +132,13 @@ class SupplierController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            // return response()->json(data: 'Data does not exist!', status: 200);
         }
 
         $data->delete();
 
-        return new ApiResource(status: 204, message: 'Data deleted successfully', resource: null);
+        // return new ApiResource(status: 204, message: 'Data deleted successfully', resource: null);
+        return redirect()->route('supplier.index')->with('success', 'Data deleted successfully');
     }
 }

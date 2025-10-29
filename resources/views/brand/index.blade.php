@@ -5,10 +5,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Categories</h4>
+                        <h4 class="card-title">Brand</h4>
                     </div>
                     <div style="text-align: right;">
-                        <a href="{{ route('category.create') }}" class="btn btn-primary">
+                        <a href="{{ route('brand.create') }}" class="btn btn-primary">
                             Create
                         </a>
                     </div>
@@ -23,7 +23,6 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    <th>Parent Category</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -32,13 +31,11 @@
                                     <tr>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->description }}</td>
-                                        <td>{{ $item->parentId->name ?? 'N/A' }}</td>
                                         <td>
-                                            <form action="{{ route('category.destroy', $item->category_id) }}"
-                                                method="POST">
+                                            <form action="{{ route('brand.destroy', $item->brand_id) }}" method="POST">
                                                 {{ csrf_field() }}
                                                 @method('DELETE')
-                                                <a href="{{ route('category.edit', $item->category_id) }}"
+                                                <a href="{{ route('brand.edit', $item->brand_id) }}"
                                                     class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                         viewBox="0 0 24 24" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +74,7 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <th colspan="3">Total Data</th>
+                                    <th colspan="2">Total Data</th>
                                     <th>{{ count($data) }}</th>
                                 </tr>
                             </tfoot>

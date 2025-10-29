@@ -15,9 +15,17 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $data = Customers::latest()->paginate(perPage: 5);
+        $data = Customers::get();
 
-        return new ApiResource(status: 200, message: 'Success!', resource: $data);
+        // return new ApiResource(status: 200, message: 'Success!', resource: $data);
+        return view('customer.index', compact('data'));
+    }
+
+    public function create()
+    {
+        $customer = null;
+
+        return view('customer.form', compact('customer'));
     }
 
     /**

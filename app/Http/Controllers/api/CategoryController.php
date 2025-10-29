@@ -42,7 +42,7 @@ class CategoryController extends Controller
         if ($validate->fails())
         {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect()->back()->withErrors($validate)->withInput();
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
 
         $category = Category::create(attributes: [
@@ -60,7 +60,8 @@ class CategoryController extends Controller
 
         if($category == null)
         {
-            return response()->json(data: 'Data does not exist', status: 200);
+            // return response()->json(data: 'Data does not exist', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
 
         return new ApiResource(status: 200, message: 'Success', resource: $category);
@@ -70,6 +71,12 @@ class CategoryController extends Controller
         $parent = Category::get();
 
         $category = Category::findOrFail($id);
+
+        if($category == null)
+        {
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+        }
 
         return view('category.form', compact('parent', 'category'));
     }
@@ -83,7 +90,7 @@ class CategoryController extends Controller
 
         if($validator->fails())
         {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors('errors', $validator->errors())->withInput();
             // return response()->json(data: $validator->errors(), status: 422);
         }
 
@@ -91,7 +98,8 @@ class CategoryController extends Controller
 
         if($category == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
 
         $category->update(attributes: [
@@ -109,11 +117,13 @@ class CategoryController extends Controller
 
         if($category == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
 
         $category->delete();
 
-        return new ApiResource(status: 204, message: 'Data deleted Successfully!', resource: null);
+        // return new ApiResource(status: 204, message: 'Data deleted Successfully!', resource: null);
+        return redirect()->route('category.index')->with('success', 'Data deleted successfully');
     }
 }

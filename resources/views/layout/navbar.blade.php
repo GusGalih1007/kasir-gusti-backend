@@ -378,7 +378,7 @@
                                 {{ auth()->guard('web')->check() ? auth()->guard('web')->user()->username : 'No Name' }}
                             </h6>
                             <p class="mb-0 caption-sub-title">
-                                {{ auth()->guard('web')->user()->role_id }}
+                                {{-- {{ auth()->guard('web')->user()->role_id }} --}}
                             </p>
                         </div>
                     </a>

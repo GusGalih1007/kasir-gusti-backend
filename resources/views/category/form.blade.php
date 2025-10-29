@@ -9,7 +9,9 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ $category ? route('category.update', $category->category_id) :  route('category.store') }}" method="POST" class="needs-validation row g-3" novalidate>
+                    <form
+                        action="{{ $category ? route('category.update', $category->category_id) : route('category.store') }}"
+                        method="POST" class="needs-validation row g-3" novalidate>
                         {{ csrf_field() }}
 
                         @if ($category)
@@ -18,9 +20,10 @@
 
                         <div class="col-6 form-group">
                             <label for="CategoryName" class="form-label">Category Name</label>
-                            <input type="text" name="name" value="{{ old('name', $category->name ?? '') }}" class="form-control" id="CategoryName" required>
+                            <input type="text" name="name" value="{{ old('name', $category->name ?? '') }}"
+                                class="form-control" id="CategoryName" required>
                             <div class="invalid-feedback">
-                                    Category name is Required
+                                Category name is Required
                             </div>
                             @if ($errors->has('name'))
                                 <span class="alert alert-danger">
@@ -29,12 +32,13 @@
                             @endif
                         </div>
                         <div class="col-6 form-group">
-                            <label for="parentId">Patrent Category</label>
+                            <label for="parentId">Parent Category</label>
                             <select name="parent_id" id="parentId" class="form-select">
                                 <option value="" selected disabled>Select Category</option>
                                 @foreach ($parent as $p)
-                                <option value="{{ $p->category_id }}" 
-                                    {{ $category ? $p->category_id == $category->parent_id ? 'selected' : '' : ''}}>{{ $p->name }}</option>
+                                    <option value="{{ $p->category_id }}"
+                                        {{ $category ? ($p->category_id == $category->parent_id ? 'selected' : '') : '' }}>
+                                        {{ $p->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -58,4 +62,9 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#parentId').select2();
+        });
+    </script>
 @endsection

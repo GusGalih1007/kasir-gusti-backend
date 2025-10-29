@@ -7,6 +7,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpKernel\Debug\VirtualRequestStack;
 
 class BrandController extends Controller
 {
@@ -17,12 +18,21 @@ class BrandController extends Controller
     {
         $data = Brand::latest()->paginate(perPage: 5);
 
-        if ($data == null)
-        {
-            return response()->json(data: 'No Data', status: 200);
-        }
+        // if ($data == null)
+        // {
+        //     return response()->json(data: 'No Data', status: 200);
+        // }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+        // return new ApiResource(status: 200, message: 'Success', resource: $data);
+
+        return view('brand.index', compact('data'));
+    }
+
+    public function create()
+    {
+        $brand = null;
+
+        return view('brand.form', compact('brand'));
     }
 
     /**
@@ -35,9 +45,10 @@ class BrandController extends Controller
             'description' => 'required|string'
         ]);
 
-        if($validate->fails())
+        if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
 
         $data = Brand::create(attributes: [
@@ -45,7 +56,8 @@ class BrandController extends Controller
             'description' => $request->description
         ]);
 
-        return new ApiResource(status: 201, message: 'Data created successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data created successfully', resource: $data);
+        return redirect()->route('brand.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -57,10 +69,24 @@ class BrandController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+        return new ApiResource(status: 200, message: 'success', resource: $data);
+    }
+
+    public function edit($id)
+    {
+        $brand = Brand::findOrFail($id);
+
+        if($brand == null)
+        {
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+        }
+
+        return view('brand.form', compact('brand'));
     }
 
     /**
@@ -70,8 +96,10 @@ class BrandController extends Controller
     {
         $data = Brand::findOrFail(id: $id);
 
-        if ($data == null){
-            return response()->json(data: 'Data does not exist!', status: 200);
+        if($data == null)
+        {
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
         }
         $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
@@ -80,7 +108,8 @@ class BrandController extends Controller
 
         if($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
 
         $data->update(attributes: [
@@ -88,7 +117,8 @@ class BrandController extends Controller
             'description' => $request->description
         ]);
 
-        return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        return redirect()->route('brand.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -100,11 +130,13 @@ class BrandController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errrors', 'Data does not exist!');
         }
 
         $data->delete();
 
-        return new ApiResource(status: 204, message: 'Data deleted Successfully', resource: null);
+        // return new ApiResource(status: 204, message: 'Data deleted Successfully', resource: null);
+        return redirect()->route('brand.index')->with('success', 'Data Deleted Successfully');
     }
 }

@@ -12,7 +12,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $user = Users::get();
-        $role = Role::findOrFail($user->role_id);
-        return view('dashboard.admin')->with($role);
+        // $role = Role::findOrFail($user->role_id);
+        return view('dashboard.admin');
     }
 }

@@ -17,7 +17,7 @@ class RoleMiddleware
     {
         if (!auth()->guard('web')->check())
         {
-            return 
+            // return null;
         }
         return $next($request);
     }
