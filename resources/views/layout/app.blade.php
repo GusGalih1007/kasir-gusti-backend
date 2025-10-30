@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Hope UI | Responsive Bootstrap 5 Admin Dashboard Template</title>
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('hope-ui/html/assets/images/favicon.ico') }}" />
-
     <!-- Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('hope-ui/html/assets/images/favicon.ico') }}" />
+    
     <!-- Library / Plugin Css Build -->
     <link rel="stylesheet" href="{{ asset('hope-ui/html/assets/css/core/libs.min.css') }}" />
 
@@ -136,12 +136,19 @@
             class="btn btn-fixed-end btn-secondary btn-icon btn-dashboard z-3"
             href="../landing-pages/index.html"
             target="_blank"
-        >
+            >
             Landing Pages
         </a> --}}
     <!-- Wrapper End-->
     <!-- offcanvas start -->
     @include('layout.offcanvas')
+
+    <!-- jQuery (required by Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <!-- Library Bundle Script -->
     <script src="{{ asset('hope-ui/html/assets/js/core/libs.min.js') }}"></script>
 
@@ -173,12 +180,8 @@
     <!-- App Script -->
     <script src="{{ asset('hope-ui/html/assets/js/hope-ui.js') }}" defer></script>
 
-    <!-- jQuery (required by Select2) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Select2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
+    @yield('scripts')
 </body>
 
 </html>

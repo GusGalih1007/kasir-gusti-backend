@@ -5,13 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customers extends Model
+class Membership extends Model
 {
     use SoftDeletes;
-    protected $table = 'customers';
-    protected $primaryKey = 'customer_id';
 
-    protected $fillable = ['first_name','last_name', 'alamat', 'phone', 'email', 'is_member', 'membership_id', 'created_by', 'updated_by'];
+    protected $table = 'memberships';
+    protected $primaryKey = 'membership_id';
+
+    protected $fillable = [
+        'membership',
+        'benefit',
+        'discount',
+        'expired_at',
+        'created_by',
+        'updated_by',
+    ];
 
     public function userCreator()
     {
@@ -23,8 +31,8 @@ class Customers extends Model
         return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
     }
 
-    public function membership()
+    public function customer()
     {
-        return $this->hasMany(Membership::class, 'membership_id', 'membership_id');
+        return $this->hasMany(Customers::class, 'membership_id', 'membership_id');
     }
 }
