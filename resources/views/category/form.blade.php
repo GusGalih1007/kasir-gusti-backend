@@ -32,9 +32,9 @@
                             @endif
                         </div>
                         <div class="col-6 form-group">
-                            <label for="parentId">Parent Category</label>
-                            <select name="parent_id" id="parentId" class="form-select">
-                                <option value="" selected disabled>Select Category</option>
+                            <label for="parentId" class="form-label">Parent Category</label>
+                            <select name="parent_id" id="parentId" class="form-control select2">
+                                <option value="" selected hidden>Select Category</option>
                                 @foreach ($parent as $p)
                                     <option value="{{ $p->category_id }}"
                                         {{ $category ? ($p->category_id == $category->parent_id ? 'selected' : '') : '' }}>
@@ -62,9 +62,13 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
     <script>
-        $(document).ready(function() {
-            $('#parentId').select2();
+        var jq = jQuery.noConflict(true);
+        jq(document).ready(function() {
+            jq('.select2').select2();
         });
     </script>
 @endsection

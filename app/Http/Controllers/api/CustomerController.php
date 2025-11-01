@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResource;
 use App\Models\Customers;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,9 +24,10 @@ class CustomerController extends Controller
 
     public function create()
     {
+        $membership = Membership::get();
         $customer = null;
 
-        return view('customer.form', compact('customer'));
+        return view('customer.form', compact('customer', 'membership'));
     }
 
     /**
@@ -39,11 +41,19 @@ class CustomerController extends Controller
             'alamat' => 'required|string',
             'phone' => 'required|numeric|max_digits:15',
             'email' => 'required|email',
-            'is_member' => 'nullable|boolean'
+            'membership' => 'required'
         ]);
 
+        $isMembership = false;
+
+        if ($request->membership != 'regular')
+        {
+            $isMembership = true;
+        }
+
         if ($validate->fails()) {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
 
         $data = Customers::create(attributes: [
@@ -52,10 +62,12 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
-            'is_member' => (!$request->is_member) ? false : $request->is_member
+            'is_member' => $isMembership,
+            'membership_id' => $request->membership
         ]);
 
-        return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
+        return redirect()->route('customer.index')->with('success', 'Data created successfully');
     }
 
     /**
