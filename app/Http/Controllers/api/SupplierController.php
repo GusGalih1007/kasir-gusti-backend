@@ -47,9 +47,9 @@ class SupplierController extends Controller
         if ($validate->fails())
         {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
-        
+
         $data = Supplier::create(attributes: [
             'name' => $request->name,
             'description' => $request->description,
@@ -109,7 +109,7 @@ class SupplierController extends Controller
 
         if ($validate->fails())
         {
-            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
             // return response()->json(data: $validate->errors(), status: 422);
         }
 

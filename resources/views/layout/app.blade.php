@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes" />
     <title>Hope UI | Responsive Bootstrap 5 Admin Dashboard Template</title>
 
     <!-- Select2 CSS -->
@@ -11,7 +11,7 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('hope-ui/html/assets/images/favicon.ico') }}" />
-    
+
     <!-- Library / Plugin Css Build -->
     <link rel="stylesheet" href="{{ asset('hope-ui/html/assets/css/core/libs.min.css') }}" />
 

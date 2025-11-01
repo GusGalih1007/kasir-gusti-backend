@@ -82,15 +82,16 @@ class CategoryController extends Controller
     }
     public function update(Request $request, $id)
     {
-        $validator = Validator::make(data: $request->all(), rules: [
+        $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
             'description' => 'required|string',
             'parent_id' => 'nullable|numeric',
         ]);
 
-        if($validator->fails())
+        if($validate->fails())
         {
-            return redirect()->back()->withErrors('errors', $validator->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
+
             // return response()->json(data: $validator->errors(), status: 422);
         }
 

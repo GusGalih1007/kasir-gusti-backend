@@ -5,10 +5,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Brand</h4>
+                        <h4 class="card-title">Membership Level</h4>
                     </div>
                     <div style="text-align: right;">
-                        <a href="{{ route('brand.create') }}" class="btn btn-primary">
+                        <a href="{{ route('membership.create') }}" class="btn btn-primary">
                             Create
                         </a>
                     </div>
@@ -21,21 +21,25 @@
                         <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Membership Level</th>
+                                    <th>Benefit</th>
+                                    <th>Discount</th>
+                                    <th>Valid For</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="table-light">
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ $item->description }}</td>
+                                        <td>{{ $item->membership }}</td>
+                                        <td>{{ $item->benefit }}</td>
+                                        <td>{{ $item->discount }}</td>
+                                        <td>{{ $item->expiration_period }}</td>
                                         <td>
-                                            <form action="{{ route('brand.destroy', $item->brand_id) }}" method="POST">
+                                            <form action="{{ route('membership.destroy', $item->membership_id) }}" method="POST">
                                                 {{ csrf_field() }}
                                                 @method('DELETE')
-                                                <a href="{{ route('brand.edit', $item->brand_id) }}"
+                                                <a href="{{ route('membership.edit', $item->membership_id) }}"
                                                     class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                         viewBox="0 0 24 24" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +78,7 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <th colspan="2">Total Data</th>
+                                    <th colspan="4">Total Data</th>
                                     <th>{{ count($data) }}</th>
                                 </tr>
                             </tfoot>

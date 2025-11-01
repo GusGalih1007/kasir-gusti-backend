@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('membership_id');
             $table->string('membership', 10);
             $table->string('benefit', 30);
-            $table->decimal('discount', 5, 2);
-            $table->date('expired_at');
+            $table->decimal('discount', 5, 2)->nullable();
+            $table->integer('expiration_period')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

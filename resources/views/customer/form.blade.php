@@ -61,15 +61,15 @@
                         </div>
                         <div class="col-6 form-group">
                             <label for="customerLastName" class="form-label">E-Mail</label>
-                            <input type="email" name="last_name"
-                                value="{{ old('last_name', $customer->last_name ?? '') }}" class="form-control"
+                            <input type="email" name="email"
+                                value="{{ old('email', $customer->email ?? '') }}" class="form-control"
                                 id="customerLastName" required>
                             <div class="invalid-feedback">
                                 Email is Required
                             </div>
-                            @if ($errors->has('last_name'))
+                            @if ($errors->has('email'))
                                 <span class="alert alert-danger">
-                                    {{ $errors->first('last_name') }}
+                                    {{ $errors->first('email') }}
                                 </span>
                             @endif
                         </div>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-12 form-group">
                             <label class="form-label" for="alamat">Alamat</label>
-                            <textarea class="form-control" name="alamat" id="alamat" rows="5" required>{{ $customer ? $customer->alamat : '' }}</textarea>
+                            <textarea class="form-control" name="alamat" id="alamat" rows="5" required>{{ $customer ? $customer->alamat : old('alamat', $customer->alamat ?? '') }}</textarea>
                             <div class="invalid-feedback">
                                 Alamat is required
                             </div>

@@ -41,19 +41,19 @@ class CustomerController extends Controller
             'alamat' => 'required|string',
             'phone' => 'required|numeric|max_digits:15',
             'email' => 'required|email',
-            'membership' => 'required'
+            'membership' => 'nullable'
         ]);
 
         $isMembership = false;
 
-        if ($request->membership != 'regular')
+        if ($request->membership != 'regular' && filled($request->membership))
         {
             $isMembership = true;
         }
 
         if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
         $data = Customers::create(attributes: [
@@ -78,10 +78,19 @@ class CustomerController extends Controller
         $data = Customers::findOrFail(id: $id);
 
         if($data == null) {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            // return response()->json(data: 'Data does not exist!', status: 200);
         }
 
         return new ApiResource(status: 200, message: 'Success!', resource: $data);
+    }
+
+    public function edit($id)
+    {
+        $membership = Membership::get();
+        $customer = Customers::findOrFail($id);
+
+        return view('customer.form', compact('membership', 'customer'));
     }
 
     /**
@@ -89,23 +98,30 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = Customers::findOrFail(id: $id);
+        if ($data == null) {
+            return response()->json(data: 'Data does not exist!', status: 200);
+        }
+
         $validate = Validator::make(data: $request->all(), rules: [
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'alamat' => 'required|string',
             'phone' => 'required|numeric|max_digits:15',
             'email' => 'required|email',
-            'is_member' => 'nullable|boolean'
+            'membership' => 'nullable'
         ]);
-        
+
+        $isMembership = false;
+
+        if ($request->membership != 'regular' && filled($request->membership) ) {
+            $isMembership = true;
+        }
+
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
-        }
-        
-        $data = Customers::findOrFail(id: $id);
-        if ($data == null) {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            // return response()->json(data: $validate->errors(), status: 422);
         }
 
         $data->update(attributes: [
@@ -114,10 +130,12 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'phone' => $request->phone,
             'email' => $request->email,
-            'is_member' => (!$request->is_member) ? false : $request->is_member
+            'is_member' => $isMembership,
+            'membership_id' => $request->membership
         ]);
 
-        return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $data);
+        return redirect()->route('customer.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -130,9 +148,10 @@ class CustomerController extends Controller
         if ($data == null) {
             return response()->json(data: 'Data does not exist!', status: 200);
         }
-        
+
         $data->delete();
 
-        return new ApiResource(status: 204, message: 'Data deleted Successfully!', resource: null);
+        return redirect()->route('customer.index')->with('success', 'Data deleted successfully');
+        // return new ApiResource(status: 204, message: 'Data deleted Successfully!', resource: null);
     }
 }

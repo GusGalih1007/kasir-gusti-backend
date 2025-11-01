@@ -48,7 +48,7 @@ class BrandController extends Controller
         if ($validate->fails())
         {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
         $data = Brand::create(attributes: [
@@ -109,7 +109,7 @@ class BrandController extends Controller
         if($validate->fails())
         {
             // return response()->json(data: $validate->errors(), status: 422);
-            return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
         $data->update(attributes: [

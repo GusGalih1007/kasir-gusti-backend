@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Membership;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class MembershipController extends Controller
 {
@@ -13,7 +14,9 @@ class MembershipController extends Controller
      */
     public function index()
     {
-        //
+        $data = Membership::get();
+
+        return view('membership.index', compact('data'));
     }
 
     /**
@@ -21,7 +24,9 @@ class MembershipController extends Controller
      */
     public function create()
     {
-        //
+        $membership = null;
+
+        return view('membership.form', compact('membership'));
     }
 
     /**
@@ -29,13 +34,32 @@ class MembershipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = Validator::make($request->all(), [
+            'membership' => 'required|string|max:10',
+            'benefit' => 'required|string|max:30',
+            'discount' => 'nullable|numeric',
+            'expiration_period' => 'nullable|numeric'
+        ]);
+
+        if ($validate->fails())
+        {
+            return redirect()->back()->withErrors($validate->errors())->withInput();
+        }
+
+        Membership::create([
+            'membership' => $request->membership,
+            'benefit' => $request->benefit,
+            'discount' => $request->discount,
+            'expiration_period' => $request->expiration_period
+        ]);
+
+        return redirect()->route('membership.index')->with('success', 'Data created successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Membership $membership)
+    public function show($id)
     {
         //
     }
@@ -43,7 +67,7 @@ class MembershipController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Membership $membership)
+    public function edit($id)
     {
         //
     }
@@ -51,7 +75,7 @@ class MembershipController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Membership $membership)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -59,7 +83,7 @@ class MembershipController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Membership $membership)
+    public function destroy($id)
     {
         //
     }
