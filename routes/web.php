@@ -6,6 +6,7 @@ use App\Http\Controllers\api\DashboardController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\MembershipController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ route::resource('brand', BrandController::class);
 route::resource('supplier', SupplierController::class);
 route::resource('customer', CustomerController::class);
 route::resource('membership', MembershipController::class);
+route::resource('product', ProductController::class);
 
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
