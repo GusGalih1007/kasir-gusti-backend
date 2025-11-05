@@ -33,7 +33,7 @@
                                     <tr>
                                         <td>{{ $item->membership }}</td>
                                         <td>{{ $item->benefit }}</td>
-                                        <td>{{ $item->discount == 0.0 || $item->discount == null ? 'No Discount' : $item->discount }}
+                                        <td>{{ $item->discount == 0.00 || $item->discount == null ? 'No Discount' : intval($item->discount) . "%" }}
                                         </td>
                                         <td>{{ $item->expiration_period == 0 || $item->expiration_period == null ? 'Lifetime' : $item->expiration_period . 'Month(s)' }}
                                         </td>

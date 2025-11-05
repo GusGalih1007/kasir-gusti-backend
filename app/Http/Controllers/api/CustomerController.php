@@ -46,7 +46,7 @@ class CustomerController extends Controller
 
         $isMembership = false;
 
-        if ($request->membership != 'regular' && filled($request->membership))
+        if (filled($request->membership))
         {
             $isMembership = true;
         }

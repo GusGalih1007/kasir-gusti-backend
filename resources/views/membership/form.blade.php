@@ -66,7 +66,7 @@
                             <div class="input-group mb-3">
                                 <input type="number" name="expiration_period"
                                     value="{{ old('expiration_period', $membership->expiration_period ?? '') }}"
-                                    class="form-control" id="expiration_period" aria-describedby="basic-addon2" required>
+                                    class="form-control" id="expiration_period" aria-describedby="basic-addon2">
                                 <span class="input-group-text" id="basic-addon2">Month</span>
                             </div>
                             <div class="invalid-feedback">

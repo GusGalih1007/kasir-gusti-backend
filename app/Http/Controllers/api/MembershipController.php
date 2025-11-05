@@ -50,7 +50,7 @@ class MembershipController extends Controller
             'membership' => $request->membership,
             'benefit' => $request->benefit,
             'discount' => $request->discount,
-            'expiration_period' => $request->expiration_period
+            'expiration_period' => intval($request->expiration_period)
         ]);
 
         return redirect()->route('membership.index')->with('success', 'Data created successfully');
@@ -114,7 +114,7 @@ class MembershipController extends Controller
             'membership' => $request->membership,
             'benefit' => $request->benefit,
             'discount' => $request->discount,
-            'expiration_period' => $request->expiration_period
+            'expiration_period' => intval($request->expiration_period)
         ]);
 
         return redirect()->route('membership.index')->with('success', 'Data updated successfully');
