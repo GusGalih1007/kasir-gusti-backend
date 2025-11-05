@@ -61,9 +61,8 @@
                         </div>
                         <div class="col-6 form-group">
                             <label for="customerLastName" class="form-label">E-Mail</label>
-                            <input type="email" name="email"
-                                value="{{ old('email', $customer->email ?? '') }}" class="form-control"
-                                id="customerLastName" required>
+                            <input type="email" name="email" value="{{ old('email', $customer->email ?? '') }}"
+                                class="form-control" id="customerLastName" required>
                             <div class="invalid-feedback">
                                 Email is Required
                             </div>
@@ -79,7 +78,9 @@
                                 aria-placeholder="Select customer membership">
                                 <option value="" selected hidden>Select customer membership</option>
                                 @foreach ($membership as $item)
-                                    <option value="{{ $item->membership_id }}">{{ $item->membership }}</option>
+                                    <option value="{{ $item->membership_id }}"
+                                        {{ $customer ? ($item->membership_id == $customer->membership_id ? 'selected' : '') : '' }}>
+                                        {{ $item->membership }}</option>
                                 @endforeach
                             </select>
                         </div>

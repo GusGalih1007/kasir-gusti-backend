@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\ApiResource;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Supplier;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,14 +19,20 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $data = Product::latest()->paginate(perPage: 10);
+        $data = Product::get();
 
-        if ($data == null)
-        {
-            return response()->json(data: 'No Data', status: 200);
-        }
+        // return new ApiResource(status: 200, message: 'Success', resource: $data);
+        return view('product.index', compact('data'));
+    }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+    public function create()
+    {
+        $product = null;
+        $category = Category::get();
+        $brand = Brand::get();
+        $supplier = Supplier::get();
+
+        return view('product.form', compact('product', 'category', 'brand', 'supplier'));
     }
 
     /**
@@ -34,7 +43,7 @@ class ProductController extends Controller
         $validate = Validator::make(data: $request->all(), rules: [
             'product_name' => 'required|max:150|string',
             'description' => 'required|string',
-            'price' => 'required|decimal:2,2',
+            'price' => 'required',
             'category' => 'required|exists:categories,category_id',
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
@@ -50,7 +59,8 @@ class ProductController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
         $data = Product::create(attributes: [
@@ -63,7 +73,8 @@ class ProductController extends Controller
             'is_available' => $available
         ]);
 
-        return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
+        return redirect()->route('product.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -81,6 +92,22 @@ class ProductController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        $category = Category::get();
+        $brand = Brand::get();
+        $supplier = Supplier::get();
+
+        if ($product == null)
+        {
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('Data does not exist!');
+        }
+
+        return view('product.form', compact('product', 'category', 'brand', 'supplier'));   
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -90,13 +117,14 @@ class ProductController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('Data does not exist!');
         }
 
         $validate = Validator::make(data: $request->all(), rules: [
             'product_name' => 'required|max:150|string',
             'description' => 'required|string',
-            'price' => 'required|decimal:2,2',
+            'price' => 'required',
             'category' => 'required|exists:categories,category_id',
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
@@ -112,10 +140,11 @@ class ProductController extends Controller
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
-        $data->update(attributes: [
+        $data->update([
             'product_name' => $request->product_name,
             'description' => $request->description,
             'price' => $request->price,
@@ -125,7 +154,8 @@ class ProductController extends Controller
             'is_available' => $available
         ]);
 
-        return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
+        return redirect()->route('product.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -137,9 +167,13 @@ class ProductController extends Controller
 
         if ($data == null)
         {
-            return response()->json(data: 'Data does not exist!', status: 200);
+            // return response()->json(data: 'Data does not exist!', status: 200);
+            return redirect()->back()->withErrors('Data does not exist!');
         }
 
-        return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);
+        $data->delete();
+
+        // return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);
+        return redirect()->route('product.index')->with('success', 'Data deleted successfully');
     }
 }
