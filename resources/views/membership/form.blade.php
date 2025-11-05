@@ -62,11 +62,11 @@
                             @endif
                         </div>
                         <div class="col-6 form-group">
-                            <label for="membershipLevel" class="form-label">Subcription Length (Month)</label>
+                            <label for="expiration_period" class="form-label">Subcription Length (Month)</label>
                             <div class="input-group mb-3">
                                 <input type="number" name="expiration_period"
-                                    value="{{ old('membership', $membership->expiration_period ?? '') }}"
-                                    class="form-control" id="membershipLevel" aria-describedby="basic-addon2" required>
+                                    value="{{ old('expiration_period', $membership->expiration_period ?? '') }}"
+                                    class="form-control" id="expiration_period" aria-describedby="basic-addon2" required>
                                 <span class="input-group-text" id="basic-addon2">Month</span>
                             </div>
                             <div class="invalid-feedback">

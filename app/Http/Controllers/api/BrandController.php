@@ -70,7 +70,7 @@ class BrandController extends Controller
         if ($data == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         return new ApiResource(status: 200, message: 'success', resource: $data);
@@ -83,7 +83,7 @@ class BrandController extends Controller
         if($brand == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         return view('brand.form', compact('brand'));
@@ -99,7 +99,7 @@ class BrandController extends Controller
         if($data == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
         $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
@@ -131,7 +131,7 @@ class BrandController extends Controller
         if ($data == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errrors', 'Data does not exist!');
+            return redirect()->back()->with('errrors', 'Data does not exist!');
         }
 
         $data->delete();

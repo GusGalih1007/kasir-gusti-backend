@@ -61,7 +61,7 @@ class CategoryController extends Controller
         if($category == null)
         {
             // return response()->json(data: 'Data does not exist', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         return new ApiResource(status: 200, message: 'Success', resource: $category);
@@ -75,7 +75,7 @@ class CategoryController extends Controller
         if($category == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         return view('category.form', compact('parent', 'category'));
@@ -100,7 +100,7 @@ class CategoryController extends Controller
         if($category == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         $category->update(attributes: [
@@ -119,7 +119,7 @@ class CategoryController extends Controller
         if($category == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         $category->delete();

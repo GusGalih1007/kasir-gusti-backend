@@ -61,7 +61,14 @@ class MembershipController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Membership::findOrFail($id);
+
+        if(!$data)
+        {
+            return redirect()->back()->with('errors', 'Data does not exist!');
+        }
+
+        return;
     }
 
     /**
@@ -69,7 +76,14 @@ class MembershipController extends Controller
      */
     public function edit($id)
     {
-        //
+        $membership = Membership::findOrFail($id);
+
+        if(!$membership)
+        {
+            return redirect()->back()->with('errors', 'Data does not exist!');
+        }
+
+        return view('membership.form', compact('membership'));
     }
 
     /**
@@ -77,7 +91,33 @@ class MembershipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = Membership::findOrFail($id);
+
+        if(!$data)
+        {
+            return redirect()->back()->with('errors', 'Data does not exist!');
+        }
+
+        $validate = Validator::make($request->all(), [
+            'membership' => 'required|string|max:10',
+            'benefit' => 'required|string|max:30',
+            'discount' => 'nullable|numeric',
+            'expiration_period' => 'nullable|numeric'
+        ]);
+
+        if ($validate->fails())
+        {
+            return redirect()->back()->withErrors($validate->errors())->withInput();
+        }
+
+        $data->update([
+            'membership' => $request->membership,
+            'benefit' => $request->benefit,
+            'discount' => $request->discount,
+            'expiration_period' => $request->expiration_period
+        ]);
+
+        return redirect()->route('membership.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -85,6 +125,15 @@ class MembershipController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Membership::findOrFail($id);
+
+        if(!$data)
+        {
+            return redirect()->back()->with('errors', 'Data does not exist!');
+        }
+
+        $data->delete();
+
+        return redirect()->route('membership.index')->with('success', 'Data deleted successfully');
     }
 }

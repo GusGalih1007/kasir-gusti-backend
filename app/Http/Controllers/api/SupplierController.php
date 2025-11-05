@@ -82,7 +82,7 @@ class SupplierController extends Controller
         if ($supplier == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         return view('supplier.form', compact('supplier'));
@@ -98,7 +98,7 @@ class SupplierController extends Controller
         if ($data == null)
         {
             // return response()->json(data: 'Data does not exist!', status: 200);
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
         }
 
         $validate = Validator::make(data: $request->all(), rules: [
@@ -132,7 +132,7 @@ class SupplierController extends Controller
 
         if ($data == null)
         {
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with('errors', 'Data does not exist!');
             // return response()->json(data: 'Data does not exist!', status: 200);
         }
 
