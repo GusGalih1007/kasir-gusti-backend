@@ -78,7 +78,7 @@ class CustomerController extends Controller
         $data = Customers::findOrFail(id: $id);
 
         if($data == null) {
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with( 'Data does not exist!');
             // return response()->json(data: 'Data does not exist!', status: 200);
         }
 
@@ -120,7 +120,7 @@ class CustomerController extends Controller
 
         if ($validate->fails())
         {
-            return redirect()->back()->withErrors('errors', 'Data does not exist!');
+            return redirect()->back()->with( 'Data does not exist!');
             // return response()->json(data: $validate->errors(), status: 422);
         }
 

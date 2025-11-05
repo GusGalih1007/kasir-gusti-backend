@@ -33,8 +33,8 @@
                                     <tr>
                                         <td>{{ $item->membership }}</td>
                                         <td>{{ $item->benefit }}</td>
-                                        <td>{{ $item->discount }}</td>
-                                        <td>{{ $item->expiration_period }}</td>
+                                        <td>{{ $item->discount == 0.00 ||  $item->discount == null ? 'No Discount' : $item->discount}}</td>
+                                        <td>{{ $item->expiration_period == 0 || $item->expiration_period == null ? 'Lifetime' : $item->expiration_period . "Month(s)" }}</td>
                                         <td>
                                             <form action="{{ route('membership.destroy', $item->membership_id) }}" method="POST">
                                                 {{ csrf_field() }}
@@ -56,7 +56,7 @@
                                                             stroke-linejoin="round">
                                                         </path>
                                                     </svg> </a>
-                                                <button type="submit" class="btn btn-sm btn-danger"> <svg class="icon-16"
+                                                <button data-bs-toggle="modal" class="btn btn-sm btn-danger"> <svg class="icon-16"
                                                         width="16" viewBox="0 0 24 24" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
                                                         <path
@@ -74,6 +74,27 @@
                                             </form>
                                         </td>
                                     </tr>
+                                    
+
+<div class="modal fade" id="deleteConfirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Modal body text goes here.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
                                 @endforeach
                             </tbody>
                             <tfoot class="table-light">
