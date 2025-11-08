@@ -49,7 +49,7 @@
                                                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                     </path>
                                                 </svg> </a>
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm"
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm{{ $item->supplier_id }}"
                                                 class="btn btn-sm btn-danger"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -65,8 +65,8 @@
                                                 </svg> </button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="deleteConfirm" data-bs-backdrop="static"
-                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    <div class="modal fade" id="deleteConfirm{{ $item->supplier_id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteConfirmLabel"
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">

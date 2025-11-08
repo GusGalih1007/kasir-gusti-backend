@@ -29,7 +29,7 @@
                             <tbody class="table-light">
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->name}}</td>
                                         <td>{{ $item->description }}</td>
                                         <td>
                                             <a href="{{ route('brand.edit', $item->brand_id) }}"
@@ -47,7 +47,7 @@
                                                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                     </path>
                                                 </svg> </a>
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm"
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm{{ $item->brand_id }}"
                                                 class="btn btn-sm btn-danger"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -61,34 +61,34 @@
                                                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                                                         stroke-linejoin="round"></path>
                                                 </svg> </button>
-                                        </td>
-                                    </tr>
-                                    <div class="modal fade" id="deleteConfirm" data-bs-backdrop="static"
-                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Warning</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Do you want to delete this data?</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-light"
-                                                        data-bs-dismiss="modal">No</button>
-                                                    <form action="{{ route('brand.destroy', $item->brand_id) }}"
-                                                        method="POST">
-                                                        {{ csrf_field() }}
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">Yes</button>
-                                                    </form>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="deleteConfirm{{ $item->brand_id }}" data-bs-backdrop="static"
+                                            data-bs-keyboard="false" tabindex="-1"
+                                            aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Warning</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Do you want to delete this data?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light"
+                                                            data-bs-dismiss="modal">No</button>
+                                                        <form action="{{ route('brand.destroy', $item->brand_id) }}"
+                                                            method="POST">
+                                                            {{ csrf_field() }}
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger">Yes</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                 @endforeach
                             </tbody>
                             <tfoot class="table-light">

@@ -28,6 +28,7 @@
                                     <th>Brand</th>
                                     <th>Supplier</th>
                                     <th>Is Available</th>
+                                    <th>Variant Available</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -36,11 +37,28 @@
                                     <tr>
                                         <td>{{ $item->product_name }}</td>
                                         <td>{{ $item->description }}</td>
-                                        <td>{{ "Rp. " . number_format($item->price, 2, ',', '.') }}</td>
+                                        <td>{{ 'Rp. ' . number_format($item->price, 2, ',', '.') }}</td>
                                         <td>{{ $item->category->name }}</td>
                                         <td>{{ $item->brand->name }}</td>
                                         <td>{{ $item->supplier->name }}</td>
                                         <td>{{ $item->is_available ? 'Yes' : 'No' }}</td>
+                                        <td>
+                                            <a href="{{ route('product-variant.index', $item->product_id) }}"
+                                                class="btn btn-info btn-sm">
+                                                {{-- <svg class="icon-16" width="16" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M16.334 2.75H7.665C4.644 2.75 2.75 4.889 2.75 7.916V16.084C2.75 19.111 4.635 21.25 7.665 21.25H16.333C19.364 21.25 21.25 19.111 21.25 16.084V7.916C21.25 4.889 19.364 2.75 16.334 2.75Z"
+                                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round"></path>
+                                                    <path d="M11.9946 16V12" stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path d="M11.9896 8.2041H11.9996" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg> --}}
+                                                View
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="{{ route('product.edit', $item->product_id) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
@@ -57,7 +75,8 @@
                                                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                     </path>
                                                 </svg> </a>
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm"
+                                            <button type="button" data-bs-toggle="modal"
+                                                data-bs-target="#deleteConfirm{{ $item->product_id }}"
                                                 class="btn btn-sm btn-danger"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -73,9 +92,9 @@
                                                 </svg> </button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="deleteConfirm" data-bs-backdrop="static"
-                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                        aria-hidden="true">
+                                    <div class="modal fade" id="deleteConfirm{{ $item->product_id }}"
+                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -103,7 +122,7 @@
                             </tbody>
                             <tfoot class="table-light">
                                 <tr>
-                                    <th colspan="7">Total Data</th>
+                                    <th colspan="8">Total Data</th>
                                     <th>{{ count($data) }}</th>
                                 </tr>
                             </tfoot>

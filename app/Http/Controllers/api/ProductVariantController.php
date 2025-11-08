@@ -14,38 +14,46 @@ class ProductVariantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        $data = ProductVariant::latest()->paginate(5);
+        // $data = ProductVariant::latest()->paginate(5);
 
-        if ($data == null)
-        {
-            return response()->json(data: 'No Data', status: 200);
-        }
+        $data = ProductVariant::where('product_id', '=', $id)->get();
+
+        // dd($data);
         
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+        // return new ApiResource(status: 200, message: 'Success', resource: $data);
+        return view('product.variant.index', compact('data'));
+    }
+
+    public function create($id)
+    {
+        $variant = null;
+        $data = ProductVariant::where('product_id', '=', $id)->first();
+
+        return view('product.variant.form', compact('variant', 'data'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            'product_id' => 'required|exists:products,product_id',
             'variant_name' => 'required|string|max:100',
-            'price' => 'required|decimal:2',
+            'price' => 'required|numeric',
             'sku' => 'required|string|max:50',
             'stock_qty' => 'required|numeric',
         ]);
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            return redirect()->back()->withErrors($validate->errors())->withInput();
+            // return response()->json(data: $validate->errors(), status: 422);
         }
 
         $data = ProductVariant::create(attributes: [
-            'product_id' => $request->product_id,
+            'product_id' => $id,
             'variant_name' => $request->variant_name,
             'price' => $request->price,
             'sku' => $request->sku,
@@ -61,8 +69,8 @@ class ProductVariantController extends Controller
             ]);
         }
 
-
-        return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
+        return redirect()->route('product-variant.index', ['id' => $id])->with('success', 'Data created successfully');
     }
 
     /**
@@ -80,12 +88,20 @@ class ProductVariantController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
+    public function edit($id, $variant)
+    {
+        $data = ProductVariant::where('product_id', '=', $id)->first();
+        $variant = ProductVariant::findOrFail($variant);
+
+        return view('product.variant.form', compact('variant', 'data'));
+    }
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $variant)
     {
-        $data = ProductVariant::findOrFail($id);
+        $data = ProductVariant::findOrFail($variant);
 
         if ($data == null)
         {
@@ -93,9 +109,8 @@ class ProductVariantController extends Controller
         }
 
         $validate = Validator::make(data: $request->all(), rules: [
-            'product_id' => 'required|exists:products,product_id',
             'variant_name' => 'required|string|max:100',
-            'price' => 'required|decimal:2',
+            'price' => 'required|numeric',
             'sku' => 'required|string|max:50',
             'stock_qty' => 'required|numeric',
         ]);
@@ -105,7 +120,7 @@ class ProductVariantController extends Controller
             return response()->json(data: $validate->errors(), status: 422);
         }
 
-        if (!$request->stock_quantity == 0)
+        if (!$request->stock_qty == 0)
         {
             $product = Product::findOrFail($request->product_id);
 
@@ -121,22 +136,22 @@ class ProductVariantController extends Controller
         }
 
         $data->update(attributes: [
-            'product_id' => $request->product_id,
             'variant_name' => $request->variant_name,
             'price' => $request->price,
             'sku' => $request->sku,
             'stock_qty' => $request->stock_qty
         ]);
 
-        return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
+        return redirect()->route('product-variant.index', ['id' => $id])->with('success', 'Data updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id, $variant)
     {
-        $data = ProductVariant::findOrFail($id);
+        $data = ProductVariant::findOrFail($variant);
 
         if ($data == null)
         {
@@ -145,6 +160,7 @@ class ProductVariantController extends Controller
 
         $data->delete();
 
-        return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);
+        // return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);
+        return redirect()->route('product-variant.index', ['id' => $id])->with('success', 'Data deleted successfully');
     }
 }
