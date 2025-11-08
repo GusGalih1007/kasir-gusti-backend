@@ -12,10 +12,10 @@
                     <form
                         action="{{ $variant
                             ? route('product-variant.update', [
-                                'variant' => $variant->variant_id,
-                                'id' => $variant->product_id,
+                                'id' => $variant->variant_id,
+                                'product' => $productParent->slug,
                             ])
-                            : route('product-variant.store', ['id' => $data->product_id]) }}"
+                            : route('product-variant.store', ['product' => $productParent->slug]) }}"
                         method="POST" class="needs-validation row g-3" novalidate>
                         {{ csrf_field() }}
 

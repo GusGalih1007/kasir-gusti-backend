@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Resources\ApiResource;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Supplier;
-use GuzzleHttp\Handler\Proxy;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $data = Product::get();
+        $data = Product::withCount('variant')->get();
 
         // return new ApiResource(status: 200, message: 'Success', resource: $data);
         return view('product.index', compact('data'));
@@ -47,18 +47,16 @@ class ProductController extends Controller
             'category' => 'required|exists:categories,category_id',
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
-            'is_available' => 'nullable|boolean'
+            'is_available' => 'nullable|boolean',
         ]);
 
         $available = false;
 
-        if (!$request->is_available == null)
-        {
+        if (! $request->is_available == null) {
             $available = $request->is_available;
         }
 
-        if ($validate->fails())
-        {
+        if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
             return redirect()->back()->withErrors($validate->errors())->withInput();
         }
@@ -70,7 +68,7 @@ class ProductController extends Controller
             'category_id' => $request->category,
             'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
-            'is_available' => $available
+            'is_available' => $available,
         ]);
 
         // return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
@@ -84,8 +82,7 @@ class ProductController extends Controller
     {
         $data = Product::findOrFail(id: $id);
 
-        if ($data == null)
-        {
+        if ($data == null) {
             return response()->json(data: 'Data does not exist!', status: 200);
         }
 
@@ -99,13 +96,12 @@ class ProductController extends Controller
         $brand = Brand::get();
         $supplier = Supplier::get();
 
-        if ($product == null)
-        {
+        if ($product == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->withErrors('Data does not exist!');
         }
 
-        return view('product.form', compact('product', 'category', 'brand', 'supplier'));   
+        return view('product.form', compact('product', 'category', 'brand', 'supplier'));
     }
 
     /**
@@ -115,8 +111,7 @@ class ProductController extends Controller
     {
         $data = Product::findOrFail(id: $id);
 
-        if ($data == null)
-        {
+        if ($data == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->withErrors('Data does not exist!');
         }
@@ -128,18 +123,16 @@ class ProductController extends Controller
             'category' => 'required|exists:categories,category_id',
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
-            'is_available' => 'nullable|boolean'
+            'is_available' => 'nullable|boolean',
         ]);
 
         $available = false;
 
-        if (!$request->is_available == null)
-        {
+        if (! $request->is_available == null) {
             $available = $request->is_available;
         }
 
-        if ($validate->fails())
-        {
+        if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
             return redirect()->back()->withErrors($validate->errors())->withInput();
         }
@@ -151,7 +144,7 @@ class ProductController extends Controller
             'category_id' => $request->category,
             'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
-            'is_available' => $available
+            'is_available' => $available,
         ]);
 
         // return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
@@ -165,8 +158,7 @@ class ProductController extends Controller
     {
         $data = Product::findOrFail(id: $id);
 
-        if ($data == null)
-        {
+        if ($data == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->withErrors('Data does not exist!');
         }

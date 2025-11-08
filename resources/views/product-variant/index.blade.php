@@ -1,28 +1,26 @@
 @extends('layout.app')
 @section('content')
-    @php
-        $single = $data->first();
-    @endphp
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
                         <h4 class="card-title">
-                            {{ $single->product->product_name . ' Variant' }}
+                            {{ $productParent->product_name . ' Variant' }}
                         </h4>
                     </div>
                     <div style="text-align: right;">
-                        {{-- <a href="{{ route('product-variant.create', $single->product_id) }}" class="btn btn-primary">
+                        <a href="{{ route('product-variant.create', $productParent->slug) }}" class="btn btn-primary">
                             Create
-                        </a> --}}
-                        <button class="btn btn-primary" data-bs-toggle="createModal"
-                            data-bs-target="createVariant{{ $single->product_id }}">
-                        </button>
+                        </a>
+                        {{-- <button class="btn btn-primary" data-bs-toggle="createModal"
+                            data-bs-target="createVariant{{ $productParent->product_id }}">
+                        </button> --}}
                     </div>
                 </div>
                 <div class="card-body">
-                    {{-- <p>Images in Bootstrap are made responsive with <code>.img-fluid</code>. <code>max-width: 100%;</code>
+                    {{-- <p>Images in Bootstrap are made responsive with <code>.img-fluid</code>.
+                        <code>max-width: 100%;</code>
                         and <code>height: auto;</code> are applied to the image so that it scales with the parent element.
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive">
@@ -45,8 +43,8 @@
                                         <td>{{ $item->stock_qty }}</td>
                                         <td>
                                             <a href="{{ route('product-variant.edit', [
-                                                'variant' => $item->variant_id,
-                                                'id' => $item->product_id,
+                                                'id' => $item->variant_id,
+                                                'product' => $item->product->slug,
                                             ]) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -97,8 +95,8 @@
                                                         data-bs-dismiss="modal">No</button>
                                                     <form
                                                         action="{{ route('product-variant.destroy', [
-                                                            'variant' => $item->variant_id,
-                                                            'id' => $item->product_id,
+                                                            'id' => $item->variant_id,
+                                                            'product' => $item->product->slug,
                                                         ]) }}"
                                                         method="POST">
                                                         {{ csrf_field() }}
@@ -121,7 +119,7 @@
                     </div>
                 </div>
             </div>
-            <div class="createModal fade" id="createVariant" data-bs-backdrop="static" data-bs-keyboard="false"
+            {{-- <div class="createModal fade" id="createVariant" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="createVariantLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
@@ -130,81 +128,78 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form
-                                action="{{ $variant
-                                    ? route('product-variant.update', [
-                                        'variant' => $variant->variant_id,
-                                        'id' => $variant->product_id,
-                                    ])
-                                    : route('product-variant.store', ['id' => $data->product_id]) }}"
+                            <form action="{{ $variant
+                                                    ? route('product-variant.update', [
+                                                        'variant' => $variant->variant_id,
+                                                        'id' => $variant->product_id,
+                                                    ])
+                                                    : route('product-variant.store', ['id' => $data->product_id]) }}"
                                 method="POST" class="needs-validation row g-3" novalidate>
                                 {{ csrf_field() }}
 
                                 @if ($variant)
-                                    @method('PUT')
+                                @method('PUT')
                                 @endif
 
                                 <div class="col-6 form-group">
                                     <label for="variantName" class="form-label">Variant Name</label>
                                     <input type="text" name="variant_name"
-                                        value="{{ old('variant_name', $variant->variant_name ?? '') }}"
-                                        class="form-control" id="variantName" required>
+                                        value="{{ old('variant_name', $variant->variant_name ?? '') }}" class="form-control"
+                                        id="variantName" required>
                                     <div class="invalid-feedback">
                                         variant name is Required
                                     </div>
                                     @if ($errors->has('variant_name'))
-                                        <div class="alert alert-danger">
-                                            {{ $errors->first('variant_name') }}
-                                        </div>
+                                    <div class="alert alert-danger">
+                                        {{ $errors->first('variant_name') }}
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="col-6 form-group">
                                     <label for="variantPrice" class="form-label">Price</label>
                                     <div class="input-group mb-3">
-                                        <input type="number" name="price"
-                                            value="{{ old('price', $variant->price ?? '') }}" class="form-control"
-                                            id="variantPrice" required>
+                                        <input type="number" name="price" value="{{ old('price', $variant->price ?? '') }}"
+                                            class="form-control" id="variantPrice" required>
                                         <span class="input-group-text">.00</span>
                                     </div>
                                     <div class="invalid-feedback">
                                         Price is Required
                                     </div>
                                     @if ($errors->has('price'))
-                                        <span class="alert alert-danger">
-                                            {{ $errors->first('price') }}
-                                        </span>
+                                    <span class="alert alert-danger">
+                                        {{ $errors->first('price') }}
+                                    </span>
                                     @endif
                                 </div>
                                 <div class="col-6 form-group">
                                     <label for="variantSku" class="form-label">SKU (Stock Keeping Unit)</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" name="sku"
-                                            value="{{ old('sku', $variant->sku ?? '') }}" class="form-control"
-                                            id="variantSku" required>
+                                        <input type="text" name="sku" value="{{ old('sku', $variant->sku ?? '') }}"
+                                            class="form-control" id="variantSku" required>
                                     </div>
                                     <div class="invalid-feedback">
                                         SKU is Required
                                     </div>
                                     @if ($errors->has('sku'))
-                                        <span class="alert alert-danger">
-                                            {{ $errors->first('sku') }}
-                                        </span>
+                                    <span class="alert alert-danger">
+                                        {{ $errors->first('sku') }}
+                                    </span>
                                     @endif
                                 </div>
                                 <div class="col-6 form-group">
                                     <label for="variantStock" class="form-label">Stock</label>
                                     <div class="input-group mb-3">
                                         <input type="number" name="stock_qty"
-                                            value="{{ old('stock_qty', $variant->stock_qty ?? '') }}"
-                                            class="form-control" id="variantStock" required>
+                                            value="{{ old('stock_qty', $variant->stock_qty ?? '') }}" class="form-control"
+                                            id="variantStock" required>
                                     </div>
                                     <div class="invalid-feedback">
                                         Stock is Required
                                     </div>
                                     @if ($errors->has('stock_qty'))
-                                        <span class="alert alert-danger">
-                                            {{ $errors->first('stock_qty') }}
-                                        </span>
+                                    <span class="alert alert-danger">
+                                        {{ $errors->first('stock_qty') }}
+                                    </span>
                                     @endif
                                 </div>
                         </div>
@@ -215,7 +210,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection
