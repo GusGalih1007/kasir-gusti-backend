@@ -18,8 +18,8 @@
                         and <code>height: auto;</code> are applied to the image so that it scales with the parent element.
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive mt-4">
-                        <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
-                            <thead class="table-light">
+                        <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
+                            <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
@@ -27,12 +27,12 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-light">
+                            <tbody>
                                 @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->description }}</td>
-                                        <td>{{ $item->parentId->name ?? 'N/A' }}</td>
+                                        <td>{{ $item->parentId->name ?? 'No Category' }}</td>
                                         <td>
                                             <a href="{{ route('category.edit', $item->category_id) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
@@ -93,7 +93,7 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot class="table-light">
+                            <tfoot>
                                 <tr>
                                     <th colspan="3">Total Data</th>
                                     <th>{{ count($data) }}</th>

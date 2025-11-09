@@ -21,6 +21,22 @@ class ProductVariantController extends Controller
         $productParent = Product::where('slug', '=', $product)->first();
         $data = ProductVariant::where('product_id', '=', $productParent->product_id)->get();
 
+        switch ($data)
+        {
+            case null:
+                $productParent->update([
+                    'is_available' => false
+                ]);
+                break;
+            case $data:
+                $productParent->update([
+                    'is_available' => true
+                ]);
+                break;
+            default:
+                return back()->withErrors('Unexpected errors, please try again later');
+        }
+
         // dd($productParent);
 
         // return new ApiResource(status: 200, message: 'Success', resource: $data);
@@ -69,6 +85,8 @@ class ProductVariantController extends Controller
             $productEdit->update([
                 'is_available' => true,
             ]);
+        } else {
+            return back()->withErrors('Unexpected errors, pleas try again later');
         }
 
         // return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
@@ -96,6 +114,20 @@ class ProductVariantController extends Controller
     {
         $variant = ProductVariant::findOrFail($id);
         $productParent = Product::where('slug', '=', $product)->first();
+
+        switch ($variant)
+        {
+            case null:
+                $productParent->update([
+                    'is_available' => false
+                ]);
+                break;
+            default:
+                $productParent->update([
+                    'is_available' => true
+                ]);
+                break;
+        }
 
         return view('product-variant.form', compact('variant', 'productParent'));
     }

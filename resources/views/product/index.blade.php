@@ -18,8 +18,8 @@
                         and <code>height: auto;</code> are applied to the image so that it scales with the parent element.
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive">
-                        <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
-                            <thead class="table-light">
+                        <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
+                            <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
@@ -32,7 +32,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-light">
+                            <tbody>
                                 @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $item->product_name }}</td>
@@ -120,7 +120,7 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot class="table-light">
+                            <tfoot>
                                 <tr>
                                     <th colspan="8">Total Data</th>
                                     <th>{{ count($data) }}</th>

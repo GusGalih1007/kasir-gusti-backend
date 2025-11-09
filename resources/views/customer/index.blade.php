@@ -19,7 +19,7 @@
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive mt-4">
                         <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Full Name</th>
                                     <th>First Name</th>
@@ -31,7 +31,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-light">
+                            <tbody>
                                 @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $item->first_name . ' ' . $item->last_name }}</td>
@@ -101,7 +101,7 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot class="table-light">
+                            <tfoot>
                                 <tr>
                                     <th colspan="7">Total Data</th>
                                     <th>{{ count($data) }}</th>

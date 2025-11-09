@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('page_code',50);
             $table->unsignedBigInteger('role_id');
             $table->string('page');
-            $table->string('action', 30);
+            $table->text('action');
             $table->timestamps();
             $table->softDeletes();
 

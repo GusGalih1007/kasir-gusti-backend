@@ -11,7 +11,10 @@ class Page extends Model
 
     protected $table = 'pages';
     protected $primaryKey = 'page_code';
-    protected $fillable = ['page_name', 'action'];
+    protected $fillable = ['page_code', 'page_name', 'action'];
+    protected $casts = [
+        'action' => 'array',
+    ];
 
     public function pageRoleActionCode()
     {

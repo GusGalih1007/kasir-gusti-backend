@@ -16,7 +16,7 @@ class PageRoleActionController extends Controller
      */
     public function index()
     {
-        $data = PageRoleAction::latest()->paginate(perPage: 5);
+        $data = PageRoleAction::get();
 
         if ($data == null)
         {
