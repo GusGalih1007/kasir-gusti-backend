@@ -17,54 +17,54 @@ class PageSeeder extends Seeder
     {
         $faker = Faker::create();
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Category',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Customer',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Brand',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Role',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Users',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Supplier',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Product',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Product Variant',
-            'action'    => 'Create,Read,Update,Delete'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Page',
-            'action'    => 'Read'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
-            'page_code' => $faker->regexify('[A-Za-z0-9]{10}'),
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Page Role Action',
-            'action'    => 'Read'
+            'action'    => ['Read','Create','Update','Delete']
         ]);
     }
 }

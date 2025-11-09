@@ -6,8 +6,10 @@ use App\Http\Controllers\api\DashboardController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\MembershipController;
+use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +39,9 @@ route::get('product/{product}/variant/{id}', [ProductVariantController::class, '
 route::get('product/{product}/variant/{id}/edit', [ProductVariantController::class, 'edit'])->name('product-variant.edit');
 route::put('product/{product}/variant/{id}', [ProductVariantController::class, 'update'])->name('product-variant.update');
 route::delete('product/{product}/variant/{id}', [ProductVariantController::class, 'destroy'])->name('product-variant.destroy');
+
+route::resource('role-permission', RoleController::class);
+route::resource('page', PageController::class);
 
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
