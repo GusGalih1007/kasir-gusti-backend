@@ -22,9 +22,17 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $data = Order::latest()->paginate(5);
+        $data = Order::orderBy('order_id', 'desc')->get();
 
-        return new ApiResource(200, 'Success', $data);
+        // return new ApiResource(200, 'Success', $data);
+        return view('transaction.index', compact('data'));
+    }
+
+    public function create()
+    {
+        $customer = Customers::get();
+        $product = Product::get();
+        $variant = ProductVariant::get();
     }
 
     /**
@@ -59,7 +67,7 @@ class TransactionController extends Controller
 
         $discount = 0;
         $customer = Customers::findOrFail($request->customer_id);
-        
+
         if ($customer->is_member == true)
         {
             $discount = $request->discount;

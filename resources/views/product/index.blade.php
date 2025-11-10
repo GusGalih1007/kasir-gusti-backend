@@ -120,12 +120,6 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="8">Total Data</th>
-                                    <th>{{ count($data) }}</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

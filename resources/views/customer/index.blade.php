@@ -18,7 +18,7 @@
                         and <code>height: auto;</code> are applied to the image so that it scales with the parent element.
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive mt-4">
-                        <table id="datatable" class="table table-striped table-hover" data-toggle="data-table">
+                        <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>Full Name</th>
@@ -101,12 +101,6 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="7">Total Data</th>
-                                    <th>{{ count($data) }}</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

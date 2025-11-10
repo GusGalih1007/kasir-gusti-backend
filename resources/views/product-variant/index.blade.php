@@ -43,9 +43,9 @@
                                         <td>{{ $item->stock_qty }}</td>
                                         <td>
                                             <a href="{{ route('product-variant.edit', [
-        'id' => $item->variant_id,
-        'product' => $item->product->slug,
-    ]) }}"
+                                                'id' => $item->variant_id,
+                                                'product' => $item->product->slug,
+                                            ]) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -95,9 +95,9 @@
                                                         data-bs-dismiss="modal">No</button>
                                                     <form
                                                         action="{{ route('product-variant.destroy', [
-        'id' => $item->variant_id,
-        'product' => $item->product->slug,
-    ]) }}"
+                                                            'id' => $item->variant_id,
+                                                            'product' => $item->product->slug,
+                                                        ]) }}"
                                                         method="POST">
                                                         {{ csrf_field() }}
                                                         @method('DELETE')
@@ -109,12 +109,6 @@
                                     </div>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="4">Total Data</th>
-                                    <th>{{ count($data) }}</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -129,11 +123,11 @@
                         </div>
                         <div class="modal-body">
                             <form action="{{ $variant
-                                                    ? route('product-variant.update', [
-                                                        'variant' => $variant->variant_id,
-                                                        'id' => $variant->product_id,
-                                                    ])
-                                                    : route('product-variant.store', ['id' => $data->product_id]) }}"
+                                                        ? route('product-variant.update', [
+                                                            'variant' => $variant->variant_id,
+                                                            'id' => $variant->product_id,
+                                                        ])
+                                                        : route('product-variant.store', ['id' => $data->product_id]) }}"
                                 method="POST" class="needs-validation row g-3" novalidate>
                                 {{ csrf_field() }}
 

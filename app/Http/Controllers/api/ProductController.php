@@ -11,6 +11,7 @@ use App\Models\ProductVariant;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Str;
 
 class ProductController extends Controller
 {
@@ -56,6 +57,8 @@ class ProductController extends Controller
             $available = $request->is_available;
         }
 
+        $slug = Str::slug($request->product_name);
+
         if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
             return redirect()->back()->withErrors($validate->errors())->withInput();
@@ -64,6 +67,7 @@ class ProductController extends Controller
         $data = Product::create(attributes: [
             'product_name' => $request->product_name,
             'description' => $request->description,
+            'slug' => $slug,
             'price' => $request->price,
             'category_id' => $request->category,
             'brand_id' => $request->brand,
