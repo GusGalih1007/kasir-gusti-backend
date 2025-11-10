@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,7 @@ route::delete('product/{product}/variant/{id}', [ProductVariantController::class
 
 route::resource('role-permission', RoleController::class);
 route::resource('page', PageController::class);
+route::resource('transaction', TransactionController::class);
 
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
