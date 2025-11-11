@@ -16,7 +16,7 @@ class Membership extends Model
         'membership',
         'benefit',
         'discount',
-        'expired_at',
+        'expiration_period',
         'created_by',
         'updated_by',
     ];

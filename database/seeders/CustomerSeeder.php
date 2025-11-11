@@ -19,7 +19,8 @@ class CustomerSeeder extends Seeder
             'alamat' => 'Jl. Mangga',
             'phone' => '8888888',
             'email' => 'email@gmail.com',
-            'is_member' => false
+            'is_member' => false,
+            'membership_id' => 1,
         ]);
     }
 }
