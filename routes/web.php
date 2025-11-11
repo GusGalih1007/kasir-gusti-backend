@@ -12,18 +12,31 @@ use App\Http\Controllers\Api\ProductVariantController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
+route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
+route::get('logout', [AuthController::class, 'logoutWeb'])->name('logout.user');
+
 route::resource('category', CategoryController::class);
+
 route::resource('brand', BrandController::class);
+
 route::resource('supplier', SupplierController::class);
+
 route::resource('customer', CustomerController::class);
+
 route::resource('membership', MembershipController::class);
-// route::resource('product', ProductController::class);
+
+route::resource('role-permission', RoleController::class);
+
+route::resource('user', UserController::class);
+
 route::get('product', [ProductController::class, 'index'])->name('product.index');
 route::get('product/create', [ProductController::class, 'create'])->name('product.create');
 route::post('product', [ProductController::class, 'store'])->name('product.store');
@@ -31,7 +44,6 @@ route::get('product/{id}', [ProductController::class, 'show'])->name('product.sh
 route::get('product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
 route::put('product/{id}', [ProductController::class, 'update'])->name('product.update');
 route::delete('product/{id}', [ProductController::class, 'destry'])->name('product.destroy');
-// route::resource('{product}-variant', ProductVariantController::class);
 
 route::get('product/{product}/variant', [ProductVariantController::class, 'index'])->name('product-variant.index');
 route::get('product/{product}/variant/create', [ProductVariantController::class, 'create'])->name('product-variant.create');
@@ -41,12 +53,9 @@ route::get('product/{product}/variant/{id}/edit', [ProductVariantController::cla
 route::put('product/{product}/variant/{id}', [ProductVariantController::class, 'update'])->name('product-variant.update');
 route::delete('product/{product}/variant/{id}', [ProductVariantController::class, 'destroy'])->name('product-variant.destroy');
 
-route::resource('role-permission', RoleController::class);
 route::resource('page', PageController::class);
+
 route::resource('transaction', TransactionController::class);
 
-route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
-route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
-route::get('logout', [AuthController::class, 'logoutWeb'])->name('logout.user');
 
 route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
