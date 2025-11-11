@@ -33,6 +33,8 @@ class TransactionController extends Controller
         $customer = Customers::get();
         $product = Product::get();
         $variant = ProductVariant::get();
+
+        return view('transaction.form', compact('customer', 'product', 'variant'));
     }
 
     /**
@@ -70,7 +72,7 @@ class TransactionController extends Controller
 
         if ($customer->is_member == true)
         {
-            $discount = $request->discount;
+            $discount = $customer->discount;
         }
 
         $totalPrice = 0;

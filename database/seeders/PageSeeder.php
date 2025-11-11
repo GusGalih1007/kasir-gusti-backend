@@ -58,12 +58,17 @@ class PageSeeder extends Seeder
         ]);
         Page::create([
             'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
-            'page_name' => 'Page',
+            'page_name' => 'Role Permission',
             'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([
             'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
-            'page_name' => 'Page Role Action',
+            'page_name' => 'Transaction',
+            'action'    => ['Read','Create']
+        ]);
+        Page::create([
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
+            'page_name' => 'Membership',
             'action'    => ['Read','Create','Update','Delete']
         ]);
     }
