@@ -5,47 +5,46 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title">Transaction History</h4>
+                        <h4 class="card-title">User</h4>
                     </div>
                     <div style="text-align: right;">
-                        <a href="{{ route('transaction.create') }}" class="btn btn-primary">
+                        <a href="{{ route('user.create') }}" class="btn btn-primary">
                             Create
                         </a>
                     </div>
                 </div>
                 <div class="card-body">
-                    {{-- <p>Images in Bootstrap are made responsive with <code>.img-fluid</code>.
-                        <code>max-width: 100%;</code>
+                    {{-- <p>Images in Bootstrap are made responsive with <code>.img-fluid</code>. <code>max-width: 100%;</code>
                         and <code>height: auto;</code> are applied to the image so that it scales with the parent element.
                     </p> --}}
                     <div class="custom-datatable-entries table-responsive mt-4">
                         <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Transaction Id</th>
-                                    <th>Customer</th>
-                                    <th>Membership</th>
-                                    <th>Bill Amount</th>
-                                    <th>Payment Amount</th>
-                                    <th>Cashier</th>
+                                    <th>Username</th>
+                                    <th>Firstname</th>
+                                    <th>Lastname</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
                                     <th>Status</th>
-                                    <th>Transaction Date</th>
+                                    <th>Last Login</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->order_id}}</td>
-                                        <td>{{ $item->customer->first_name . ' ' . $item->customer->last_name}}</td>
-                                        <td>{{ $item->customer->membership->membership }}</td>
-                                        <td>{{ $item->total_amount }}</td>
-                                        <td>{{ $item->payment->amount }}</td>
-                                        <td>{{ $item->userId->username }}</td>
+                                        <td>{{ $item->username }}</td>
+                                        <td>{{ $item->first_name }}</td>
+                                        <td>{{ $item->last_name }}</td>
+                                        <td>{{ $item->email }}</td>
+                                        <td>{{ $item->phone }}</td>
+                                        <td>{{ $item->role->name }}</td>
                                         <td>{{ $item->status }}</td>
-                                        <td>{{ $item->create_at->format('d-m-Y') }}</td>
+                                        <td>{{ $item->last_login }}</td>
                                         <td>
-                                            <a href="{{ route('transaction.edit', $item->order_id) }}"
+                                            <a href="{{ route('user.edit', $item->user_id) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -60,8 +59,7 @@
                                                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                     </path>
                                                 </svg> </a>
-                                            <button type="button" data-bs-toggle="modal"
-                                                data-bs-target="#deleteConfirm{{ $item->order_id }}"
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirm{{ $item->user_id }}"
                                                 class="btn btn-sm btn-danger"> <svg class="icon-16" width="16"
                                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -77,7 +75,7 @@
                                                 </svg> </button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="deleteConfirm{{ $item->order_id }}" data-bs-backdrop="static"
+                                    <div class="modal fade" id="deleteConfirm{{ $item->user_id }}" data-bs-backdrop="static"
                                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteConfirmLabel"
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -93,7 +91,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light"
                                                         data-bs-dismiss="modal">No</button>
-                                                    <form action="{{ route('transaction.destroy', $item->order_id) }}"
+                                                    <form action="{{ route('user.destroy', $item->user_id) }}"
                                                         method="POST">
                                                         {{ csrf_field() }}
                                                         @method('DELETE')

@@ -31,13 +31,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = Users::latest()->paginate(5);
+        $data = Users::get();
 
-        if ($data == null){
-            return response()->json(data: 'No Data', status: 200);
-        }
+        // return new ApiResource(status: 200, message: 'Success', resource: $data);
+        return view('user.index', compact('data'));
+    }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+    public function create()
+    {
+        $user = null;
+        $role = Role::all();
+        
+        return view('user.form', compact('user', 'role'));
     }
 
     /**
@@ -69,17 +74,19 @@ class UserController extends Controller
         $validate = Validator::make(data: $request->all(), rules: [
             'username' => 'required|string',
             'email' => 'required|email',
-            'password' => 'required|min:8',
+            'password' => 'required|confirmed|min:8',
+            'password_confirmation' => 'required',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
             'phone' => 'required|numeric|max_digits:15',
-            'role_id' => 'required|exists:roles,role_id',
+            'role' => 'required|exists:roles,role_id',
             'status' => 'required|string'
         ]);
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            return back()->withInput()->withErrors($validate->errors());
+            // return response()->json(data: $validate->errors(), status: 422);
         }
 
         $data = Users::create(attributes: [
@@ -89,11 +96,12 @@ class UserController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone' => $request->phone,
-            'role_id' => $request->role_id,
+            'role_id' => $request->role,
             'status' => $request->status
         ]);
 
-        return new ApiResource(status: 201, message: 'Data Successfully created!', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data Successfully created!', resource: $data);
+        return redirect()->route('user.index')->with('success' , 'Data created successfully');
     }
 
     /**
@@ -111,6 +119,14 @@ class UserController extends Controller
         return new ApiResource(status: 200, message: 'Success', resource: $data);
     }
 
+    public function edit($id)
+    {
+        $user = Users::findOrFail($id);
+        $role = Role::all();
+
+        return view('user.form', compact('user', 'role'));
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -126,17 +142,18 @@ class UserController extends Controller
         $validate = Validator::make(data: $request->all(), rules: [
             'username' => 'required|string',
             'email' => 'required|email',
-            'password' => 'nullable|min:8',
+            'password' => 'nullable|confirmed|min:8',
             'first_name' => 'required|string',
             'last_name' => 'nullable|string',
             'phone' => 'required|numeric|max_digits:15',
-            'role_id' => 'required|exists:roles,role_id',
+            'role' => 'required|exists:roles,role_id',
             'status' => 'required|string'
         ]);
 
         if ($validate->fails())
         {
-            return response()->json(data: $validate->errors(), status: 422);
+            // return response()->json(data: $validate->errors(), status: 422);
+            return back()->withInput()->withErrors($validate->errors());
         }
 
         $field = [
@@ -145,7 +162,7 @@ class UserController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone' => $request->phone,
-            'role_id' => $request->role_id,
+            'role_id' => $request->role,
             'status' => $request->status
         ];
 
@@ -156,7 +173,8 @@ class UserController extends Controller
 
         $data->update(attributes: $field);
 
-        return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        // return new ApiResource(status: 201, message: 'Data updated successfully', resource: $data);
+        return redirect()->route('user.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -173,6 +191,7 @@ class UserController extends Controller
 
         $data->delete();
 
-        return new ApiResource(status: 204, message: 'Data deleted successfully', resource: null);
+        // return new ApiResource(status: 204, message: 'Data deleted successfully', resource: null);
+        return redirect()->route('user.index')->with('success', 'Data deleted successfully');
     }
 }
