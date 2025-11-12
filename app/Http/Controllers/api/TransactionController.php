@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResource;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Customers;
+use App\Models\Membership;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\ProductVariant;
@@ -22,7 +24,14 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $data = Order::orderBy('order_id', 'desc')->get();
+        $data = Order::with(
+            'detail.product',
+            'customer.member',
+            'payment',
+            'userId'
+        )->get();
+
+        // dd($data);
 
         // return new ApiResource(200, 'Success', $data);
         return view('transaction.index', compact('data'));
@@ -33,8 +42,16 @@ class TransactionController extends Controller
         $customer = Customers::get();
         $product = Product::get();
         $variant = ProductVariant::get();
+        $categories = Category::get();
+        $membership = Membership::get();
 
-        return view('transaction.form', compact('customer', 'product', 'variant'));
+        return view('transaction.form', compact(
+            'customer', 
+            'product', 
+            'variant', 
+            'categories',
+            'membership'
+        ));
     }
 
     /**
@@ -44,9 +61,9 @@ class TransactionController extends Controller
     {
         $item = $request->product;
         if (is_string($item)) {
-        $item = json_decode($item, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json(['error' => 'Invalid product JSON'], 422);
+            $item = json_decode($item, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['error' => 'Invalid product JSON'], 422);
             }
         }
 
@@ -62,31 +79,28 @@ class TransactionController extends Controller
             'payment' => 'required|numeric|min:0',
         ]);
 
-        if ($validate->fails())
-        {
+        if ($validate->fails()) {
             return response()->json($validate->errors(), 422);
         }
 
         $discount = 0;
         $customer = Customers::findOrFail($request->customer_id);
 
-        if ($customer->is_member == true)
-        {
-            $discount = $customer->discount;
+        if ($customer->is_member == true) {
+            $discount = $customer->member->discount;
         }
 
         $totalPrice = 0;
         // $item = json_decode($request->product);
-        $apiUser = Auth::guard('api')->id(); // Standardize to API guard
+        $User = Auth::guard('web')->id(); // Standardize to API guard
 
-        if (!$apiUser) {
+        if (!$User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $products = [];
         // $variants = [];
-        foreach ($item as $productData )
-        {
+        foreach ($item as $productData) {
             $variant = ProductVariant::with('product')->findOrFail($productData['variant_id']);
 
             $price = $variant->price_at_purchase ?? $variant->product->price; // Use variant price if available
@@ -112,7 +126,7 @@ class TransactionController extends Controller
             ];
         }
 
-        $totalAfterDiscount = max(0 ,$totalPrice - $discount);
+        $totalAfterDiscount = max(0, $totalPrice - $discount);
         $change = $request->payment - $totalAfterDiscount;
 
         if ($change < 0) {
@@ -120,24 +134,23 @@ class TransactionController extends Controller
         }
 
         $transaction = Order::create([
-            'user_id' => Auth::id(),
+            'user_id' => $User,
             'customer_id' => $request->customer_id,
             'total_amount' => $totalAfterDiscount,
             'discount' => $discount,
             'change' => $change,
             'order_date' => today(),
             'status' => 'completed',
-            'created_by' => $apiUser,
+            'created_by' => $User,
         ]);
 
-        foreach ($products as $p)
-        {
+        foreach ($products as $p) {
             $detail = OrderDetail::create([
                 'order_id' => $transaction->order_id,
                 'product_id' => $p['product_id'],
                 'variant_id' => $p['variant_id'],
                 'quantity' => $p['quantity'],
-                'price_at_purchase'=> $p['price'],
+                'price_at_purchase' => $p['price'],
                 'total_price' => $p['total']
             ]);
 
@@ -149,18 +162,20 @@ class TransactionController extends Controller
         $payment = Payment::create([
             'order_id' => $transaction->order_id,
             'payment_method' => $request->payment_method,
-            'amount'         => $request->payment,
-            'currency'  => $request->currency,
+            'amount' => $request->payment,
+            'currency' => $request->currency,
             'status' => 'complete',
-            'change'         => $change,
-            'payment_date'   => now(),
-            'created_by'       => $apiUser,  // ID user yang menerima pembayaran
+            'change' => $change,
+            'payment_date' => now(),
+            'created_by' => $User,  // ID user yang menerima pembayaran
         ]);
 
-        return new ApiResource(201, 'Data Successfully created!', [
-            'order' => $transaction,
-            'order detail' => $detail,
-            'payment' => $payment]);
+        // return new ApiResource(201, 'Data Successfully created!', [
+        //     'order' => $transaction,
+        //     'order detail' => $detail,
+        //     'payment' => $payment]);
+
+        return redirect()->route('transaction.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -170,8 +185,7 @@ class TransactionController extends Controller
     {
         $transaction = Order::with('detail.product', 'customer', 'payment', 'userId')->findOrFail($id);
 
-        if ($transaction == null)
-        {
+        if ($transaction == null) {
             return response()->json('Data does not exist!', 200);
         }
 
@@ -193,8 +207,7 @@ class TransactionController extends Controller
     {
         $data = Order::where('transaction_id', $id);
 
-        if ($data == null)
-        {
+        if ($data == null) {
             return response()->json('Data does not exist!', 200);
         }
 

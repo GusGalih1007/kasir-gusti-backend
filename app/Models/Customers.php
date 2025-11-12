@@ -23,8 +23,8 @@ class Customers extends Model
         return $this->belongsTo(related: Users::class, foreignKey: 'updated_by', ownerKey: 'user_id');
     }
 
-    public function membership()
+    public function member()
     {
-        return $this->hasMany(Membership::class, 'membership_id', 'membership_id');
+        return $this->belongsTo(Membership::class, 'membership_id', 'membership_id');
     }
 }

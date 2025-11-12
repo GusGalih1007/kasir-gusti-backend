@@ -36,14 +36,14 @@
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->order_id}}</td>
-                                        <td>{{ $item->customer->first_name . ' ' . $item->customer->last_name}}</td>
-                                        <td>{{ $item->customer->membership->membership }}</td>
+                                        <td>{{ $item->order_id }}</td>
+                                        <td>{{ $item->customer->first_name . ' ' . $item->customer->last_name }}</td>
+                                        <td>{{ $item->customer->member->membership }}</td>
                                         <td>{{ $item->total_amount }}</td>
                                         <td>{{ $item->payment->amount }}</td>
                                         <td>{{ $item->userId->username }}</td>
                                         <td>{{ $item->status }}</td>
-                                        <td>{{ $item->create_at->format('d-m-Y') }}</td>
+                                        <td>{{ $item->order_date }}</td>
                                         <td>
                                             <a href="{{ route('transaction.edit', $item->order_id) }}"
                                                 class="btn btn-warning btn-sm"> <svg class="icon-16" width="16"
@@ -59,6 +59,18 @@
                                                     <path d="M15.1655 4.60254L19.7315 9.16854" stroke="currentColor"
                                                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                     </path>
+                                                </svg> </a>
+                                            <a href="{{ route('transaction.show', $item->order_id) }}"
+                                                class="btn btn-info btn-sm"> <svg class="icon-16" width="16"
+                                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M16.334 2.75H7.665C4.644 2.75 2.75 4.889 2.75 7.916V16.084C2.75 19.111 4.635 21.25 7.665 21.25H16.333C19.364 21.25 21.25 19.111 21.25 16.084V7.916C21.25 4.889 19.364 2.75 16.334 2.75Z"
+                                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round"></path>
+                                                    <path d="M11.9946 16V12" stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path d="M11.9896 8.2041H11.9996" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"></path>
                                                 </svg> </a>
                                             <button type="button" data-bs-toggle="modal"
                                                 data-bs-target="#deleteConfirm{{ $item->order_id }}"
@@ -77,9 +89,9 @@
                                                 </svg> </button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="deleteConfirm{{ $item->order_id }}" data-bs-backdrop="static"
-                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteConfirmLabel"
-                                        aria-hidden="true">
+                                    <div class="modal fade" id="deleteConfirm{{ $item->order_id }}"
+                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                        aria-labelledby="deleteConfirmLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
