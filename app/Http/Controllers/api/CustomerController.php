@@ -35,19 +35,21 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make(data: $request->all(), rules: [
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'nullable|string|max:100',
-            'alamat' => 'required|string',
-            'phone' => 'required|numeric|max_digits:15',
-            'email' => 'required|email',
-            'membership' => 'nullable'
-        ]);
+        $validate = Validator::make(
+            data: $request->all(),
+            rules: [
+                'first_name' => 'required|string|max:100',
+                'last_name' => 'nullable|string|max:100',
+                'alamat' => 'required|string',
+                'phone' => 'required|numeric|max_digits:15',
+                'email' => 'required|email',
+                'membership' => 'nullable',
+            ],
+        );
 
         $isMembership = false;
 
-        if (filled($request->membership))
-        {
+        if (filled($request->membership)) {
             $isMembership = true;
         }
 
@@ -56,15 +58,27 @@ class CustomerController extends Controller
             return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
-        $data = Customers::create(attributes: [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'alamat' => $request->alamat,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'is_member' => $isMembership,
-            'membership_id' => $request->membership
-        ]);
+        $data = Customers::create(
+            attributes: [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'alamat' => $request->alamat,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'is_member' => $isMembership,
+                'membership_id' => $request->membership,
+            ],
+        );
+
+        if ($request->ajax()) {
+            return response()->json(
+                [
+                    'message' => 'Customer added successfully!',
+                    'data' => $data,
+                ],
+                201,
+            );
+        }
 
         // return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
         return redirect()->route('customer.index')->with('success', 'Data created successfully');
@@ -77,8 +91,8 @@ class CustomerController extends Controller
     {
         $data = Customers::findOrFail(id: $id);
 
-        if($data == null) {
-            return redirect()->back()->with( 'Data does not exist!');
+        if ($data == null) {
+            return redirect()->back()->with('Data does not exist!');
             // return response()->json(data: 'Data does not exist!', status: 200);
         }
 
@@ -103,36 +117,40 @@ class CustomerController extends Controller
             return response()->json(data: 'Data does not exist!', status: 200);
         }
 
-        $validate = Validator::make(data: $request->all(), rules: [
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'nullable|string|max:100',
-            'alamat' => 'required|string',
-            'phone' => 'required|numeric|max_digits:15',
-            'email' => 'required|email',
-            'membership' => 'nullable'
-        ]);
+        $validate = Validator::make(
+            data: $request->all(),
+            rules: [
+                'first_name' => 'required|string|max:100',
+                'last_name' => 'nullable|string|max:100',
+                'alamat' => 'required|string',
+                'phone' => 'required|numeric|max_digits:15',
+                'email' => 'required|email',
+                'membership' => 'nullable',
+            ],
+        );
 
         $isMembership = false;
 
-        if ($request->membership != 'regular' && filled($request->membership) ) {
+        if ($request->membership != 'regular' && filled($request->membership)) {
             $isMembership = true;
         }
 
-        if ($validate->fails())
-        {
-            return redirect()->back()->with( 'Data does not exist!');
+        if ($validate->fails()) {
+            return redirect()->back()->with('Data does not exist!');
             // return response()->json(data: $validate->errors(), status: 422);
         }
 
-        $data->update(attributes: [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'alamat' => $request->alamat,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'is_member' => $isMembership,
-            'membership_id' => $request->membership
-        ]);
+        $data->update(
+            attributes: [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'alamat' => $request->alamat,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'is_member' => $isMembership,
+                'membership_id' => $request->membership,
+            ],
+        );
 
         // return new ApiResource(status: 201, message: 'Data updated Successfully!', resource: $data);
         return redirect()->route('customer.index')->with('success', 'Data updated successfully');

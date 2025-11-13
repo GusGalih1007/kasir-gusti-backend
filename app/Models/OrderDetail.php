@@ -18,10 +18,12 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(related: Product::class, foreignKey: 'product_id', ownerKey: 'product_id');
     }
+
     public function order()
     {
         return $this->belongsTo(related: Order::class, foreignKey: 'order_id', ownerKey: 'order_id');
     }
+    
     public function variant()
     {
         return $this->belongsTo(related: ProductVariant::class, foreignKey: 'variant_id', ownerKey: 'variant_id');
