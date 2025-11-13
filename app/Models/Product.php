@@ -13,13 +13,19 @@ class Product extends Model
     protected $primaryKey = 'product_id';
 
     protected $fillable = [ 'product_name', 'description', 'slug', 'price',
-                            'category_id', 'brand_id', 'supplier_id', 'is_available',
-                            'created_by', 'updated_by'];
-
+    'category_id', 'brand_id', 'supplier_id', 'is_available',
+    'created_by', 'updated_by'];
+    
     public function variant()
     {
         return $this->hasMany(related: ProductVariant::class, foreignKey: 'product_id', localKey: 'product_id');
     }
+    
+    public function detail()
+    {
+        return $this->hasMany(OrderDetail::class, 'product_id', 'product_id');
+    }
+    
     public function userCreator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'created_by', ownerKey: 'user_id');

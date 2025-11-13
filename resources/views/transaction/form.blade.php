@@ -43,6 +43,9 @@
                         {{-- HIDDEN CURRENCY --}}
                         <input type="hidden" name="currency" value="IDR">
 
+                        <input type="hidden" name="product" id="product_json">
+
+
                         {{-- CATEGORY FILTER --}}
                         <div class="col-md-6 form-group">
                             <label for="category_select" class="form-label fw-bold">Category</label>
@@ -114,7 +117,8 @@
                         <div class="row mb-4">
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Total</label>
-                                <input type="text" id="total_amount" class="form-control money" readonly value="Rp 0">
+                                <input type="text" id="total_amount" class="form-control money" readonly
+                                    value="Rp 0">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Discount</label>
@@ -139,7 +143,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="payment_input" class="form-label fw-bold">Pay (Rp)</label>
+                                <label for="payment_input" name="payment" class="form-label fw-bold">Pay (Rp)</label>
                                 <input type="text" id="payment_input" class="form-control money"
                                     placeholder="Masukkan jumlah pembayaran">
                             </div>
@@ -504,6 +508,17 @@
                 modal.show();
                 return;
             }
+
+            // 🟢 Tambahkan data product ke input hidden sebelum submit
+            $('#product_json').val(JSON.stringify(productList));
+
+            // 🟢 Tambahkan nilai pembayaran ke hidden input juga
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'payment',
+                value: pay
+            }).appendTo('#transaction-form');
+            
             this.submit();
         });
 
