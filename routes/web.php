@@ -34,6 +34,8 @@ route::resource('customer', CustomerController::class);
 route::resource('membership', MembershipController::class);
 
 route::resource('role-permission', RoleController::class);
+Route::post('/role-permission/update-permission', [RoleController::class, 'updatePermission'])
+    ->name('role-permission.update-permission');
 
 route::resource('user', UserController::class);
 

@@ -11,6 +11,8 @@ class Page extends Model
 
     protected $table = 'pages';
     protected $primaryKey = 'page_code';
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = ['page_code', 'page_name', 'action'];
     protected $casts = [
         'action' => 'array',
