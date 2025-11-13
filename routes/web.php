@@ -19,6 +19,11 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+// Protected routes with permission middleware (it handles auth check internally)
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])
+    ->name('dashboard')
+    ->middleware('permission:read');
+
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
 route::get('logout', [AuthController::class, 'logoutWeb'])->name('logout.user');
@@ -58,6 +63,3 @@ route::delete('product/{product}/variant/{id}', [ProductVariantController::class
 route::resource('page', PageController::class);
 
 route::resource('transaction', TransactionController::class);
-
-
-route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
