@@ -309,17 +309,27 @@
             </div>
         </div>
     </div>
-
     <div class="wrapper">
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
-
         <div class="gradient">
-            <div class="container">
-                <img src="{{ asset('hope-ui/html/assets/images/error/404.png') }}" class="img-fluid mb-4 w-50"
-                    alt="">
-                <h2 class="mb-0 mt-4 text-white">Oops! This Page is Not Found.</h2>
-                <p class="mt-2 text-white">The requested page dose not exist.</p>
+            <div class="container text-center">
+                <img src="{{ asset('hope-ui/html/assets/images/error/403.png') }}" class="img-fluid mb-4 w-50"
+                    alt="403 Error">
+                <h2 class="mb-0 mt-4 text-white">Access Denied</h2>
+                <p class="mt-2 text-white">You don't have permission to access this page.</p>
+
+                @auth
+                    <a class="btn bg-white text-primary d-inline-flex align-items-center me-2"
+                        href="{{ url()->previous() }}">Go Back</a>
+                @endauth
+
                 <a class="btn bg-white text-primary d-inline-flex align-items-center" href="/">Back to Home</a>
+
+                @if (auth()->guard('web')->check() && auth()->guard('web')->user()->role_id == 1)
+                    <div class="mt-3">
+                        <small class="text-white-50">Need admin access? Contact system administrator.</small>
+                    </div>
+                @endif
             </div>
             <div class="box">
                 <div class="c xl-circle">
@@ -335,6 +345,7 @@
             </div>
         </div>
     </div>
+    
     <!-- Library Bundle Script -->
     <script src="{{ asset('hope-ui/html/assets/js/core/libs.min.js') }}"></script>
 
@@ -364,8 +375,6 @@
 
     <!-- App Script -->
     <script src="{{ asset('hope-ui/html/assets/js/hope-ui.js') }}" defer></script>
-
-
 </body>
 
 </html>

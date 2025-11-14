@@ -57,7 +57,7 @@ class AuthController extends Controller
             return redirect()->back()->withErrors('Something went wrong, try again later');
         }
 
-        return redirect()->route('dashboard');
+        return redirect('/');
     }
     public function logoutWeb()
     {

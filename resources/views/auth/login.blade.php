@@ -8,7 +8,7 @@
                         <div class="col-md-10">
                             <div class="card card-transparent shadow-none d-flex justify-content-center mb-0 auth-card">
                                 <div class="card-body z-3 px-md-0 px-lg-4">
-                                    <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center mb-3">
+                                    {{-- <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center mb-3"> --}}
 
                                         <!--Logo start-->
                                         {{-- <div class="logo-main">
@@ -49,7 +49,7 @@
                                         </div> --}}
                                         <!--logo End-->
                                         {{-- <h4 class="logo-title ms-3">Hope UI</h4> --}}
-                                    </a>
+                                    {{-- </a> --}}
                                     <h2 class="mb-2 text-center">Log-In</h2>
                                     <p class="text-center">Enter your credential to log-in</p>
                                     <form action="{{ route('login.post') }}" class="needs-validation row g-3" method="POST" novalidate>
