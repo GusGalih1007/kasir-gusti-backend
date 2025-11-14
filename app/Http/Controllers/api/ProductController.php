@@ -11,7 +11,7 @@ use App\Models\ProductVariant;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Str;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {

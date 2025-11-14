@@ -11,7 +11,7 @@
                                     <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center mb-3">
 
                                         <!--Logo start-->
-                                        <div class="logo-main">
+                                        {{-- <div class="logo-main">
                                             <div class="logo-normal">
                                                 <svg class="text-primary icon-30" viewBox="0 0 30 30" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
@@ -46,12 +46,12 @@
                                                         fill="currentColor" />
                                                 </svg>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <!--logo End-->
-                                        <h4 class="logo-title ms-3">Hope UI</h4>
+                                        {{-- <h4 class="logo-title ms-3">Hope UI</h4> --}}
                                     </a>
-                                    <h2 class="mb-2 text-center">Sign In</h2>
-                                    <p class="text-center">Insert your credential</p>
+                                    <h2 class="mb-2 text-center">Log-In</h2>
+                                    <p class="text-center">Enter your credential to log-in</p>
                                     <form action="{{ route('login.post') }}" class="needs-validation row g-3" method="POST" novalidate>
                                         {{ csrf_field() }}
                                         <div class="row">

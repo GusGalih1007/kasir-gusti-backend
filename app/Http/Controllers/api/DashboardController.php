@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function adminDashboard()
     {
         $user = Users::get();
         // $role = Role::findOrFail($user->role_id);
