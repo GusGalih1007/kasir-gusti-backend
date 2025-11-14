@@ -16,13 +16,11 @@ use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('admin-dashboard');
+    return redirect()->route('dashboard');
 });
 
 // Protected routes with permission middleware (it handles auth check internally)
-Route::get('/admin', [DashboardController::class, 'adminDashboard'])
-    ->name('admin-dashboard')
-    ->middleware('permission:read');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('permission:read');
 
 
 // AUTH

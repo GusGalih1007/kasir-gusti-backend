@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                         </div> --}}
-                        <a href="#" class="text-center btn btn-primary btn-icon mt-lg-0 mt-md-0 mt-3"
+                        {{-- <a href="#" class="text-center btn btn-primary btn-icon mt-lg-0 mt-md-0 mt-3"
                             data-bs-toggle="modal" data-bs-target="#staticBackdrop-1">
                             <i class="btn-inner">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -104,7 +104,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -116,6 +116,7 @@
                                     @foreach ($data as $item)
                                         <th class="text-center">
                                             {{ $item->name }}
+                                            <div>-</div>
                                             <div style="float:center;">
                                                 <a class="btn btn-sm btn-icon text-primary flex-end" title="Delete User"
                                                     href="#" data-bs-toggle="modal"
@@ -137,7 +138,7 @@
                                                         </svg>
                                                     </span>
                                                 </a>
-                                                <a class="btn btn-sm btn-icon text-danger" data-bs-toggle="modal"
+                                                {{-- <a class="btn btn-sm btn-icon text-danger" data-bs-toggle="modal"
                                                     title="Delete User" data-bs-target="#deleteRole{{ $item->role_id }}"
                                                     href="#">
                                                     <span class="btn-inner">
@@ -157,7 +158,7 @@
                                                                 stroke-linecap="round" stroke-linejoin="round"></path>
                                                         </svg>
                                                     </span>
-                                                </a>
+                                                </a> --}}
                                             </div>
                                         </th>
                                         <div class="modal fade" id="editRole{{ $item->role_id }}"
@@ -166,8 +167,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel">Add new
-                                                            role</h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Edit role name</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
@@ -196,7 +196,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal fade" id="deleteRole{{ $item->role_id }}"
+                                        {{-- <div class="modal fade" id="deleteRole{{ $item->role_id }}"
                                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                                             aria-labelledby="deleteConfirmLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
@@ -222,7 +222,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     @endforeach
                                 </tr>
                             </thead>

@@ -1,4 +1,4 @@
 @extends('layout.app')
-@section('title', 'Admin Dashboard')
+@section('title', 'Warehouse Dashboard')
 @section('content')
 @endsection
