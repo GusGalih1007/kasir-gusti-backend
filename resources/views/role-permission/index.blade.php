@@ -8,7 +8,7 @@
                         <h4 class="card-title mb-0">Role & Permission</h4>
                     </div>
                     <div class="">
-                        <a href="#" class=" text-center btn btn-primary btn-icon mt-lg-0 mt-md-0 mt-3"
+                        {{-- <a href="#" class=" text-center btn btn-primary btn-icon mt-lg-0 mt-md-0 mt-3"
                             data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="btn-inner">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <a href="#" class="text-center btn btn-primary btn-icon mt-lg-0 mt-md-0 mt-3"
                             data-bs-toggle="modal" data-bs-target="#staticBackdrop-1">
                             <i class="btn-inner">
@@ -109,7 +109,7 @@
                 </div>
                 <div class="card-body">
                     <div class="custom-datatable-entries table-responsive">
-                        <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
+                        <table id="datatable" data-page-length="50" data-toggle="data-table" class="table table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -232,7 +232,7 @@
                                         <tr class="">
                                             <td class="d-flex justify-content-between">
                                                 {{ $item['page_name'] . ' ' . $action }}
-                                                <div style="float:right;">
+                                                {{-- <div style="float:right;">
                                                     <a class="btn btn-sm btn-icon text-primary flex-end"
                                                         data-bs-toggle="tooltip" title="Edit User" href="#">
                                                         <span class="btn-inner">
@@ -276,7 +276,7 @@
                                                             </svg>
                                                         </span>
                                                     </a>
-                                                </div>
+                                                </div> --}}
                                             </td>
                                             @foreach ($data as $role)
                                                 <td class="text-center">

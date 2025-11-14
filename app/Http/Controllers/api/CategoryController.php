@@ -31,7 +31,7 @@ class CategoryController extends Controller
         return view('category.form', compact('parent', 'category'));
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $validate = Validator::make(data: $request->all(), rules: [
             'name' => 'required|string|max:100',
@@ -39,8 +39,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|numeric',
         ]);
 
-        if ($validate->fails())
-        {
+        if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
             return redirect()->back()->withErrors('errors', $validate->errors())->withInput();
         }
@@ -58,8 +57,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail(id: $id);
 
-        if($category == null)
-        {
+        if ($category == null) {
             // return response()->json(data: 'Data does not exist', status: 200);
             return redirect()->back()->with('errors', 'Data does not exist!');
         }
@@ -72,8 +70,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
 
-        if($category == null)
-        {
+        if ($category == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->with('errors', 'Data does not exist!');
         }
@@ -88,8 +85,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|numeric',
         ]);
 
-        if($validate->fails())
-        {
+        if ($validate->fails()) {
             return redirect()->back()->withErrors($validate->errors())->withInput();
 
             // return response()->json(data: $validator->errors(), status: 422);
@@ -97,8 +93,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail(id: $id);
 
-        if($category == null)
-        {
+        if ($category == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->with('errors', 'Data does not exist!');
         }
@@ -116,8 +111,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail(id: $id);
 
-        if($category == null)
-        {
+        if ($category == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->with('errors', 'Data does not exist!');
         }

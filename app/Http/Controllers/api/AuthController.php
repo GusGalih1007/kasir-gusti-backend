@@ -20,6 +20,11 @@ class AuthController extends Controller
     //Web auth start
     public function loginPage()
     {
+        if (Auth::check())
+        {
+            return redirect('/');
+        }
+
         return view('auth.login');
     }
 
