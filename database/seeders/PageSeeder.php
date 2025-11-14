@@ -71,5 +71,20 @@ class PageSeeder extends Seeder
             'page_name' => 'Membership',
             'action'    => ['Read','Create','Update','Delete']
         ]);
+        Page::create([
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
+            'page_name' => 'Admin Dashboard',
+            'action'    => ['Read']
+        ]);
+        Page::create([
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
+            'page_name' => 'Cashier Dashboard',
+            'action'    => ['Read']
+        ]);
+        Page::create([
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
+            'page_name' => 'Warehouse Dashboard',
+            'action'    => ['Read']
+        ]);
     }
 }

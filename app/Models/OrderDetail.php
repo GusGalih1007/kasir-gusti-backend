@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetail extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'order_details';
     protected $primaryKey = 'order_detail_id';
@@ -23,7 +23,7 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(related: Order::class, foreignKey: 'order_id', ownerKey: 'order_id');
     }
-    
+
     public function variant()
     {
         return $this->belongsTo(related: ProductVariant::class, foreignKey: 'variant_id', ownerKey: 'variant_id');

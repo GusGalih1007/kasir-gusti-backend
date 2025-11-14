@@ -13,14 +13,14 @@ use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Users extends Authenticatable implements JWTSubject
+class Users extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
     protected $primaryKey = 'user_id';
     protected $fillable = [
-        'username', 
+        'username',
         'email',
         'password',
         'first_name',
@@ -32,7 +32,7 @@ class Users extends Authenticatable implements JWTSubject
         'created_by',
         'updated_by'
     ];
-    
+
     public function getJwtIdentifier()
     {
         return $this->getKey();

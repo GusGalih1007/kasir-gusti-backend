@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'product_variants';
     protected $primaryKey = 'variant_id';
 
-    protected $fillable = ['product_id', 'variant_name', 'price', 'sku', 'stock_qty', 'created_by', 'updated_by'];
+    protected $fillable = ['product_id', 'variant_name', 'price', 'sku', 'stock_qty', 'created_by', 'updated_by', 'created_at', 'updated_at'];
 
     public function userCreator()
     {

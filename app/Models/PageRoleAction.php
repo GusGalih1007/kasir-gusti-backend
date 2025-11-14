@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PageRoleAction extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'page_role_actions';
 
     // Remove 'page_name' from fillable
