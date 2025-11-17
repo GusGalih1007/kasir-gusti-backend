@@ -12,7 +12,22 @@ class Payment extends Model
     protected $table = 'payments';
     protected $primaryKey = 'payment_id';
 
-    protected $fillable = ['order_id', 'change', 'payment_method', 'amount', 'currency', 'status', 'payment_date', 'created_by'];
+    protected $fillable = [
+        'order_id', 
+        'change', 
+        'payment_method', 
+        'snap_token',
+        'token_expires_at',
+        'amount', 
+        'currency', 
+        'status', 
+        'payment_date', 
+        'created_by'];
+
+    protected $casts = [
+        'payment_date' => 'datetime',
+        'token_expires_at' => 'datetime', 
+    ];
 
     public function order()
     {

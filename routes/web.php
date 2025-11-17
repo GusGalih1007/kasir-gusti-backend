@@ -124,3 +124,17 @@ route::get('transaction/{id}', [TransactionController::class, 'show'])->name('tr
 route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store')->middleware('permission:create');
 // route::resource('page', PageController::class);
 
+// Snap payment routes
+// Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPayment'])->name('transaction.retry-payment');
+
+// Midtrans routes
+Route::get('/transaction/midtrans/finish', [TransactionController::class, 'midtransFinish'])->name('transaction.midtrans.finish');
+Route::get('/transaction/midtrans/error', [TransactionController::class, 'midtransError'])->name('transaction.midtrans.error');
+Route::get('/transaction/midtrans/pending', [TransactionController::class, 'midtransPending'])->name('transaction.midtrans.pending');
+Route::post('/transaction/midtrans/notification', [TransactionController::class, 'midtransNotification'])->name('transaction.midtrans.notification');
+
+// Status check route
+Route::get('/transaction/{id}/check-status', [TransactionController::class, 'checkStatus'])->name('transaction.check-status');
+
+// Retry payment route
+Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPayment'])->name('transaction.retry-payment');
