@@ -138,8 +138,7 @@
                                 <select name="payment_method" id="payment_method" class="form-select" required>
                                     <option value="">Pilih Metode Pembayaran</option>
                                     <option value="Cash">Tunai</option>
-                                    <option value="Credit Card">Kartu Kredit</option>
-                                    <option value="Transfer">Transfer Bank</option>
+                                    <option value="Midtrans">Online Payment (Midtrans)</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -452,6 +451,8 @@
         }
 
         $(document).ready(function() {
+            // Initialize payment method state
+            $('#payment_method').trigger('change');
             $('#saveCustomerBtn').on('click', function() {
                 let form = $('#addCustomerForm');
                 if (!form[0].checkValidity()) {
@@ -498,27 +499,80 @@
             });
         });
 
+        // ===== PAYMENT METHOD HANDLING =====
+        $('#payment_method').on('change', function() {
+            const method = $(this).val();
+            const paymentInputDiv = $('#payment_input').closest('.col-md-6');
+            const changeOutputDiv = $('#change_output').closest('.mb-4');
+
+            if (method === 'Midtrans') {
+                // Hide payment input and change output for Midtrans
+                paymentInputDiv.hide();
+                changeOutputDiv.hide();
+
+                // Clear and disable payment input
+                $('#payment_input').val('Rp 0').prop('disabled', true);
+                $('#change_output').val('Rp 0');
+            } else {
+                // Show payment input and change output for other methods
+                paymentInputDiv.show();
+                changeOutputDiv.show();
+
+                // Enable payment input and recalculate
+                $('#payment_input').prop('disabled', false);
+                calcChange();
+            }
+        });
+
         // ===== SUBMIT FORM =====
         $('#transaction-form').on('submit', function(e) {
             e.preventDefault();
-            const pay = parseRupiah($('#payment_input').val());
+
+            const paymentMethod = $('#payment_method').val();
             const due = parseRupiah($('#total_due').val());
+
+            // Validate payment method
+            if (!paymentMethod) {
+                alert('Please select payment method');
+                return;
+            }
+
+            // For Midtrans - skip payment amount validation
+            if (paymentMethod === 'Midtrans') {
+                // 🟢 Prepare data for submission
+                $('#product_json').val(JSON.stringify(productList));
+
+                // 🟢 Set payment amount to total due for Midtrans
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'payment',
+                    value: due
+                }).appendTo('#transaction-form');
+
+                // Submit the form
+                this.submit();
+                return;
+            }
+
+            // For other payment methods - validate payment amount
+            const pay = parseRupiah($('#payment_input').val());
+
             if (pay < due) {
                 const modal = new bootstrap.Modal(document.getElementById('insufficientModal'));
                 modal.show();
                 return;
             }
 
-            // 🟢 Tambahkan data product ke input hidden sebelum submit
+            // 🟢 Prepare data for regular payment submission
             $('#product_json').val(JSON.stringify(productList));
 
-            // 🟢 Tambahkan nilai pembayaran ke hidden input juga
+            // 🟢 Add payment amount to form
             $('<input>').attr({
                 type: 'hidden',
                 name: 'payment',
                 value: pay
             }).appendTo('#transaction-form');
-            
+
             this.submit();
         });
 
