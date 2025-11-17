@@ -133,6 +133,9 @@ Route::get('/transaction/midtrans/error', [TransactionController::class, 'midtra
 Route::get('/transaction/midtrans/pending', [TransactionController::class, 'midtransPending'])->name('transaction.midtrans.pending');
 Route::post('/transaction/midtrans/notification', [TransactionController::class, 'midtransNotification'])->name('transaction.midtrans.notification');
 
+// Payment URL check route
+Route::get('/transaction/{id}/payment-url', [TransactionController::class, 'getPaymentUrl'])->name('transaction.payment-url');
+
 // Status check route
 Route::get('/transaction/{id}/check-status', [TransactionController::class, 'checkStatus'])->name('transaction.check-status');
 

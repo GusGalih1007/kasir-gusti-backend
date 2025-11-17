@@ -31,17 +31,18 @@ class MidtransService
     }
 
     /**
-     * Get Snap redirect URL (legacy method)
+     * Get Snap redirect URL with token
      */
-    public function getSnapRedirectUrl(array $transactionData)
+    public function getSnapRedirectUrl($snapToken)
     {
-        try {
-            return Snap::getSnapUrl($transactionData);
-        } catch (Exception $e) {
-            throw new Exception('Midtrans Error: ' . $e->getMessage());
-        }
+        // Midtrans provides a standard URL format for Snap
+        $baseUrl = config('services.midtrans.is_production') 
+            ? 'https://app.midtrans.com/snap/v2/vtweb/'
+            : 'https://app.sandbox.midtrans.com/snap/v2/vtweb/';
+            
+        return $baseUrl . $snapToken;
     }
-
+    
     /**
      * Check if token is expired
      */

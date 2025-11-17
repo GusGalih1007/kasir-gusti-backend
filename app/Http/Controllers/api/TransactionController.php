@@ -291,19 +291,27 @@ class TransactionController extends Controller
                 ]
             ];
 
-            // Get Snap URL for direct redirection (no custom page)
-            $snapUrl = $this->midtransService->getSnapRedirectUrl($midtransData);
+            // Generate Snap token
+            $snapToken = $this->midtransService->createSnapTransaction($midtransData);
+            $tokenExpiresAt = now()->addHours(24);
 
-            // Create payment record (no snap_token needed for direct redirect)
+            // Create payment record with Snap token
             Payment::create([
                 'order_id' => $transaction->order_id,
                 'payment_method' => 'Midtrans',
+                'snap_token' => $snapToken,
+                'token_expires_at' => $tokenExpiresAt,
                 'amount' => $totalAfterDiscount,
                 'currency' => $request->currency,
                 'status' => 'pending',
                 'change' => 0,
                 'created_by' => $userId,
             ]);
+
+            Log::info("Created Snap token for transaction {$transaction->order_id}: {$snapToken}");
+
+            // Get Midtrans Snap URL and redirect directly to it
+            $snapUrl = $this->midtransService->getSnapRedirectUrl($snapToken);
 
             Log::info("Redirecting to Midtrans Snap URL for transaction {$transaction->order_id}");
 
@@ -559,7 +567,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * Regenerate Snap URL for payment retry
+     * Regenerate Snap token and redirect to Midtrans payment page
      */
     public function retryPayment($id)
     {
@@ -590,7 +598,7 @@ class TransactionController extends Controller
                     ->with('error', 'This transaction is too old to retry. Please create a new transaction.');
             }
 
-            // Prepare Midtrans transaction data
+            // Prepare Midtrans transaction data (same order ID, different token)
             $midtransData = [
                 'transaction_details' => [
                     'order_id' => (string) $transaction->order_id,
@@ -610,23 +618,32 @@ class TransactionController extends Controller
                 ]
             ];
 
-            // Get NEW Snap URL
-            $newSnapUrl = $this->midtransService->getSnapRedirectUrl($midtransData);
+            // Generate NEW Snap token
+            $newSnapToken = $this->midtransService->createSnapTransaction($midtransData);
+            $tokenExpiresAt = now()->addHours(24);
+
+            // Update payment with new token
+            $transaction->payment->update([
+                'snap_token' => $newSnapToken,
+                'token_expires_at' => $tokenExpiresAt,
+                'status' => 'pending',
+            ]);
 
             // Reset transaction status if it was failed
             if ($transaction->status === 'failed') {
                 $transaction->update(['status' => 'pending']);
             }
 
-            // Update payment status back to pending
-            $transaction->payment->update(['status' => 'pending']);
+            Log::info("Regenerated Snap token for transaction {$transaction->order_id}: {$newSnapToken}");
 
-            Log::info("Regenerated Snap URL for transaction {$transaction->order_id}");
+            // Get Midtrans Snap URL and redirect directly to it
+            $snapUrl = $this->midtransService->getSnapRedirectUrl($newSnapToken);
+
+            Log::info("Redirecting to Midtrans Snap page for retry: {$snapUrl}");
 
             DB::commit();
 
-            // Direct redirect to NEW Snap URL
-            return redirect($newSnapUrl);
+            return redirect($snapUrl);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -635,6 +652,51 @@ class TransactionController extends Controller
             return redirect()
                 ->route('transaction.show', $id)
                 ->with('error', 'Failed to retry payment: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Check if payment token is still valid and get payment URL
+     */
+    public function getPaymentUrl($id)
+    {
+        try {
+            $transaction = Order::with('payment')->findOrFail($id);
+
+            if ($transaction->payment->payment_method !== 'Midtrans') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This is not a Midtrans payment'
+                ]);
+            }
+
+            $payment = $transaction->payment;
+
+            // Check if token exists and is not expired
+            if (!$payment->snap_token || $this->midtransService->isTokenExpired($payment->token_expires_at)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment token expired or invalid',
+                    'action_required' => true
+                ]);
+            }
+
+            // Token is valid, return the payment URL
+            $paymentUrl = $this->midtransService->getSnapRedirectUrl($payment->snap_token);
+
+            return response()->json([
+                'success' => true,
+                'payment_url' => $paymentUrl,
+                'token_expires_at' => $payment->token_expires_at
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Error getting payment URL for transaction {$id}: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error getting payment URL'
+            ], 500);
         }
     }
 

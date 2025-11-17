@@ -220,7 +220,7 @@
                                 <div class="card border-{{ $transaction->status == 'pending' ? 'warning' : 'danger' }}">
                                     <div
                                         class="card-header bg-{{ $transaction->status == 'pending' ? 'warning' : 'danger' }} text-white">
-                                        <h5 class="card-title mb-0">
+                                        <h5 class="card-title mb-4 text-white">
                                             @if ($transaction->status == 'pending')
                                                 ⏳ Pending Payment
                                             @else
@@ -229,35 +229,27 @@
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        @if ($transaction->status == 'pending')
-                                            <p>This transaction is waiting for payment confirmation.</p>
+                                        @if ($transaction->status == 'pending' && $transaction->payment->snap_token)
                                             <div class="alert alert-info">
                                                 <small>
-                                                    <strong>Note:</strong>
-                                                    If you haven't completed the payment, click the button below to
-                                                    continue.
-                                                </small>
-                                            </div>
-                                        @else
-                                            <p>This payment has failed or expired.</p>
-                                            <div class="alert alert-warning">
-                                                <small>
-                                                    <strong>Reason:</strong> The payment was not completed within the
-                                                    allowed time frame.
+                                                    <strong>Payment Token:</strong> Active<br>
+                                                    <strong>Expires:</strong>
+                                                    {{ $transaction->payment->token_expires_at->format('M j, Y H:i') }}
                                                 </small>
                                             </div>
                                         @endif
 
                                         <div class="d-grid gap-2">
-                                            {{-- Retry/Continue Payment Button --}}
-                                            <a href="{{ route('transaction.retry-payment', $transaction->order_id) }}"
-                                                class="btn btn-{{ $transaction->status == 'pending' ? 'success' : 'warning' }}">
+                                            {{-- Payment Action Buttons --}}
+                                            <button id="continuePaymentBtn"
+                                                class="btn btn-{{ $transaction->status == 'pending' ? 'success' : 'warning' }}"
+                                                data-order-id="{{ $transaction->order_id }}">
                                                 @if ($transaction->status == 'pending')
                                                     💳 Continue Payment
                                                 @else
                                                     🔄 Retry Payment
                                                 @endif
-                                            </a>
+                                            </button>
 
                                             {{-- Status Check Button --}}
                                             <a href="{{ route('transaction.check-status', $transaction->order_id) }}"
@@ -272,9 +264,70 @@
                                                 </a>
                                             @endif
                                         </div>
+
+                                        {{-- Payment URL will be displayed here --}}
+                                        <div id="paymentUrlContainer" class="mt-3" style="display: none;">
+                                            <div class="alert alert-success">
+                                                <p>Redirecting to payment page...</p>
+                                                <a id="paymentLink" href="#" class="btn btn-success btn-sm">
+                                                    Click here if not redirected automatically
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            @push('scripts')
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const continuePaymentBtn = document.getElementById('continuePaymentBtn');
+                                        const paymentUrlContainer = document.getElementById('paymentUrlContainer');
+                                        const paymentLink = document.getElementById('paymentLink');
+
+                                        if (continuePaymentBtn) {
+                                            continuePaymentBtn.addEventListener('click', function() {
+                                                const orderId = this.getAttribute('data-order-id');
+
+                                                // Show loading state
+                                                this.innerHTML = '⏳ Getting payment link...';
+                                                this.disabled = true;
+
+                                                // Check if we have a valid payment token
+                                                fetch(`/transaction/${orderId}/payment-url`)
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            // We have a valid payment URL, redirect to it
+                                                            paymentLink.href = data.payment_url;
+                                                            paymentUrlContainer.style.display = 'block';
+
+                                                            // Auto-redirect after 2 seconds
+                                                            setTimeout(() => {
+                                                                window.location.href = data.payment_url;
+                                                            }, 2000);
+                                                        } else {
+                                                            // Token expired or invalid, use retry payment
+                                                            if (data.action_required) {
+                                                                window.location.href = `/transaction/${orderId}/retry-payment`;
+                                                            } else {
+                                                                alert(data.message || 'Error getting payment link');
+                                                                this.innerHTML = '💳 Continue Payment';
+                                                                this.disabled = false;
+                                                            }
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                        alert('Error getting payment link');
+                                                        this.innerHTML = '💳 Continue Payment';
+                                                        this.disabled = false;
+                                                    });
+                                            });
+                                        }
+                                    });
+                                </script>
+                            @endpush
                         @endif
                     </div>
                 </div>
