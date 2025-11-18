@@ -1,4 +1,5 @@
 @extends('layout.app')
+@section('title', 'Category Brand List')
 @section('content')
     <div class="row">
         <div class="col-sm-12">

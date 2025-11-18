@@ -1,4 +1,5 @@
 @extends('layout.app')
+@section('title', "Transaction Id {$transaction->order_id} Detail")
 @section('content')
     <div class="row">
         <div class="col-md-12 col-lg-12">
@@ -111,13 +112,14 @@
 
                                             <div class="col-6">
                                                 <h6 class="mb-2">Price Per Item</h6>
-                                                <p class="small">Rp
+                                                <p class="small">Rp.
                                                     {{ number_format($detail->price_at_purchase, 2, ',', '.') }}</p>
                                             </div>
 
                                             <div class="col-6">
                                                 <h6 class="mb-2">Sub-Total</h6>
-                                                <p class="small">Rp {{ number_format($detail->total_price, 2, ',', '.') }}
+                                                <p class="small">Rp.
+                                                    {{ number_format($detail->total_price, 2, ',', '.') }}
                                                 </p>
                                             </div>
                                         </div>
@@ -162,11 +164,11 @@
                                         <tbody>
                                             <tr>
                                                 <td><strong>Discount</strong></td>
-                                                <td>{{ intval($transaction->discount) }}%</td>
+                                                <td>Rp. {{ number_format($transaction->discount, 2, ',', '.') }}</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Total Price</strong></td>
-                                                <td>Rp {{ number_format($transaction->total_amount, 2, ',', '.') }}</td>
+                                                <td>Rp. {{ number_format($transaction->total_amount, 2, ',', '.') }}</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Payment Method</strong></td>
@@ -183,12 +185,13 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Payment Amount</strong></td>
-                                                <td>Rp {{ number_format($transaction->payment->amount, 2, ',', '.') }}</td>
+                                                <td>Rp. {{ number_format($transaction->payment->amount, 2, ',', '.') }}
+                                                </td>
                                             </tr>
                                             @if ($transaction->payment->payment_method != 'Midtrans')
                                                 <tr>
                                                     <td><strong>Change</strong></td>
-                                                    <td>Rp {{ number_format($transaction->change, 2, ',', '.') }}</td>
+                                                    <td>Rp. {{ number_format($transaction->change, 2, ',', '.') }}</td>
                                                 </tr>
                                             @endif
                                             <tr>
@@ -277,57 +280,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            @push('scripts')
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        const continuePaymentBtn = document.getElementById('continuePaymentBtn');
-                                        const paymentUrlContainer = document.getElementById('paymentUrlContainer');
-                                        const paymentLink = document.getElementById('paymentLink');
-
-                                        if (continuePaymentBtn) {
-                                            continuePaymentBtn.addEventListener('click', function() {
-                                                const orderId = this.getAttribute('data-order-id');
-
-                                                // Show loading state
-                                                this.innerHTML = '⏳ Getting payment link...';
-                                                this.disabled = true;
-
-                                                // Check if we have a valid payment token
-                                                fetch(`/transaction/${orderId}/payment-url`)
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        if (data.success) {
-                                                            // We have a valid payment URL, redirect to it
-                                                            paymentLink.href = data.payment_url;
-                                                            paymentUrlContainer.style.display = 'block';
-
-                                                            // Auto-redirect after 2 seconds
-                                                            setTimeout(() => {
-                                                                window.location.href = data.payment_url;
-                                                            }, 2000);
-                                                        } else {
-                                                            // Token expired or invalid, use retry payment
-                                                            if (data.action_required) {
-                                                                window.location.href = `/transaction/${orderId}/retry-payment`;
-                                                            } else {
-                                                                alert(data.message || 'Error getting payment link');
-                                                                this.innerHTML = '💳 Continue Payment';
-                                                                this.disabled = false;
-                                                            }
-                                                        }
-                                                    })
-                                                    .catch(error => {
-                                                        console.error('Error:', error);
-                                                        alert('Error getting payment link');
-                                                        this.innerHTML = '💳 Continue Payment';
-                                                        this.disabled = false;
-                                                    });
-                                            });
-                                        }
-                                    });
-                                </script>
-                            @endpush
                         @endif
                     </div>
                 </div>
@@ -338,6 +290,54 @@
 @section('scripts')
     @if ($transaction->payment->payment_method == 'Midtrans' && $transaction->status == 'pending')
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const continuePaymentBtn = document.getElementById('continuePaymentBtn');
+                const paymentUrlContainer = document.getElementById('paymentUrlContainer');
+                const paymentLink = document.getElementById('paymentLink');
+
+                if (continuePaymentBtn) {
+                    continuePaymentBtn.addEventListener('click', function() {
+                        const orderId = this.getAttribute('data-order-id');
+
+                        // Show loading state
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '⏳ Getting payment link...';
+                        this.disabled = true;
+
+                        // Check if we have a valid payment token
+                        fetch(`/transaction/${orderId}/payment-url`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // We have a valid payment URL using existing token
+                                    paymentLink.href = data.payment_url;
+                                    paymentUrlContainer.style.display = 'block';
+
+                                    // Auto-redirect after 1 second
+                                    setTimeout(() => {
+                                        window.location.href = data.payment_url;
+                                    }, 1000);
+                                } else {
+                                    // Token expired or invalid, regenerate token for the same transaction
+                                    if (data.action_required) {
+                                        window.location.href =
+                                        `/transaction/${orderId}/retry-payment-token`;
+                                    } else {
+                                        alert(data.message || 'Error getting payment link');
+                                        this.innerHTML = originalText;
+                                        this.disabled = false;
+                                    }
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Error getting payment link');
+                                this.innerHTML = originalText;
+                                this.disabled = false;
+                            });
+                    });
+                }
+            });
             // Auto-check status every 30 seconds for pending payments
             let checkCount = 0;
             const maxChecks = 10; // Stop after 5 minutes

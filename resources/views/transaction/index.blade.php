@@ -1,4 +1,5 @@
 @extends('layout.app')
+@section('title', 'Transaction List')
 @section('content')
     <div class="row">
         <div class="col-sm-12">
@@ -91,9 +92,9 @@
                                                 </svg>
                                             </a>
 
-                                            @if ($item->payment->payment_method == 'Midtrans' && in_array($item->status, ['pending', 'failed']))
+                                            @if ($item->payment->payment_method == 'Midtrans' && in_array($item->status, ['pending']))
                                                 {{-- Retry/Continue Payment Button --}}
-                                                <a href="{{ route('transaction.retry-payment', $item->order_id) }}"
+                                                <a href="{{ route('transaction.payment-url', $item->order_id) }}"
                                                     class="btn btn-{{ $item->status == 'pending' ? 'success' : 'warning' }} btn-sm"
                                                     title="{{ $item->status == 'pending' ? 'Continue Payment' : 'Retry Payment' }}">
                                                     @if ($item->status == 'pending')
@@ -102,7 +103,7 @@
                                                         🔄
                                                     @endif
                                                 </a>
-                                                @if ($item->status == 'pending')
+                                                @if ($item->status == ['pending', 'replaced'])
                                                 {{-- Status Check Button --}}
                                                 <a href="{{ route('transaction.check-status', $item->order_id) }}"
                                                     class="btn btn-{{ $item->status == 'pending' ? 'primary' : 'info' }} btn-sm"

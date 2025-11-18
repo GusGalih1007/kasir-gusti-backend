@@ -54,6 +54,25 @@ class MidtransService
     }
 
     /**
+     * Check if token is valid for payment (not used and not expired)
+     */
+    public function isTokenValid($token, $expiresAt, $isUsed)
+    {
+        if ($isUsed) return false;
+        if (!$token) return false;
+        
+        return !$this->isTokenExpired($expiresAt);
+    }
+
+    /**
+     * Generate a new transaction with unique order ID for retry
+     */
+    public function generateRetryOrderId($originalOrderId)
+    {
+        return $originalOrderId . '_RETRY_' . time() . '_' . rand(1000, 9999);
+    }
+
+    /**
      * Regenerate Snap token for existing transaction
      */
     public function regenerateSnapToken(array $transactionData)
