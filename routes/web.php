@@ -64,6 +64,7 @@ route::delete('supplier/{id}', [SupplierController::class, 'destroy'])->name('su
 route::get('customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('permission:read');
 route::get('customer/create', [CustomerController::class, 'create'])->name('customer.create')->middleware('permission:create');
 route::post('customer', [CustomerController::class, 'store'])->name('customer.store')->middleware('permission:create');
+route::get('customer/{id}', [CustomerController::class, 'show'])->name('customer.show')->middleware('permission:read');
 route::get('customer/{id}/edit', [CustomerController::class, 'edit'])->name('customer.edit')->middleware('permission:update');
 route::put('customer/{id}', [CustomerController::class, 'update'])->name('customer.update')->middleware('permission:update');
 route::delete('customer/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy')->middleware('permission:delete');
@@ -136,5 +137,6 @@ Route::post('/transaction/midtrans/notification', [TransactionController::class,
 // Status check route
 Route::get('/transaction/{id}/check-status', [TransactionController::class, 'checkStatus'])->name('transaction.check-status');
 
-// Retry payment route
-Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPayment'])->name('transaction.retry-payment');
+// Simple retry route - no new database records
+Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPaymentWithToken'])->name('transaction.retry-payment');
+Route::get('/transaction/{id}/payment-url', [TransactionController::class, 'getPaymentUrl'])->name('transaction.payment-url');

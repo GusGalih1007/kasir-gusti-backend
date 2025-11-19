@@ -1,4 +1,5 @@
 @extends('layout.app')
+@section('title', "{$productParent->product_name} Variant")
 @section('content')
     <div class="row">
         <div class="col-sm-12">

@@ -47,7 +47,7 @@ class TransactionController extends Controller
 
     public function create()
     {
-        $customer = Customers::get();
+        $customer = Customers::with('member')->get();
         $product = Product::with('variant', 'category', 'brand')->get();
         $variant = ProductVariant::get();
         $categories = Category::get();
@@ -149,18 +149,28 @@ class TransactionController extends Controller
                     'quantity' => $productData['qty'],
                     'price' => $price,
                     'total' => $itemTotal,
+                    'merchant_name' => auth()->guard('web')->user()->username,
                     'brand_name' => $variant->product->brand->name ?? 'N/A',
                     'category_name' => $variant->product->category->name ?? 'N/A',
                 ];
             }
 
+
             // Apply discount
             $discountValue = ($totalPrice * $discountPercent / 100);
             $totalAfterDiscount = max(0, $totalPrice - $discountValue);
+            // dd($products, $totalAfterDiscount);
 
             // For Midtrans payments
             if ($request->payment_method === 'Midtrans') {
-                $result = $this->handleMidtransPayment($request, $totalAfterDiscount, $products, $userId, $discountValue);
+                $result = $this->handleMidtransPayment(
+                    $request,
+                    $totalPrice,
+                    $totalAfterDiscount,
+                    $products,
+                    $userId,
+                    $discountValue
+                );
                 DB::commit();
                 return $result;
             }
@@ -241,9 +251,9 @@ class TransactionController extends Controller
     }
 
     /**
-     * Handle Midtrans payment with direct Snap redirect
+     * Handle Midtrans payment with Snap token (redirect to Midtrans page)
      */
-    protected function handleMidtransPayment($request, $totalAfterDiscount, $products, $userId, $discountValue)
+    protected function handleMidtransPayment($request, $totalPrice, $totalAfterDiscount, $products, $userId, $discountValue)
     {
         try {
             // Create pending transaction first
@@ -275,9 +285,9 @@ class TransactionController extends Controller
             $midtransData = [
                 'transaction_details' => [
                     'order_id' => (string) $transaction->order_id,
-                    'gross_amount' => (int) $totalAfterDiscount,
+                    'gross_amount' => (int) $totalAfterDiscount, // This should match the sum of all items
                 ],
-                'item_details' => $this->prepareItemDetails($products),
+                'item_details' => $this->prepareItemDetails($products, $discountValue), // Pass discount here
                 'customer_details' => [
                     'first_name' => $customer ? $customer->first_name : 'Customer',
                     'last_name' => $customer ? $customer->last_name : '',
@@ -291,23 +301,49 @@ class TransactionController extends Controller
                 ]
             ];
 
-            // Get Snap URL for direct redirection (no custom page)
-            $snapUrl = $this->midtransService->getSnapRedirectUrl($midtransData);
 
-            // Create payment record (no snap_token needed for direct redirect)
+            $calculatedTotal = array_sum(array_map(function ($item) {
+                return $item['price'] * $item['quantity'];
+            }, $midtransData['item_details']));
+
+            if ($calculatedTotal !== (int) $totalAfterDiscount) {
+                Log::error("Amount mismatch: Calculated: {$calculatedTotal}, Expected: {$totalAfterDiscount}");
+                throw new \Exception("Payment amount calculation error. Please try again.");
+            }
+
+            Log::info("Amount validation passed: Calculated: {$calculatedTotal}, Expected: {$totalAfterDiscount}");
+
+            Log::info("Midtrans transaction data:", [
+                'gross_amount' => $midtransData['transaction_details']['gross_amount'],
+                'item_details' => $midtransData['item_details'],
+                'total_before_discount' => $totalPrice, // Add this variable to your method
+                'discount_value' => $discountValue,
+                'total_after_discount' => $totalAfterDiscount,
+            ]);
+            // Generate Snap token
+            $snapToken = $this->midtransService->createSnapTransaction($midtransData);
+            $tokenExpiresAt = now()->addHours(24);
+
+            // Create payment record with Snap token
             Payment::create([
                 'order_id' => $transaction->order_id,
                 'payment_method' => 'Midtrans',
-                'amount' => $totalAfterDiscount,
+                'snap_token' => $snapToken,
+                'token_expires_at' => $tokenExpiresAt,
+                'amount' => $totalAfterDiscount, // Store the discounted amount
                 'currency' => $request->currency,
                 'status' => 'pending',
                 'change' => 0,
                 'created_by' => $userId,
             ]);
 
-            Log::info("Redirecting to Midtrans Snap URL for transaction {$transaction->order_id}");
+            Log::info("Created Snap token for transaction {$transaction->order_id} with discount: {$discountValue}");
 
-            // Direct redirect to Midtrans Snap page
+            // Get Midtrans Snap URL and redirect directly to it
+            $snapUrl = $this->midtransService->getSnapRedirectUrl($snapToken);
+
+            Log::info("Redirecting to Midtrans Snap page: {$snapUrl}");
+
             return redirect($snapUrl);
 
         } catch (\Exception $e) {
@@ -323,65 +359,9 @@ class TransactionController extends Controller
     }
 
     /**
-     * Show Snap payment page
-     */
-    public function showSnapPayment(Request $request)
-    {
-        Log::info("=== SNAP PAYMENT METHOD CALLED ===");
-
-        try {
-            $snapToken = $request->query('token');
-            $orderId = $request->query('order_id');
-
-            Log::info("Parameters received:", ['token' => $snapToken, 'order_id' => $orderId]);
-
-            if (!$snapToken || !$orderId) {
-                Log::error("Missing parameters");
-                abort(400, 'Missing payment parameters');
-            }
-
-            Log::info("Looking for payment with token: {$snapToken} and order: {$orderId}");
-
-            // Verify the token belongs to the order
-            $payment = Payment::with('order.customer')
-                ->where('snap_token', $snapToken)
-                ->where('order_id', $orderId)
-                ->first();
-
-            if (!$payment) {
-                Log::error("Payment not found in database");
-                Log::error("Available payments with this token: " . Payment::where('snap_token', $snapToken)->count());
-                Log::error("Available payments with this order: " . Payment::where('order_id', $orderId)->count());
-
-                return redirect()
-                    ->route('transaction.create')
-                    ->with('error', 'Invalid payment session.');
-            }
-
-            Log::info("Payment found, rendering view...");
-
-            return view('transaction.snap-payment', [
-                'snapToken' => $snapToken,
-                'orderId' => $orderId,
-                'payment' => $payment,
-                'transaction' => $payment->order
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error("Exception in showSnapPayment: " . $e->getMessage());
-            Log::error($e->getTraceAsString());
-            throw $e;
-
-            // return redirect()
-            //     ->route('transaction.create')
-            //     ->with('error', 'Error loading payment page: ' . $e->getMessage());
-        }
-    }
-
-    /**
      * Prepare item details for Midtrans
      */
-    protected function prepareItemDetails($products)
+    protected function prepareItemDetails($products, $discountValue = 0)
     {
         $items = [];
 
@@ -393,6 +373,17 @@ class TransactionController extends Controller
                 'name' => "{$product['product_name']} - {$product['variant_name']}",
             ];
         }
+
+        if ($discountValue > 0) {
+            $items[] = [
+                'id' => 'discount',
+                'price' => (int) -$discountValue, // Negative price for discount
+                'quantity' => 1,
+                'name' => 'Member Discount',
+            ];
+        }
+
+        // dd($items);
 
         return $items;
     }
@@ -559,12 +550,10 @@ class TransactionController extends Controller
     }
 
     /**
-     * Regenerate Snap URL for payment retry
+     * Retry payment using new Snap token (no new database records)
      */
-    public function retryPayment($id)
+    public function retryPaymentWithToken($id)
     {
-        DB::beginTransaction();
-
         try {
             $transaction = Order::with('payment', 'detail', 'customer')->findOrFail($id);
 
@@ -590,13 +579,16 @@ class TransactionController extends Controller
                     ->with('error', 'This transaction is too old to retry. Please create a new transaction.');
             }
 
-            // Prepare Midtrans transaction data
+            // Generate a unique order ID for this retry attempt to avoid conflicts
+            $retryOrderId = $transaction->order_id . '_RETRY_' . time();
+
+            // Prepare Midtrans transaction data with unique retry order ID
             $midtransData = [
                 'transaction_details' => [
-                    'order_id' => (string) $transaction->order_id,
+                    'order_id' => (string) $retryOrderId, // Use unique ID for this attempt
                     'gross_amount' => (int) $transaction->total_amount,
                 ],
-                'item_details' => $this->prepareRetryItemDetails($transaction->detail),
+                'item_details' => $this->prepareRetryItemDetails($transaction->detail, $transaction->discount),
                 'customer_details' => [
                     'first_name' => $transaction->customer ? $transaction->customer->first_name : 'Customer',
                     'last_name' => $transaction->customer ? $transaction->customer->last_name : '',
@@ -610,27 +602,46 @@ class TransactionController extends Controller
                 ]
             ];
 
-            // Get NEW Snap URL
-            $newSnapUrl = $this->midtransService->getSnapRedirectUrl($midtransData);
+            // Generate NEW Snap token
+            $newSnapToken = $this->midtransService->createSnapTransaction($midtransData);
+            $tokenExpiresAt = now()->addHours(24);
+
+            // Store previous token for audit
+            $previousTokens = $transaction->payment->previous_tokens
+                ? json_decode($transaction->payment->previous_tokens, true)
+                : [];
+
+            $previousTokens[] = [
+                'token' => $transaction->payment->snap_token,
+                'used_at' => now()->toDateTimeString(),
+                'status' => 'replaced_by_retry'
+            ];
+
+            // Update the EXISTING payment record with new token
+            $transaction->payment->update([
+                'snap_token' => $newSnapToken,
+                'token_expires_at' => $tokenExpiresAt,
+                'is_used' => false, // Reset to false since we're creating a new payment session
+                'previous_tokens' => json_encode($previousTokens),
+                'status' => 'pending', // Reset status
+            ]);
 
             // Reset transaction status if it was failed
             if ($transaction->status === 'failed') {
                 $transaction->update(['status' => 'pending']);
             }
 
-            // Update payment status back to pending
-            $transaction->payment->update(['status' => 'pending']);
+            Log::info("Regenerated Snap token for existing transaction {$transaction->order_id}. New token: {$newSnapToken}");
 
-            Log::info("Regenerated Snap URL for transaction {$transaction->order_id}");
+            // Get Midtrans Snap URL and redirect directly to it
+            $snapUrl = $this->midtransService->getSnapRedirectUrl($newSnapToken);
 
-            DB::commit();
+            Log::info("Redirecting to Midtrans Snap page for retry: {$snapUrl}");
 
-            // Direct redirect to NEW Snap URL
-            return redirect($newSnapUrl);
+            return redirect($snapUrl);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Error retrying payment for transaction {$id}: " . $e->getMessage());
+            Log::error("Error retrying payment with token for transaction {$id}: " . $e->getMessage());
 
             return redirect()
                 ->route('transaction.show', $id)
@@ -639,9 +650,66 @@ class TransactionController extends Controller
     }
 
     /**
+     * Check if payment token is still valid and get payment URL
+     */
+    public function getPaymentUrl($id)
+    {
+        try {
+            $transaction = Order::with('payment')->findOrFail($id);
+
+            if ($transaction->payment->payment_method !== 'Midtrans') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This is not a Midtrans payment'
+                ]);
+            }
+
+            $payment = $transaction->payment;
+
+            // Check if token is valid (not used and not expired)
+            $isTokenValid = $this->midtransService->isTokenValid(
+                $payment->snap_token,
+                $payment->token_expires_at,
+                $payment->is_used
+            );
+
+            if ($isTokenValid) {
+                // Token is valid, return the payment URL
+                $paymentUrl = $this->midtransService->getSnapRedirectUrl($payment->snap_token);
+
+                // Mark token as used since we're about to redirect to payment
+                $payment->update(['is_used' => true]);
+
+                return response()->json([
+                    'success' => true,
+                    'payment_url' => $paymentUrl,
+                    'token_expires_at' => $payment->token_expires_at,
+                    'method' => 'existing_token'
+                ]);
+            } else {
+                // Token is invalid, need to generate new one
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment token expired or already used',
+                    'action_required' => true,
+                    'method' => 'new_token_required'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Error getting payment URL for transaction {$id}: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error getting payment URL'
+            ], 500);
+        }
+    }
+
+    /**
      * Prepare item details for retry payment
      */
-    protected function prepareRetryItemDetails($orderDetails)
+    protected function prepareRetryItemDetails($orderDetails, $discountValue = 0)
     {
         $items = [];
 
@@ -651,6 +719,16 @@ class TransactionController extends Controller
                 'price' => (int) $detail->price_at_purchase,
                 'quantity' => (int) $detail->quantity,
                 'name' => $detail->product->product_name . ' - ' . ($detail->variant->variant_name ?? 'Standard'),
+            ];
+        }
+
+        // Add discount as a negative item if discount exists
+        if ($discountValue > 0) {
+            $items[] = [
+                'id' => 'discount',
+                'price' => (int) -$discountValue, // Negative price for discount
+                'quantity' => 1,
+                'name' => 'Member Discount',
             ];
         }
 

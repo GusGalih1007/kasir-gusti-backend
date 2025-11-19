@@ -1,4 +1,12 @@
 @extends('layout.app')
+@section('title', 'transaction Form')
+<style>
+    #discount_amount[title] {
+        cursor: help;
+        border-color: #28a745 !important;
+        background-color: #f8fff9;
+    }
+</style>
 @section('content')
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -18,7 +26,15 @@
                                 <select class="form-select" id="customer_id" name="customer_id" required>
                                     <option value="" selected hidden>Select Customer</option>
                                     @foreach ($customer as $c)
-                                        <option value="{{ $c->customer_id }}">{{ $c->first_name }} {{ $c->last_name }}
+                                        <option value="{{ $c->customer_id }}"
+                                            data-is_member="{{ $c->is_member ? '1' : '0' }}"
+                                            data-discount="{{ $c->member ? $c->member->discount : 0 }}">
+                                            {{ $c->first_name }} {{ $c->last_name }}
+                                            @if ($c->is_member && $c->member)
+                                                ({{ $c->member->membership }} - {{ $c->member->discount }}% Discount)
+                                            @else
+                                                (Non-Member)
+                                            @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -413,11 +429,44 @@
 
         // ===== CUSTOMER MEMBERSHIP =====
         $('#customer_id').on('change', function() {
-            const opt = $(this).find(':selected');
-            customerIsMember = opt.data('member') == 1;
-            discountPercent = parseFloat(opt.data('discount')) || 0;
+            const selected = $(this).find(':selected');
+
+            // Robust boolean parsing
+            const isMemberData = selected.data('is_member');
+            customerIsMember = Boolean(
+                isMemberData === '1' ||
+                isMemberData === 1 ||
+                isMemberData === 'true' ||
+                isMemberData === true
+            );
+
+            discountPercent = parseFloat(selected.data('discount')) || 0;
+
+            console.log('Customer changed:', {
+                rawIsMember: isMemberData,
+                typeofIsMember: typeof isMemberData,
+                parsedIsMember: customerIsMember,
+                discountPercent: discountPercent
+            });
+
             calculateTotals();
         });
+
+        // Debug function to check customer data
+        function debugCustomerData() {
+            const selected = $('#customer_id').find(':selected');
+            console.log('Customer Debug Info:', {
+                customerId: selected.val(),
+                customerName: selected.text(),
+                isMember: selected.data('is_member'),
+                discount: selected.data('discount'),
+                parsedIsMember: selected.data('is_member') === true,
+                parsedDiscount: parseFloat(selected.data('discount')) || 0
+            });
+        }
+
+        // Call this when customer changes
+        $('#customer_id').on('change', debugCustomerData);
 
         // ===== CURRENCY INPUT HANDLING =====
         $(document).on('input', '.money', function() {
@@ -429,14 +478,36 @@
             return parseInt(str.replace(/[^0-9]/g, '')) || 0;
         }
 
-        // ===== TOTALS =====
+        // ===== TOTALS CALCULATION =====
         function calculateTotals() {
-            let total = productList.reduce((s, i) => s + (i.price * i.qty), 0);
-            let disc = customerIsMember ? (total * discountPercent / 100) : 0;
-            let due = total - disc;
-            $('#total_amount').val(formatRupiah(total));
-            $('#discount_amount').val(formatRupiah(disc));
-            $('#total_due').val(formatRupiah(due));
+            let subtotal = productList.reduce((s, i) => s + (i.price * i.qty), 0);
+            let discountAmount = 0;
+
+            console.log('Calculating totals:', {
+                customerIsMember: customerIsMember,
+                discountPercent: discountPercent,
+                subtotal: subtotal
+            });
+
+            // Apply discount only if customer is a member and has discount
+            if (customerIsMember && discountPercent > 0) {
+                discountAmount = subtotal * (discountPercent / 100);
+                console.log('✅ APPLYING DISCOUNT:', {
+                    discountPercent: discountPercent + '%',
+                    discountAmount: discountAmount,
+                    finalTotal: subtotal - discountAmount
+                });
+            } else {
+                console.log('❌ NO DISCOUNT APPLIED - Reason:',
+                    !customerIsMember ? 'Customer is not member' : 'No discount percentage');
+            }
+
+            let totalDue = subtotal - discountAmount;
+
+            $('#total_amount').val(formatRupiah(subtotal));
+            $('#discount_amount').val(formatRupiah(discountAmount));
+            $('#total_due').val(formatRupiah(totalDue));
+
             calcChange();
         }
 

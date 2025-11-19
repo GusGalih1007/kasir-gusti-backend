@@ -16,17 +16,21 @@ class Payment extends Model
         'order_id', 
         'change', 
         'payment_method', 
-        'snap_token',
-        'token_expires_at',
+        'snap_token',      
+        'token_expires_at', 
+        'is_used',
+        'previous_tokens',
         'amount', 
         'currency', 
         'status', 
         'payment_date', 
-        'created_by'];
+        'created_by'
+    ];
 
     protected $casts = [
         'payment_date' => 'datetime',
-        'token_expires_at' => 'datetime', 
+        'token_expires_at' => 'datetime',
+        'is_used' => 'boolean',
     ];
 
     public function order()

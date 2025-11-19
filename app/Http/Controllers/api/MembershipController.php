@@ -17,6 +17,7 @@ class MembershipController extends Controller
         $data = Membership::get();
 
         return view('membership.index', compact('data'));
+        // return response()->json(['data' => $data], 200);
     }
 
     /**
