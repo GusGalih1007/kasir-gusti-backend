@@ -116,27 +116,3 @@ route::get('product/{product}/variant/{id}', [ProductVariantController::class, '
 route::get('product/{product}/variant/{id}/edit', [ProductVariantController::class, 'edit'])->name('product-variant.edit')->middleware('permission:update');
 route::put('product/{product}/variant/{id}', [ProductVariantController::class, 'update'])->name('product-variant.update')->middleware('permission:update');
 route::delete('product/{product}/variant/{id}', [ProductVariantController::class, 'destroy'])->name('product-variant.destroy')->middleware('permission:delete');
-
-
-// TRANSACTION
-route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index')->middleware('permission:read');
-route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create')->middleware('permission:create');
-route::get('transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show')->middleware('permission:read');
-route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store')->middleware('permission:create');
-// route::resource('page', PageController::class);
-
-// Snap payment routes
-// Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPayment'])->name('transaction.retry-payment');
-
-// Midtrans routes
-Route::get('/transaction/midtrans/finish', [TransactionController::class, 'midtransFinish'])->name('transaction.midtrans.finish');
-Route::get('/transaction/midtrans/error', [TransactionController::class, 'midtransError'])->name('transaction.midtrans.error');
-Route::get('/transaction/midtrans/pending', [TransactionController::class, 'midtransPending'])->name('transaction.midtrans.pending');
-Route::post('/transaction/midtrans/notification', [TransactionController::class, 'midtransNotification'])->name('transaction.midtrans.notification');
-
-// Status check route
-Route::get('/transaction/{id}/check-status', [TransactionController::class, 'checkStatus'])->name('transaction.check-status');
-
-// Simple retry route - no new database records
-Route::get('/transaction/{id}/retry-payment', [TransactionController::class, 'retryPaymentWithToken'])->name('transaction.retry-payment');
-Route::get('/transaction/{id}/payment-url', [TransactionController::class, 'getPaymentUrl'])->name('transaction.payment-url');
