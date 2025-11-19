@@ -116,3 +116,7 @@ route::get('product/{product}/variant/{id}', [ProductVariantController::class, '
 route::get('product/{product}/variant/{id}/edit', [ProductVariantController::class, 'edit'])->name('product-variant.edit')->middleware('permission:update');
 route::put('product/{product}/variant/{id}', [ProductVariantController::class, 'update'])->name('product-variant.update')->middleware('permission:update');
 route::delete('product/{product}/variant/{id}', [ProductVariantController::class, 'destroy'])->name('product-variant.destroy')->middleware('permission:delete');
+
+
+// TRANSACTION
+route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index')->middleware('permission:read');

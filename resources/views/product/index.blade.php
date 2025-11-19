@@ -22,6 +22,7 @@
                         <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Name</th>
                                     <th>Description</th>
                                     <th>Base Price</th>
@@ -36,6 +37,14 @@
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
+                                        <td>
+                                            @if ($item->photo)
+                                                <img src="{{ asset('storage/' . $item->photo) }}"
+                                                    alt="{{ $item->product_name }}" width="100">
+                                            @else
+                                                <img src="https://via.placeholder.com/100" alt="No Image" width="100">
+                                            @endif
+                                        </td>
                                         <td>{{ $item->product_name }}</td>
                                         <td>{{ $item->description }}</td>
                                         <td>{{ 'Rp. ' . number_format($item->price, 2, ',', '.') }}</td>
@@ -46,7 +55,7 @@
                                         <td>
                                             <a href="{{ route('product-variant.index', $item->slug) }}"
                                                 class="btn btn-info btn-sm">
-                                                View {{ $item->variant_count}} Variant
+                                                View {{ $item->variant_count }} Variant
                                                 {{-- <svg class="icon-16" width="16" viewBox="0 0 24 24" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" clip-rule="evenodd"

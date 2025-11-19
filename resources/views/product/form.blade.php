@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body">
                     <form action="{{ $product ? route('product.update', $product->product_id) : route('product.store') }}"
-                        method="POST" class="needs-validation row g-3" novalidate>
+                        method="POST" class="needs-validation row g-3" enctype="multipart/form-data" novalidate>
                         {{ csrf_field() }}
 
                         @if ($product)
@@ -65,8 +65,7 @@
                             <select name="category" class="form-select" data-trigger id="category">
                                 <option value="" selected hidden>Select category</option>
                                 @foreach ($category as $item)
-                                    <option
-                                        value="{{ $item->category_id }}"
+                                    <option value="{{ $item->category_id }}"
                                         {{ $product ? ($item->category_id == $product->category_id ? 'selected' : '') : '' }}>
                                         {{ $item->name }}</option>
                                 @endforeach
@@ -85,16 +84,27 @@
                             </select>
                         </div>
                         <div class="col-12 form-group">
+                            <div class="form-group">
+                                <label for="photo" class="form-label custom-file-input">Product Photo</label>
+                                <input type="file" name="photo" class="form-control" id="photo">
+                            </div>
+                            @if ($errors->has('photo'))
+                                <span class="alert alert-danger">
+                                    {{ $errors->first('photo') }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="col-12 form-group">
                             <label class="form-label" for="description">Description</label>
                             <textarea class="form-control" name="description" id="description" rows="5" required>{{ $product ? $product->description : '' }}</textarea>
                             <div class="invalid-feedback">
                                 Description is required
                             </div>
-                            {{-- @if ($errors->has('description'))
+                            @if ($errors->has('description'))
                                 <span class="alert alert-danger">
                                     {{ $errors->first('description') }}
                                 </span>
-                            @endif --}}
+                            @endif
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>

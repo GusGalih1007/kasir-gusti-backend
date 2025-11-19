@@ -28,6 +28,7 @@
                         <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Variant Name</th>
                                     <th>Variant Price</th>
                                     <th>SKU</th>
@@ -38,6 +39,14 @@
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
+                                        <td>
+                                            @if ($item->photo)
+                                                <img src="{{ asset('storage/' . $item->photo) }}"
+                                                    alt="{{ $item->product_name }}" width="100">
+                                            @else
+                                                <img src="https://via.placeholder.com/100" alt="No Image" width="100">
+                                            @endif
+                                        </td>
                                         <td>{{ $item->variant_name }}</td>
                                         <td>{{ 'Rp. ' . number_format($item->price, 2, ',', '.') }}</td>
                                         <td>{{ $item->sku }}</td>

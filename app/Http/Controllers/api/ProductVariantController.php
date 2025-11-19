@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ProductVariantController extends Controller
 {
@@ -21,8 +22,7 @@ class ProductVariantController extends Controller
         $productParent = Product::where('slug', '=', $product)->first();
         $data = ProductVariant::where('product_id', '=', $productParent->product_id)->get();
 
-        switch ($data)
-        {
+        switch ($data) {
             case null:
                 $productParent->update([
                     'is_available' => false
@@ -64,11 +64,20 @@ class ProductVariantController extends Controller
             'price' => 'required',
             'sku' => 'required|string|max:50',
             'stock_qty' => 'required|numeric',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp'
         ]);
 
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate->errors())->withInput();
             // return response()->json(data: $validate->errors(), status: 422);
+        }
+
+        $photoPath = null; //motor-photo/penjualan-motor.png
+
+        // Jika ada file yang diunggah
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->
+            store('product-variant', 'public'); // Simpan ke folder public/storage
         }
 
         ProductVariant::create(attributes: [
@@ -77,6 +86,7 @@ class ProductVariantController extends Controller
             'price' => $request->price,
             'sku' => $request->sku,
             'stock_qty' => $request->stock_qty,
+            'photo' => $photoPath
         ]);
 
         if ($request->stock_qty != null || $request->stock_qty > 0) {
@@ -115,8 +125,7 @@ class ProductVariantController extends Controller
         $variant = ProductVariant::findOrFail($id);
         $productParent = Product::where('slug', '=', $product)->first();
 
-        switch ($variant)
-        {
+        switch ($variant) {
             case null:
                 $productParent->update([
                     'is_available' => false
@@ -149,7 +158,21 @@ class ProductVariantController extends Controller
             'price' => 'required',
             'sku' => 'required|string|max:50',
             'stock_qty' => 'required|numeric',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp'
         ]);
+
+        $photoPath = $data->photo;
+
+        // Jika ada file yang diunggah
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($data->photo) {
+                Storage::disk('public')->delete($data->photo);
+            }
+
+            $photoPath = $request->file('photo')->
+                store('product-variant', 'public'); // Simpan foto baru
+        }
 
         if ($validate->fails()) {
             // return response()->json(data: $validate->errors(), status: 422);
@@ -161,6 +184,7 @@ class ProductVariantController extends Controller
             'price' => $request->price,
             'sku' => $request->sku,
             'stock_qty' => $request->stock_qty,
+            'photo' => $photoPath
         ]);
 
         // return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
@@ -178,6 +202,10 @@ class ProductVariantController extends Controller
             return response()->json(data: 'Data does not exist!', status: 200);
         }
 
+        if ($data->photo) {
+            Storage::disk('public')->delete($data->photo);
+        }
+        
         $data->delete();
 
         // return new ApiResource(status: 204, message: 'Data Deleted Successfully', resource: null);

@@ -12,6 +12,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -49,12 +50,21 @@ class ProductController extends Controller
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
             'is_available' => 'nullable|boolean',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp'
         ]);
 
         $available = false;
 
-        if (! $request->is_available == null) {
+        if (!$request->is_available == null) {
             $available = $request->is_available;
+        }
+
+        $photoPath = null; //motor-photo/penjualan-motor.png
+
+        // Jika ada file yang diunggah
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->
+                store('product', 'public'); // Simpan ke folder public/storage
         }
 
         $slug = Str::slug($request->product_name);
@@ -64,7 +74,7 @@ class ProductController extends Controller
             return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
-        $data = Product::create(attributes: [
+        Product::create(attributes: [
             'product_name' => $request->product_name,
             'description' => $request->description,
             'slug' => $slug,
@@ -73,6 +83,7 @@ class ProductController extends Controller
             'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
             'is_available' => $available,
+            'photo' => $photoPath
         ]);
 
         // return new ApiResource(status: 201, message: 'Data Created Successfully', resource: $data);
@@ -120,6 +131,8 @@ class ProductController extends Controller
             return redirect()->back()->withErrors('Data does not exist!');
         }
 
+        // dd($request->photo);
+
         $validate = Validator::make(data: $request->all(), rules: [
             'product_name' => 'required|max:150|string',
             'description' => 'required|string',
@@ -128,11 +141,27 @@ class ProductController extends Controller
             'brand' => 'required|exists:brands,brand_id',
             'supplier' => 'required|exists:suppliers,supplier_id',
             'is_available' => 'nullable|boolean',
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp']
         ]);
+
+        $photoPath = $data->photo;
+
+        // Jika ada file yang diunggah
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($data->photo) {
+                Storage::disk('public')->delete($data->photo);
+            }
+
+            $photoPath = $request->file('photo')->
+                store('product', 'public'); // Simpan foto baru
+        }
+
+        // dd($photoPath);
 
         $available = false;
 
-        if (! $request->is_available == null) {
+        if (!$request->is_available == null) {
             $available = $request->is_available;
         }
 
@@ -149,6 +178,7 @@ class ProductController extends Controller
             'brand_id' => $request->brand,
             'supplier_id' => $request->supplier,
             'is_available' => $available,
+            'photo' => $photoPath
         ]);
 
         // return new ApiResource(status: 201, message: 'Data Updated Successfully!', resource: $data);
@@ -165,6 +195,10 @@ class ProductController extends Controller
         if ($data == null) {
             // return response()->json(data: 'Data does not exist!', status: 200);
             return redirect()->back()->withErrors('Data does not exist!');
+        }
+
+        if ($data->photo) {
+            Storage::disk('public')->delete($data->photo);
         }
 
         $data->delete();

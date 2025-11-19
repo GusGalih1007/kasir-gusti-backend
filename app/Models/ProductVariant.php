@@ -12,7 +12,18 @@ class ProductVariant extends Model
     protected $table = 'product_variants';
     protected $primaryKey = 'variant_id';
 
-    protected $fillable = ['product_id', 'variant_name', 'price', 'sku', 'stock_qty', 'created_by', 'updated_by', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'product_id',
+        'variant_name',
+        'price',
+        'sku',
+        'stock_qty',
+        'photo',
+        'created_by',
+        'updated_by',
+        'created_at',
+        'updated_at'
+    ];
 
     public function userCreator()
     {
