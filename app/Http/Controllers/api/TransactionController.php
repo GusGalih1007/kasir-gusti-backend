@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customers;
+use App\Models\Membership;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Payment;
@@ -39,9 +40,10 @@ class TransactionController extends Controller
     {
         $customer = Customers::with('member')->get();
         $product = Product::with('variant')->get();
+        $membership = Membership::get();
         $category = Category::get();
 
-        return view('transaction.form', compact('customer', 'product', 'category'));
+        return view('transaction.form', compact('customer', 'product', 'category', 'membership'));
     }
 
     /**
@@ -73,13 +75,11 @@ class TransactionController extends Controller
             ]);
 
             if ($validate->fails()) {
-                // return redirect()
-                //     ->back()
-                //     ->withErrors($validate)
-                //     ->withInput()
-                //     ->with('error', 'Please check the form and try again.');
-
-                // return response()->json(['data', $validate->errors()], 500);
+                return redirect()
+                    ->back()
+                    ->withErrors($validate)
+                    ->withInput()
+                    ->with('error', 'Please check the form and try again.');
             }
 
             DB::beginTransaction();
@@ -90,7 +90,7 @@ class TransactionController extends Controller
 
             // Validate if discount applied matches membership discount
             $calculatedDiscount = $request->totalAmount * ($membershipDiscount / 100);
-            if (abs($request->discount - $calculatedDiscount) > 0.01) { // Allow small floating point difference
+            if (abs($request->discount - $calculatedDiscount) > 0.01) {
                 throw new Exception("Discount calculation mismatch. Expected: {$calculatedDiscount}, Received: {$request->discount}");
             }
 
@@ -106,17 +106,17 @@ class TransactionController extends Controller
                 }
             }
 
-            // Get current user (assuming you have authentication)
-            $userId = auth()->guard('web')->id() ?? 1; // Fallback to 1 if no auth
+            // Get current user
+            $userId = auth()->guard('web')->id() ?? 1;
 
             // Create Order
             $order = Order::create([
                 'user_id' => $userId,
                 'customer_id' => $request->customer_id,
                 'order_date' => now(),
-                'total_amount' => $request->totalAfterDiscount,
+                'total_amount' => $request->totalAmount,
                 'discount' => $request->discount,
-                'status' => 'completed',
+                'status' => $request->payment_method === 'midtrans' ? 'pending' : 'completed',
                 'created_by' => $userId,
                 'created_at' => now()
             ]);
@@ -136,37 +136,42 @@ class TransactionController extends Controller
                     'total_price' => $subtotal
                 ]);
 
-                // Update stock
-                $variant->decrement('stock_qty', $item['quantity']);
+                // Update stock only for cash payments immediately
+                // For midtrans, stock will be updated after payment confirmation
+                if ($request->payment_method === 'cash') {
+                    $variant->decrement('stock_qty', $item['quantity']);
+                }
             }
 
             // Create Payment Record
-            $payment = Payment::create([
+            $paymentData = [
                 'order_id' => $order->order_id,
                 'payment_method' => $request->payment_method,
-                'amount' => $request->payment,
+                'amount' => $request->payment_method === 'midtrans' ? $request->totalAfterDiscount : $request->payment,
                 'change' => $request->change,
                 'currency' => 'IDR',
                 'status' => $request->payment_method === 'midtrans' ? 'pending' : 'completed',
-                'payment_date' => now(),
+                'payment_date' => $request->payment_method === 'cash' ? now() : null,
                 'created_by' => $userId
-            ]);
+            ];
 
-            // If payment method is Midtrans, handle payment gateway integration
+            // If payment method is Midtrans, generate snap token
             if ($request->payment_method === 'midtrans') {
-                $snapToken = $this->generateMidtransSnapToken($order, $payment);
+                $snapToken = $this->generateMidtransSnapToken($order, $request->totalAfterDiscount);
 
-                $payment->update([
-                    'snap_token' => $snapToken,
-                    'token_expires_at' => now()->addHours(2), // Token expires in 2 hours
-                    'status' => 'pending'
-                ]);
-
-                // You might want to redirect to Midtrans payment page here
-                // or handle it differently based on your frontend setup
+                $paymentData['snap_token'] = $snapToken;
+                $paymentData['token_expires_at'] = now()->addHours(2);
             }
 
+            $payment = Payment::create($paymentData);
+
             DB::commit();
+
+            // Redirect based on payment method
+            if ($request->payment_method === 'midtrans') {
+                return redirect()->route('transaction.payment', ['order' => $order->order_id])
+                    ->with('success', 'Order created successfully. Please complete the payment.');
+            }
 
             return redirect()
                 ->route('transaction.index')
@@ -175,19 +180,17 @@ class TransactionController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            // return redirect()
-            //     ->back()
-            //     ->withInput()
-            //     ->with('error', 'Transaction failed: ' . $e->getMessage());
-
-            return response()->json(['errors' => $e->getMessage()],500);
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Transaction failed: ' . $e->getMessage());
         }
     }
 
     /**
      * Generate Midtrans Snap Token
      */
-    private function generateMidtransSnapToken(Order $order, Payment $payment)
+    private function generateMidtransSnapToken(Order $order, $totalAmount)
     {
         // Configure Midtrans
         \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
@@ -197,8 +200,8 @@ class TransactionController extends Controller
 
         // Prepare transaction details
         $transactionDetails = [
-            'order_id' => $order->order_id . '-' . time(),
-            'gross_amount' => (int) $payment->amount,
+            'order_id' => 'ORDER-' . $order->order_id . '-' . time(),
+            'gross_amount' => (int) $totalAmount,
         ];
 
         // Prepare customer details
@@ -208,6 +211,18 @@ class TransactionController extends Controller
             'last_name' => $customer->last_name ?? '',
             'email' => $customer->email,
             'phone' => $customer->phone,
+            'billing_address' => [
+                'first_name' => $customer->first_name,
+                'last_name' => $customer->last_name ?? '',
+                'address' => $customer->alamat,
+                'phone' => $customer->phone,
+            ],
+            'shipping_address' => [
+                'first_name' => $customer->first_name,
+                'last_name' => $customer->last_name ?? '',
+                'address' => $customer->alamat,
+                'phone' => $customer->phone,
+            ]
         ];
 
         // Prepare item details
@@ -225,7 +240,7 @@ class TransactionController extends Controller
         if ($order->discount > 0) {
             $itemDetails[] = [
                 'id' => 'DISCOUNT',
-                'price' => (int) -$order->discount, // Negative price for discount
+                'price' => (int) -$order->discount,
                 'quantity' => 1,
                 'name' => 'Member Discount',
             ];
@@ -236,6 +251,9 @@ class TransactionController extends Controller
             'transaction_details' => $transactionDetails,
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
+            'callbacks' => [
+                'finish' => route('transaction.payment.callback'),
+            ]
         ];
 
         try {
@@ -247,7 +265,109 @@ class TransactionController extends Controller
     }
 
     /**
-     * Midtrans Payment Notification Handler (Webhook)
+     * Show payment page for Midtrans
+     */
+    public function showPayment($orderId)
+    {
+        $order = Order::with(['customer', 'detail.variant.product', 'payment'])
+            ->findOrFail($orderId);
+
+        if ($order->payment->status === 'completed') {
+            return redirect()->route('transaction.show', $orderId)
+                ->with('info', 'Payment already completed.');
+        }
+
+        if ($order->payment->status !== 'pending') {
+            return redirect()->route('transaction.show', $orderId)
+                ->with('error', 'Invalid payment status.');
+        }
+
+        return view('transaction.payment', compact('order'));
+    }
+
+    /**
+     * Handle Midtrans payment callback
+     */
+    public function paymentCallback(Request $request)
+    {
+        try {
+            $orderId = $request->order_id;
+            $statusCode = $request->status_code;
+            $grossAmount = $request->gross_amount;
+            $transactionStatus = $request->transaction_status;
+            $fraudStatus = $request->fraud_status;
+
+            // Extract original order ID
+            $originalOrderId = explode('-', $orderId)[1]; // ORDER-{order_id}-timestamp
+
+            $order = Order::with('payment', 'detail.variant')->find($originalOrderId);
+            if (!$order) {
+                return response()->json(['message' => 'Order not found'], 404);
+            }
+
+            $payment = $order->payment;
+
+            DB::beginTransaction();
+
+            if ($transactionStatus == 'capture') {
+                if ($fraudStatus == 'challenge') {
+                    $payment->status = 'challenge';
+                    $order->status = 'pending';
+                } else if ($fraudStatus == 'accept') {
+                    $payment->status = 'completed';
+                    $order->status = 'completed';
+                    $payment->payment_date = now();
+
+                    // Update stock for completed payment
+                    foreach ($order->detail as $detail) {
+                        $variant = $detail->variant;
+                        if ($variant) {
+                            $variant->decrement('stock_qty', $detail->quantity);
+                        }
+                    }
+                }
+            } else if ($transactionStatus == 'settlement') {
+                $payment->status = 'completed';
+                $order->status = 'completed';
+                $payment->payment_date = now();
+
+                // Update stock for completed payment
+                foreach ($order->detail as $detail) {
+                    $variant = $detail->variant;
+                    if ($variant) {
+                        $variant->decrement('stock_qty', $detail->quantity);
+                    }
+                }
+            } else if ($transactionStatus == 'pending') {
+                $payment->status = 'pending';
+                $order->status = 'pending';
+            } else if (
+                $transactionStatus == 'deny' ||
+                $transactionStatus == 'expire' ||
+                $transactionStatus == 'cancel'
+            ) {
+                $payment->status = 'failed';
+                $order->status = 'cancelled';
+            }
+
+            $payment->save();
+            $order->save();
+
+            DB::commit();
+
+            // Redirect to order detail page
+            return redirect()->route('transaction.show', $order->order_id)
+                ->with('success', 'Payment status updated: ' . $transactionStatus);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('transaction.index')
+                ->with('error', 'Error processing payment: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Handle Midtrans notification (webhook)
      */
     public function midtransNotification(Request $request)
     {
@@ -260,28 +380,50 @@ class TransactionController extends Controller
             $transactionStatus = $notification->transaction_status;
             $fraudStatus = $notification->fraud_status;
 
-            // Extract original order ID (remove timestamp suffix)
-            $originalOrderId = explode('-', $orderId)[0];
+            // Extract original order ID
+            $originalOrderId = explode('-', $orderId)[1];
 
-            $order = Order::find($originalOrderId);
+            $order = Order::with('payment', 'detail.variant')->find($originalOrderId);
             if (!$order) {
                 return response()->json(['message' => 'Order not found'], 404);
             }
 
-            $payment = Payment::where('order_id', $order->order_id)->first();
+            $payment = $order->payment;
+
+            DB::beginTransaction();
 
             if ($transactionStatus == 'capture') {
                 if ($fraudStatus == 'challenge') {
                     $payment->status = 'challenge';
+                    $order->status = 'pending';
                 } else if ($fraudStatus == 'accept') {
                     $payment->status = 'completed';
                     $order->status = 'completed';
+                    $payment->payment_date = now();
+
+                    // Update stock
+                    foreach ($order->detail as $detail) {
+                        $variant = $detail->variant;
+                        if ($variant) {
+                            $variant->decrement('stock_qty', $detail->quantity);
+                        }
+                    }
                 }
             } else if ($transactionStatus == 'settlement') {
                 $payment->status = 'completed';
                 $order->status = 'completed';
+                $payment->payment_date = now();
+
+                // Update stock
+                foreach ($order->detail as $detail) {
+                    $variant = $detail->variant;
+                    if ($variant) {
+                        $variant->decrement('stock_qty', $detail->quantity);
+                    }
+                }
             } else if ($transactionStatus == 'pending') {
                 $payment->status = 'pending';
+                $order->status = 'pending';
             } else if (
                 $transactionStatus == 'deny' ||
                 $transactionStatus == 'expire' ||
@@ -289,24 +431,32 @@ class TransactionController extends Controller
             ) {
                 $payment->status = 'failed';
                 $order->status = 'cancelled';
-
-                // Restore stock if payment failed
-                foreach ($order->detail as $detail) {
-                    $variant = ProductVariant::find($detail->variant_id);
-                    if ($variant) {
-                        $variant->increment('stock_qty', $detail->quantity);
-                    }
-                }
             }
 
             $payment->save();
             $order->save();
 
+            DB::commit();
+
             return response()->json(['message' => 'Notification processed successfully']);
 
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json(['message' => 'Error processing notification: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Check payment status
+     */
+    public function checkPaymentStatus($orderId)
+    {
+        $order = Order::with('payment')->findOrFail($orderId);
+
+        return response()->json([
+            'status' => $order->payment->status,
+            'snap_token' => $order->payment->snap_token
+        ]);
     }
 
     /**
@@ -314,7 +464,12 @@ class TransactionController extends Controller
      */
     public function show(string $id)
     {
-        $order = Order::with('detail.variant.product', 'customer.member', 'payment')
+        $order = Order::with([
+            'customer.member',
+            'userCreator',
+            'detail.variant.product.category',
+            'payment'
+        ])
             ->findOrFail($id);
 
         return view('transaction.show', compact('order'));

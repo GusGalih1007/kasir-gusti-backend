@@ -19,8 +19,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
-            $table->foreign('page_code')->references('page_code')->on('pages')->onDelete('cascade');
+            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('page_code')->references('page_code')->on('pages')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

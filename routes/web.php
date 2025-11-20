@@ -122,3 +122,9 @@ route::delete('product/{product}/variant/{id}', [ProductVariantController::class
 route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index')->middleware('permission:read');
 route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create')->middleware('permission:create');
 route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store')->middleware('permission:create');
+Route::get('/transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show')->middleware('permission:read');
+
+// Midtrans payment routes
+Route::get('/transaction/{order}/payment', [TransactionController::class, 'showPayment'])->name('transaction.payment');
+Route::get('/transaction/payment/callback', [TransactionController::class, 'paymentCallback'])->name('transaction.payment.callback');
+Route::get('/transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');

@@ -26,11 +26,11 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
 
-            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('supplier_id')->on('suppliers')->onDelete('cascade');
-            $table->foreign('brand_id')->references('brand_id')->on('brands')->onDelete('cascade');
+            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('supplier_id')->references('supplier_id')->on('suppliers')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('brand_id')->references('brand_id')->on('brands')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

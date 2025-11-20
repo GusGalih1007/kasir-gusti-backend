@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
+            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 
