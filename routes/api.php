@@ -15,6 +15,14 @@ use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('customers', [TransactionController::class, 'getCustomers']);
+Route::get('categories/{categoryId}/subcategories', [TransactionController::class, 'getSubCategories']);
+Route::get('categories/{categoryId}/products', [TransactionController::class, 'getProductsByCategory']);
+Route::get('subcategories/{subCategoryId}/products', [TransactionController::class, 'getProductsBySubCategory']);
+Route::get('products/{productId}/variants', [TransactionController::class, 'getVariantsByProduct']);
+// Midtrans webhook
+Route::post('midtrans/notification', [TransactionController::class, 'midtransNotification']);
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');

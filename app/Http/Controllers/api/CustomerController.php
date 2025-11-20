@@ -43,18 +43,19 @@ class CustomerController extends Controller
                 'alamat' => 'required|string',
                 'phone' => 'required|numeric|max_digits:15',
                 'email' => 'required|email',
-                'membership' => 'nullable',
+                'membership' => 'nullable|exists:memberships,membership_id',
             ],
         );
 
         $isMembership = false;
+        $membershipId = null;
 
         if (filled($request->membership)) {
             $isMembership = true;
+            $membershipId = $request->membership;
         }
 
         if ($validate->fails()) {
-            // return response()->json(data: $validate->errors(), status: 422);
             return redirect()->back()->withErrors($validate->errors())->withInput();
         }
 
@@ -66,7 +67,7 @@ class CustomerController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'is_member' => $isMembership,
-                'membership_id' => $request->membership,
+                'membership_id' => $membershipId,
             ],
         );
 
@@ -74,13 +75,12 @@ class CustomerController extends Controller
             return response()->json(
                 [
                     'message' => 'Customer added successfully!',
-                    'data' => $data,
+                    'data' => $data->load('member'), // Load membership relation
                 ],
                 201,
             );
         }
 
-        // return new ApiResource(status: 201, message: 'Data created successfully!', resource: $data);
         return redirect()->route('customer.index')->with('success', 'Data created successfully');
     }
 

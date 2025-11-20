@@ -120,3 +120,5 @@ route::delete('product/{product}/variant/{id}', [ProductVariantController::class
 
 // TRANSACTION
 route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index')->middleware('permission:read');
+route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create')->middleware('permission:create');
+route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store')->middleware('permission:create');

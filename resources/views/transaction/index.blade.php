@@ -9,7 +9,7 @@
                         <h4 class="card-title">Transaction History</h4>
                     </div>
                     <div style="text-align: right">
-                        <a href="#" class="btn btn-primary">Create</a>
+                        <a href="{{ route('transaction.create') }}" class="btn btn-primary">Create</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -22,6 +22,7 @@
                                     <th>Customer Membership</th>
                                     <th>Total Bill</th>
                                     <th>Total Payment</th>
+                                    <th>Payment Method</th>
                                     <th>Cashier</th>
                                     <th>Status</th>
                                     <th>Transaction Date</th>
@@ -36,6 +37,7 @@
                                         <td>{{ $item->customer->member->membership }}</td>
                                         <td>{{ 'Rp. ' . number_format($item->total_amount, 2, ',', '.') }}</td>
                                         <td>{{ 'Rp. ' . number_format($item->payment->amount, 2, ',', '.') }}</td>
+                                        <td>{{ ucfirst($item->payment->payment_method) }}</td>
                                         <td>{{ $item->userId->username }}</td>
                                         <td style="text-align: center">
                                             @switch($item->status)
