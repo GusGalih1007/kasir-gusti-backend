@@ -21,14 +21,30 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Order::with(
-            'detail.variant.product',
-            'customer.member',
-            'userId',
-            'payment'
-        )->get();
+        $query = Order::with(['customer.member', 'userId', 'payment']);
+
+        // Apply filters
+        if ($request->has('start_date') && $request->start_date) {
+            $query->whereDate('order_date', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date') && $request->end_date) {
+            $query->whereDate('order_date', '<=', $request->end_date);
+        }
+
+        if ($request->has('payment_method') && $request->payment_method) {
+            $query->whereHas('payment', function ($q) use ($request) {
+                $q->where('payment_method', $request->payment_method);
+            });
+        }
+
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $data = $query->orderBy('order_date', 'desc')->get();
 
         return view('transaction.index', compact('data'));
     }

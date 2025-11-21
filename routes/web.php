@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -128,3 +129,10 @@ Route::get('/transaction/{id}', [TransactionController::class, 'show'])->name('t
 Route::get('/transaction/{order}/payment', [TransactionController::class, 'showPayment'])->name('transaction.payment');
 Route::get('/transaction/payment/callback', [TransactionController::class, 'paymentCallback'])->name('transaction.payment.callback');
 Route::get('/transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
+
+// Export routes
+Route::get('/export/transactions/pdf', [ExportController::class, 'exportTransactionsPdf'])->name('export.transactions.pdf');
+Route::get('/export/transactions/excel', [ExportController::class, 'exportTransactionsExcel'])->name('export.transactions.excel');
+Route::get('/export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print');
+Route::get('/export/receipt/{orderId}/pdf', [ExportController::class, 'exportReceiptPdf'])->name('export.receipt.pdf');
+Route::get('/export/sales-report', [ExportController::class, 'exportSalesReport'])->name('export.sales-report.pdf');
