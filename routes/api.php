@@ -21,8 +21,11 @@ Route::get('categories/{categoryId}/subcategories', [TransactionController::clas
 Route::get('categories/{categoryId}/products', [TransactionController::class, 'getProductsByCategory']);
 Route::get('subcategories/{subCategoryId}/products', [TransactionController::class, 'getProductsBySubCategory']);
 Route::get('products/{productId}/variants', [TransactionController::class, 'getVariantsByProduct']);
+
 // Midtrans webhook
 Route::post('midtrans/notification', [TransactionController::class, 'midtransNotification']);
+
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');

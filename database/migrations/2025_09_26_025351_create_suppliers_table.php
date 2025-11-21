@@ -21,8 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
             
-            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

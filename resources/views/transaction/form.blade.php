@@ -14,7 +14,6 @@
                         {{ csrf_field() }}
 
                         <!-- Customer Selection -->
-                        <!-- Customer Selection -->
                         <div class="form-group col-12">
                             <label for="customerId" class="form-label">Customer</label>
                             <div class="input-group">
@@ -182,12 +181,12 @@
                                 <input type="email" class="form-control" name="email" id="email" required>
                             </div>
                             <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="membership" id="membership">
-                                    <label class="form-check-label" for="membership">
-                                        Add to Membership
-                                    </label>
-                                </div>
+                                <label for="membership">Membership</label>
+                                <select name="membership" id="membership" class="form-select">
+                                    @foreach ($membership as $item)
+                                        <option value="{{ $item->membership_id }}">{{ $item->membership }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -223,8 +222,8 @@
                         // Add new customer to dropdown
                         const newOption = new Option(
                             response.data.first_name + ' ' + (response.data.last_name ||
-                            '') +
-                            (response.data.is_member ? ' (Member)' : ''),
+                                '') +
+                            response.data.membership,
                             response.data.customer_id,
                             false,
                             false
@@ -454,7 +453,8 @@
                     const newQty = existingProduct.qty + quantity;
                     if (newQty > stockQty) {
                         alert(
-                            `Cannot add more items! Only ${stockQty - existingProduct.qty} additional items available.`);
+                            `Cannot add more items! Only ${stockQty - existingProduct.qty} additional items available.`
+                        );
                         return;
                     }
                     existingProduct.qty = newQty;
@@ -503,10 +503,10 @@
                 productList.forEach((product, index) => {
                     $('form').append(
                         `<input type="hidden" name="items[${index}][product_id]" value="${product.productId}">`
-                        );
+                    );
                     $('form').append(
                         `<input type="hidden" name="items[${index}][variant_id]" value="${product.variantId}">`
-                        );
+                    );
                     $('form').append(
                         `<input type="hidden" name="items[${index}][quantity]" value="${product.qty}">`);
                     $('form').append(

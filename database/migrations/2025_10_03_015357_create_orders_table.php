@@ -23,9 +23,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('customer_id')->references('customer_id')->on('customers')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('customer_id')->references('customer_id')->on('customers')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

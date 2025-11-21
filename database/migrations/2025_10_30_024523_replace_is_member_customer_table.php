@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('customers', function (Blueprint $table) {
             $table->unsignedBigInteger('membership_id')->nullable();
 
-            $table->foreign('membership_id')->references('membership_id')->on('memberships')->onDelete('cascade');
+            $table->foreign('membership_id')->references('membership_id')->on('memberships')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::table('customers', function (Blueprint $table) {
             $table->unsignedBigInteger('membership_id')->nullable();
             
-            $table->foreign('membership_id')->references('membership_id')->on('memberships')->onDelete('cascade');
+            $table->foreign('membership_id')->references('membership_id')->on('memberships')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 };
