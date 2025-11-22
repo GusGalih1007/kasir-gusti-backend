@@ -34,19 +34,6 @@
                             @endif
                         </div>
                         <div class="col-6 form-group">
-                            <label for="membershipBenefit" class="form-label">Benefit</label>
-                            <input type="text" name="benefit" value="{{ old('benefit', $membership->benefit ?? '') }}"
-                                class="form-control" id="membershipLevel" required>
-                            <div class="invalid-feedback">
-                                Benefit is Required
-                            </div>
-                            @if ($errors->has('benefit'))
-                                <span class="alert alert-danger">
-                                    {{ $errors->first('benefit') }}
-                                </span>
-                            @endif
-                        </div>
-                        <div class="col-6 form-group">
                             <label for="membershipDiscount" class="form-label">Discount</label>
                             <div class="input-group mb-3">
                                 <input type="number" name="discount" value="{{ old('discount', $membership->discount ?? '') }}"
@@ -62,7 +49,20 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="col-6 form-group">
+                        <div class="col-12 form-group">
+                            <label for="membershipBenefit" class="form-label">Benefit</label>
+                            <textarea type="text" name="benefit"
+                                class="form-control" rows="5" id="membershipLevel" required>{{ old('benefit', $membership->benefit ?? '') }}</textarea>
+                            <div class="invalid-feedback">
+                                Benefit is Required
+                            </div>
+                            @if ($errors->has('benefit'))
+                                <span class="alert alert-danger">
+                                    {{ $errors->first('benefit') }}
+                                </span>
+                            @endif
+                        </div>
+                        {{-- <div class="col-6 form-group">
                             <label for="expiration_period" class="form-label">Subcription Length (Month)</label>
                             <div class="input-group mb-3">
                                 <input type="number" name="expiration_period"
@@ -78,9 +78,10 @@
                                     {{ $errors->first('expiration_period') }}
                                 </span>
                             @endif
-                        </div>
+                        </div> --}}
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="{{ route('membership.index') }}" class="btn btn-light">Back</a>
                         </div>
                     </form>
                 </div>
