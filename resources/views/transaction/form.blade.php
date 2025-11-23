@@ -70,8 +70,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="quantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" name="quantity" id="quantity" min="1"
-                                    value="1">
+                                <input type="number" class="form-control" name="quantity" id="quantity" min="1" value="1">
                             </div>
                         </div>
 
@@ -125,8 +124,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="payment" class="form-label">Payment Amount</label>
-                                <input type="number" class="form-control" name="payment" id="payment" min="0"
-                                    required>
+                                <input type="number" class="form-control" name="payment" id="payment" min="0" required>
                             </div>
                         </div>
 
@@ -148,8 +146,7 @@
     </div>
 
     <!-- Create Customer Modal -->
-    <div class="modal fade" id="createCustomer" tabindex="-1" aria-labelledby="createCustomerLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="createCustomer" tabindex="-1" aria-labelledby="createCustomerLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -161,7 +158,8 @@
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="first_name" class="form-label">First Name</label>
+                                <label for="first_name" class="form-label">First Name <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="first_name" id="first_name" required>
                             </div>
                             <div class="col-md-6">
@@ -169,24 +167,40 @@
                                 <input type="text" class="form-control" name="last_name" id="last_name">
                             </div>
                             <div class="col-12">
-                                <label for="alamat" class="form-label">Address</label>
+                                <label for="alamat" class="form-label">Address <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="alamat" id="alamat" rows="2" required></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone</label>
+                                <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="phone" id="phone" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" name="email" id="email" required>
                             </div>
                             <div class="col-12">
-                                <label for="membership">Membership</label>
-                                <select name="membership" id="membership" class="form-select">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="is_member" id="is_member">
+                                    <label class="form-check-label" for="is_member">
+                                        Make this customer a member
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12" id="membershipField" style="display: none;">
+                                <label for="membership_id" class="form-label">Membership Type <span
+                                        class="text-danger">*</span></label>
+                                <select name="membership_id" id="membership_id" class="form-select">
+                                    <option value="" selected disabled>Select Membership Type</option>
                                     @foreach ($membership as $item)
-                                        <option value="{{ $item->membership_id }}">{{ $item->membership }}</option>
+                                        <option value="{{ $item->membership_id }}" data-discount="{{ $item->discount }}">
+                                            {{ $item->membership }} ({{ $item->discount }}% Discount)
+                                            @if($item->benefit)
+                                                - Benefit: {{ $item->benefit }}
+                                            @endif
+                                        </option>
                                     @endforeach
                                 </select>
+                                <div class="form-text" id="membershipInfo"></div>
                             </div>
                         </div>
                     </div>
@@ -203,41 +217,89 @@
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             let productList = [];
             let discountPercent = 0; // Will be set based on membership
 
             // Initialize
             updateDateTime();
 
+            // Toggle membership field based on checkbox
+            $('#is_member').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('#membershipField').slideDown();
+                    $('#membership_id').prop('required', true);
+                } else {
+                    $('#membershipField').slideUp();
+                    $('#membership_id').prop('required', false).val('');
+                    $('#membershipInfo').text('');
+                }
+            });
+
+            // Show membership info when selection changes
+            $('#membership_id').on('change', function () {
+                const selectedOption = $(this).find('option:selected');
+                const discount = selectedOption.data('discount') || 0;
+                if (discount > 0) {
+                    $('#membershipInfo').html(`<span class="text-success">This membership includes ${discount}% discount on all purchases</span>`);
+                } else {
+                    $('#membershipInfo').html(`<span class="text-info">Standard membership selected</span>`);
+                }
+            });
+
             // Customer Modal Form Submission
-            $('#customerForm').on('submit', function(e) {
+            $('#customerForm').on('submit', function (e) {
                 e.preventDefault();
+
+                // Prepare form data
+                const formData = $(this).serialize();
+
+                // Show loading state
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalText = submitBtn.html();
+                submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
 
                 $.ajax({
                     url: '{{ route('customer.store') }}',
                     type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        // Add new customer to dropdown
+                    data: formData,
+                    success: function (response) {
+                        // Add new customer to dropdown with proper formatting
+                        const customerName = response.data.first_name + ' ' + (response.data.last_name || '');
+                        const memberText = response.data.is_member ? ` (Member - ${response.data.member?.discount || 0}% Discount)` : '';
+
                         const newOption = new Option(
-                            response.data.first_name + ' ' + (response.data.last_name ||
-                                '') +
-                            response.data.membership,
+                            customerName + memberText,
                             response.data.customer_id,
                             false,
                             false
                         );
+
+                        // Add data attributes for member info
+                        $(newOption).attr('data-member', response.data.is_member ? '1' : '0')
+                            .attr('data-discount', response.data.member?.discount || 0);
+
                         $('#customerId').append(newOption).val(response.data.customer_id);
 
                         // Close modal and reset form
                         $('#createCustomer').modal('hide');
                         $('#customerForm')[0].reset();
+                        $('#membershipField').hide();
+                        $('#is_member').prop('checked', false);
+
+                        // Reset button state
+                        submitBtn.html(originalText).prop('disabled', false);
 
                         // Show success message
                         alert('Customer added successfully!');
+
+                        // Trigger customer change to update discount
+                        $('#customerId').trigger('change');
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
+                        // Reset button state
+                        submitBtn.html(originalText).prop('disabled', false);
+
                         if (xhr.status === 422) {
                             const errors = xhr.responseJSON.errors;
                             let errorMessage = '';
@@ -253,7 +315,7 @@
             });
 
             // Customer Change Event - Load membership discount
-            $('#customerId').on('change', function() {
+            $('#customerId').on('change', function () {
                 const customerId = $(this).val();
                 const selectedOption = $(this).find('option:selected');
 
@@ -265,7 +327,7 @@
                     // Show discount info
                     if (discountPercent > 0) {
                         $('#discountInfo').removeClass('d-none').text(
-                            `Member discount: ${discountPercent}%`);
+                            `Member discount: ${discountPercent}% applied`);
                     } else {
                         $('#discountInfo').addClass('d-none');
                     }
@@ -279,7 +341,7 @@
             });
 
             // Category Change Event
-            $('#categoryId').on('change', function() {
+            $('#categoryId').on('change', function () {
                 const categoryId = $(this).val();
 
                 if (categoryId) {
@@ -305,7 +367,7 @@
             });
 
             // Product Change Event
-            $('#productId').on('change', function() {
+            $('#productId').on('change', function () {
                 const productId = $(this).val();
 
                 if (productId) {
@@ -324,7 +386,7 @@
             });
 
             // Variant Change Event
-            $('#variantId').on('change', function() {
+            $('#variantId').on('change', function () {
                 const selectedVariant = $(this).find('option:selected');
                 const stockQty = selectedVariant.data('stock') || 0;
                 $('#stockQty').val(stockQty);
@@ -337,23 +399,51 @@
             });
 
             // Add Item to Table
-            $('#addItem').on('click', function() {
+            $('#addItem').on('click', function () {
                 addProductToTable();
             });
 
             // Payment Calculation
             $('#payment').on('input', calculateChange);
-            $('#paymentMethod').on('change', function() {
+            $('#paymentMethod').on('change', function () {
                 if ($(this).val() === 'midtrans') {
-                    $('#payment').val($('#totalAfterDiscount').val()).prop('readonly', true);
+                    const totalAfterDiscount = parseFloat($('#totalAfterDiscount').val()) || 0;
+                    $('#payment').val(totalAfterDiscount).prop('readonly', true);
                 } else {
-                    $('#payment').prop('readonly', false);
+                    $('#payment').prop('readonly', false).val('');
                 }
                 calculateChange();
             });
 
+            // Validasi form sebelum submit
+            $('form').on('submit', function (e) {
+                if (productList.length === 0) {
+                    e.preventDefault();
+                    alert('Please add at least one product to the transaction!');
+                    return;
+                }
+
+                const totalAfterDiscount = parseFloat($('#totalAfterDiscount').val()) || 0;
+                const payment = parseFloat($('#payment').val()) || 0;
+                const paymentMethod = $('#paymentMethod').val();
+
+                if (paymentMethod === 'cash' && payment < totalAfterDiscount) {
+                    e.preventDefault();
+                    alert("Payment cannot be less than total amount after discount!");
+                    return;
+                }
+
+                // Untuk midtrans, pastikan payment sama dengan total setelah diskon
+                if (paymentMethod === 'midtrans' && payment !== totalAfterDiscount) {
+                    e.preventDefault();
+                    alert("Payment amount must equal total after discount for Midtrans payments!");
+                    return;
+                }
+            });
+
+
             // Form Submission
-            $('form').on('submit', function(e) {
+            $('form').on('submit', function (e) {
                 if (productList.length === 0) {
                     e.preventDefault();
                     alert('Please add at least one product to the transaction!');
@@ -375,17 +465,17 @@
                 $.ajax({
                     url: `/api/categories/${categoryId}/products`,
                     type: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         $('#productId').empty().append(
                             '<option value="" hidden selected>Select Product to buy</option>'
                         );
-                        response.forEach(function(product) {
+                        response.forEach(function (product) {
                             $('#productId').append(
                                 `<option value="${product.product_id}">${product.product_name}</option>`
                             );
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error('Error loading products:', xhr);
                         $('#productId').empty().append(
                             '<option value="" hidden selected>Error loading products</option>'
@@ -398,21 +488,21 @@
                 $.ajax({
                     url: `/api/products/${productId}/variants`,
                     type: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         $('#variantId').empty().append(
                             '<option value="" hidden selected>Select Product variant to buy</option>'
                         );
-                        response.forEach(function(variant) {
+                        response.forEach(function (variant) {
                             $('#variantId').append(
-                                `<option value="${variant.variant_id}" 
-                                data-stock="${variant.stock_qty}" 
-                                data-price="${variant.price}">
-                            ${variant.variant_name} - Rp ${variant.price.toLocaleString()}
-                        </option>`
+                                `<option value="${variant.variant_id}"
+                                        data-stock="${variant.stock_qty}"
+                                        data-price="${variant.price}">
+                                        ${variant.variant_name} - Rp ${variant.price.toLocaleString()}
+                                    </option>`
                             );
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error('Error loading variants:', xhr);
                         $('#variantId').empty().append(
                             '<option value="" hidden selected>Error loading variants</option>'
@@ -481,21 +571,21 @@
                 productList.forEach((product, index) => {
                     const subtotal = product.price * product.qty;
                     tbody.append(`
-                <tr>
-                    <td>${product.productName}</td>
-                    <td>${product.variantName}</td>
-                    <td>Rp ${product.price.toLocaleString()}</td>
-                    <td>
-                        <button class="btn btn-sm btn-secondary decrease" data-index="${index}">-</button>
-                        ${product.qty}
-                        <button class="btn btn-sm btn-secondary increase" data-index="${index}">+</button>
-                    </td>
-                    <td>Rp ${subtotal.toLocaleString()}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm remove" data-index="${index}">Remove</button>
-                    </td>
-                </tr>
-            `);
+                            <tr>
+                                <td>${product.productName}</td>
+                                <td>${product.variantName}</td>
+                                <td>Rp ${product.price.toLocaleString()}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-secondary decrease" data-index="${index}">-</button>
+                                    ${product.qty}
+                                    <button class="btn btn-sm btn-secondary increase" data-index="${index}">+</button>
+                                </td>
+                                <td>Rp ${subtotal.toLocaleString()}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm remove" data-index="${index}">Remove</button>
+                                </td>
+                            </tr>
+                        `);
                 });
 
                 // Update hidden inputs for form submission
@@ -545,7 +635,7 @@
             }
 
             // Event Delegation for Dynamic Elements
-            $(document).on('click', '.increase', function() {
+            $(document).on('click', '.increase', function () {
                 const index = $(this).data('index');
                 const product = productList[index];
                 const stockQty = parseInt($('#stockQty').val());
@@ -559,7 +649,7 @@
                 }
             });
 
-            $(document).on('click', '.decrease', function() {
+            $(document).on('click', '.decrease', function () {
                 const index = $(this).data('index');
                 const product = productList[index];
                 if (product && product.qty > 1) {
@@ -569,7 +659,7 @@
                 }
             });
 
-            $(document).on('click', '.remove', function() {
+            $(document).on('click', '.remove', function () {
                 const index = $(this).data('index');
                 productList.splice(index, 1);
                 updateProductTable();

@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ $brand ? route('brand.update', $brand->brand_id) :  route('brand.store') }}" method="POST" class="needs-validation row g-3" novalidate>
+                    <form action="{{ $brand ? route('brand.update', $brand->brand_id) : route('brand.store') }}" method="POST" class="needs-validation row g-3" novalidate>
                         {{ csrf_field() }}
 
                         @if ($brand)
@@ -43,6 +43,7 @@
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="{{ route('brand.index') }}" class="btn btn-light">Back</a>
                         </div>
                     </form>
                 </div>

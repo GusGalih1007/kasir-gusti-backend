@@ -123,16 +123,44 @@ route::delete('product/{product}/variant/{id}', [ProductVariantController::class
 route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index')->middleware('permission:read');
 route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create')->middleware('permission:create');
 route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store')->middleware('permission:create');
-Route::get('/transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show')->middleware('permission:read');
+Route::get('transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show')->middleware('permission:read');
 
 // Midtrans payment routes
+Route::match(['GET', 'POST'], '/transaction/payment/callback', [TransactionController::class, 'paymentCallback'])->name('transaction.payment.callback');
 Route::get('/transaction/{order}/payment', [TransactionController::class, 'showPayment'])->name('transaction.payment');
-Route::get('/transaction/payment/callback', [TransactionController::class, 'paymentCallback'])->name('transaction.payment.callback');
-Route::get('/transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
+Route::get('/transaction/{order}/payment/finish', [TransactionController::class, 'paymentFinish'])->name('transaction.payment.finish');
+Route::get('/api/transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
+// Route::get('transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
 
 // Export routes
-Route::get('/export/transactions/pdf', [ExportController::class, 'exportTransactionsPdf'])->name('export.transactions.pdf');
-Route::get('/export/transactions/excel', [ExportController::class, 'exportTransactionsExcel'])->name('export.transactions.excel');
-Route::get('/export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print');
-Route::get('/export/receipt/{orderId}/pdf', [ExportController::class, 'exportReceiptPdf'])->name('export.receipt.pdf');
-Route::get('/export/sales-report', [ExportController::class, 'exportSalesReport'])->name('export.sales-report.pdf');
+Route::get('export/transactions/pdf', [ExportController::class, 'exportTransactionsPdf'])->name('export.transactions.pdf');
+Route::get('export/transactions/excel', [ExportController::class, 'exportTransactionsExcel'])->name('export.transactions.excel');
+Route::get('export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print');
+Route::get('export/receipt/{orderId}/pdf', [ExportController::class, 'exportReceiptPdf'])->name('export.receipt.pdf');
+Route::get('export/sales-report', [ExportController::class, 'exportSalesReport'])->name('export.sales-report.pdf');
+
+Route::get('debug/check-status/{order}', function($orderId) {
+    try {
+        $order = \App\Models\Order::with('payment')->find($orderId);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'order_id' => $order->order_id,
+            'payment_method' => $order->payment->payment_method,
+            'payment_status' => $order->payment->status,
+            'endpoint_working' => true
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});

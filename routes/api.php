@@ -24,6 +24,8 @@ Route::get('products/{productId}/variants', [TransactionController::class, 'getV
 
 // Midtrans webhook
 Route::post('midtrans/notification', [TransactionController::class, 'midtransNotification']);
+// Check payment status
+// Route::get('transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
 
 
 // Route::get('/user', function (Request $request) {
@@ -38,28 +40,28 @@ Route::post('midtrans/notification', [TransactionController::class, 'midtransNot
 // route::middleware('jwt')->group(function () {
 //     //category
 //     route::apiResource('category', CategoryController::class);
-    
+
 //     //customer
 //     route::apiResource('customer', CustomerController::class);
-    
+
 //     //role
 //     route::apiResource('role', RoleController::class);
-    
+
 //     //user
 //     route::apiResource('user', UserController::class);
-    
+
 //     //brand
 //     route::apiResource('brand', BrandController::class);
-    
+
 //     //supplier
 //     route::apiResource('supplier', SupplierController::class);
-    
+
 //     //product
 //     route::apiResource('product', ProductController::class);
-    
+
 //     //product-variant
 //     route::apiResource('product-variant', ProductVariantController::class);
-    
+
 //     //page action
 //     route::get('page-action', [PageController::class, 'index'])->name('pageRole.getAll');
 //     route::get('page-action/{page-code}', [PageController::class, 'show'])->name('pageRole.getByCode');

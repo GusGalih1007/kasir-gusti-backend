@@ -12,11 +12,11 @@
                 <div class="card-body">
                     <form
                         action="{{ $variant
-                            ? route('product-variant.update', [
-                                'id' => $variant->variant_id,
-                                'product' => $productParent->slug,
-                            ])
-                            : route('product-variant.store', ['product' => $productParent->slug]) }}"
+    ? route('product-variant.update', [
+        'id' => $variant->variant_id,
+        'product' => $productParent->slug,
+    ])
+    : route('product-variant.store', ['product' => $productParent->slug]) }}"
                         method="POST" class="needs-validation row g-3" enctype="multipart/form-data" novalidate>
                         {{ csrf_field() }}
 
@@ -85,7 +85,7 @@
                                 </span>
                             @endif
                         </div>
-                        
+
                         <div class="col-12 form-group">
                             <div class="form-group">
                                 <label for="photo" class="form-label custom-file-input">Product Photo</label>
@@ -99,6 +99,7 @@
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="{{ route('product-variant.index', ['product' => $productParent->slug]) }}" class="btn btn-light">Back</a>
                         </div>
                     </form>
                 </div>

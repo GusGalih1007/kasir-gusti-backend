@@ -11,6 +11,7 @@
                         </h4>
                     </div>
                     <div style="text-align: right;">
+                        <a href="{{ route('product.index') }}" class="btn btn-light">Back</a>
                         @if (App\Helpers\PermissionHelper::hasPermission('create'))
                         <a href="{{ route('product-variant.create', $productParent->slug) }}" class="btn btn-primary">
                             Create
@@ -46,7 +47,7 @@
                                                 <img src="{{ asset('storage/' . $item->photo) }}"
                                                     alt="{{ $item->product_name }}" width="100">
                                             @else
-                                                <img src="https://via.placeholder.com/100" alt="No Image" width="100">
+                                                <img src="https://placehold.co/100" alt="No Image" width="100">
                                             @endif
                                         </td>
                                         <td>{{ $item->variant_name }}</td>

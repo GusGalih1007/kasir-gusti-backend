@@ -111,7 +111,7 @@
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label" for="uaerPassword">Password</label>
-                            <input type="password" class="form-control" name="password" id="userPassword" 
+                            <input type="password" class="form-control" name="password" id="userPassword"
                             {{ $user ? '' : 'required' }}>
                             <div class="invalid-feedback">
                                 Password is required
@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label" for="passwordConfirm">Password Confirm</label>
-                            <input type="password" class="form-control" name="password_confirmation" id="passwordConfirm" 
+                            <input type="password" class="form-control" name="password_confirmation" id="passwordConfirm"
                             {{ $user ? '' : 'required' }}>
                             <div class="invalid-feedback">
                                 Please confirm your password
@@ -137,6 +137,7 @@
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="{{ route('user.index') }}" class="btn btn-light">Back</a>
                         </div>
                     </form>
                 </div>

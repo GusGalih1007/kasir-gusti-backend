@@ -99,6 +99,7 @@
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="{{ route('customer.index') }}" class="btn btn-light">Back</a>
                         </div>
                     </form>
                 </div>

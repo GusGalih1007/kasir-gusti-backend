@@ -13,17 +13,18 @@ class Payment extends Model
     protected $primaryKey = 'payment_id';
 
     protected $fillable = [
-        'order_id', 
-        'change', 
-        'payment_method', 
-        'snap_token',      
-        'token_expires_at', 
+        'order_id',
+        'change',
+        'payment_method',
+        'snap_token',
+        'midtrans_order_id',
+        'token_expires_at',
         'is_used',
         'previous_tokens',
-        'amount', 
-        'currency', 
-        'status', 
-        'payment_date', 
+        'amount',
+        'currency',
+        'status',
+        'payment_date',
         'created_by'
     ];
 

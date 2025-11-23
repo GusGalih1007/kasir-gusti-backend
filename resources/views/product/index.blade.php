@@ -44,7 +44,7 @@
                                                 <img src="{{ asset('storage/' . $item->photo) }}"
                                                     alt="{{ $item->product_name }}" width="100">
                                             @else
-                                                <img src="https://via.placeholder.com/100" alt="No Image" width="100">
+                                                <img src="https://placehold.co/100" alt="No Image" width="100">
                                             @endif
                                         </td>
                                         <td>{{ $item->product_name }}</td>

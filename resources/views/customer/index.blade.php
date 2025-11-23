@@ -44,7 +44,7 @@
                                         <td>{{ $item->alamat }}</td>
                                         <td>{{ $item->phone }}</td>
                                         <td>{{ $item->email }}</td>
-                                        <td>{{ $item->is_member ? 'Yes' : 'No' }}</td>
+                                        <td>{{ $item->member->membership}}</td>
                                         <td>
                                             @if (App\Helpers\PermissionHelper::hasPermission('update') || App\Helpers\PermissionHelper::hasPermission('delete'))
                                                 @if (App\Helpers\PermissionHelper::hasPermission('update'))
