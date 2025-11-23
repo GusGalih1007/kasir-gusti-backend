@@ -4,15 +4,18 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <div class="header-title">
                         <h4 class="card-title">Transaction History</h4>
                     </div>
+                    @if (App\Helpers\PermissionHelper::hasPermission('create'))
                     <div style="text-align: right">
-                        <a href="{{ route('transaction.create') }}" class="btn btn-primary">Create</a>
+                    <a href="{{ route('transaction.create') }}" class="btn btn-primary">Create</a>
                     </div>
+                    @endif
                 </div>
                 <div class="card-body">
+                    @if (App\Helpers\PermissionHelper::hasPermission('create', 'export'))
                     <!-- Filter Section -->
                     <div class="row mb-4">
                         <div class="col-md-3">
@@ -70,9 +73,10 @@
                             </div>
                         </div>
                     </div>
+                    @endif
 
-                    <div class="table-responsive">
-                        <table id="transactionTable" class="table table-hover table-bordered" style="width:100%">
+                    <div class="table-responsive custom-datatable-entries">
+                        <table id="datatable" data-toggle="data-table" class="table table-hover table-bordered" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Transaction ID</th>

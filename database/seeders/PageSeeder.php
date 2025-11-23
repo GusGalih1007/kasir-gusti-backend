@@ -71,11 +71,17 @@ class PageSeeder extends Seeder
             'page_name' => 'Membership',
             'action'    => ['Read','Create','Update','Delete']
         ]);
-        
+
         Page::create([
             'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
             'page_name' => 'Dashboard',
             'action'    => ['Read']
+        ]);
+
+        Page::create([
+            'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
+            'page_name' => 'Export',
+            'action'    => ['Read', 'Create']
         ]);
     }
 }

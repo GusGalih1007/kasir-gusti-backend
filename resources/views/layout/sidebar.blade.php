@@ -1,15 +1,14 @@
 <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
-    <li class="nav-item static-item">
+    {{-- <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
             <span class="default-icon">Home</span>
             <span class="mini-icon">-</span>
         </a>
-    </li>
+    </li> --}}
     <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="../dashboard/index.html">
+        <a class="nav-link" aria-current="page" href="{{ route('dashboard') }}">
             <i class="icon">
-                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="icon-20">
+                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
                     <path opacity="0.4"
                         d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z"
                         fill="currentColor"></path>
@@ -21,12 +20,100 @@
             <span class="item-name">Dashboard</span>
         </a>
     </li>
+    <li>
+        <hr class="hr-horizontal">
+    </li>
+    @if (
+            App\Helpers\PermissionHelper::hasPermission('read', 'membership') ||
+            App\Helpers\PermissionHelper::hasPermission('read', 'role-permission') ||
+            App\Helpers\PermissionHelper::hasPermission('read', 'user')
+        )
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#masterData" role="button" aria-expanded="false"
+                aria-controls="masterData">
+                <i class="icon">
+                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
+                        <path opacity="0.4"
+                            d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
+                            fill="currentColor"></path>
+                        <path opacity="0.4"
+                            d="M22.0001 6.37867C22.0001 5.56214 21.3246 4.89844 20.4934 4.89844H13.9179C13.0857 4.89844 12.4102 5.56214 12.4102 6.37867C12.4102 7.1963 13.0857 7.86 13.9179 7.86H20.4934C21.3246 7.86 22.0001 7.1963 22.0001 6.37867Z"
+                            fill="currentColor"></path>
+                        <path
+                            d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
+                            fill="currentColor"></path>
+                        <path
+                            d="M21.9998 17.3992C21.9998 19.2648 20.4609 20.7777 18.5609 20.7777C16.6621 20.7777 15.1221 19.2648 15.1221 17.3992C15.1221 15.5325 16.6621 14.0195 18.5609 14.0195C20.4609 14.0195 21.9998 15.5325 21.9998 17.3992Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </i>
+                <span class="item-name">Master Data</span>
+                <i class="right-icon">
+                    <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </i>
+            </a>
+            <ul class="sub-nav collapse" id="masterData" data-bs-parent="#sidebar-menu">
+                @if (App\Helpers\PermissionHelper::hasPermission('read', 'user'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('user.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> U </i>
+                            <span class="item-name">
+                                User
+                            </span>
+                        </a>
+                    </li>
+                @endif
+                @if (App\Helpers\PermissionHelper::hasPermission('read', 'role-permission'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('role-permission.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> R </i>
+                            <span class="item-name">Role Permission</span>
+                        </a>
+                    </li>
+                @endif
+                @if (App\Helpers\PermissionHelper::hasPermission('read', 'membership'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('membership.index') }}">
+                            <i class="icon svg-icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> M </i>
+                            <span class="item-name">Membership Level</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#horizontal-menu" role="button" aria-expanded="false"
-            aria-controls="horizontal-menu">
+        <a class="nav-link" data-bs-toggle="collapse" href="#stock" role="button" aria-expanded="false"
+            aria-controls="stock">
             <i class="icon">
-                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="icon-20">
+                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
                     <path opacity="0.4"
                         d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
                         fill="currentColor"></path>
@@ -41,17 +128,17 @@
                         fill="currentColor"></path>
                 </svg>
             </i>
-            <span class="item-name">Menu Style</span>
+            <span class="item-name">Stock</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
         </a>
-        <ul class="sub-nav collapse" id="horizontal-menu" data-bs-parent="#sidebar-menu">
+        <ul class="sub-nav collapse" id="stock" data-bs-parent="#sidebar-menu">
             <li class="nav-item">
-                <a class="nav-link" href="../dashboard/index-horizontal.html">
+                <a class="nav-link" href="{{ route('category.index') }}">
                     <i class="icon">
                         <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
                             fill="currentColor">
@@ -60,14 +147,12 @@
                             </g>
                         </svg>
                     </i>
-                    <i class="sidenav-mini-icon"> H </i>
-                    <span class="item-name">
-                        Horizontal
-                    </span>
+                    <i class="sidenav-mini-icon"> PC </i>
+                    <span class="item-name">Product Category</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../dashboard/index-dual-horizontal.html">
+                <a class="nav-link" href="{{ route('brand.index') }}">
                     <i class="icon">
                         <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
                             fill="currentColor">
@@ -76,26 +161,12 @@
                             </g>
                         </svg>
                     </i>
-                    <i class="sidenav-mini-icon"> D </i>
-                    <span class="item-name">Dual Horizontal</span>
+                    <i class="sidenav-mini-icon"> PB </i>
+                    <span class="item-name">Product Brand</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../dashboard/index-dual-compact.html">
-                    <i class="icon svg-icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> D </i>
-                    <span class="item-name">Dual Compact</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../dashboard/index-boxed.html">
+                <a class="nav-link" href="{{ route('supplier.index') }}">
                     <i class="icon">
                         <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
                             fill="currentColor">
@@ -104,12 +175,12 @@
                             </g>
                         </svg>
                     </i>
-                    <i class="sidenav-mini-icon"> B </i>
-                    <span class="item-name">Boxed Horizontal</span>
+                    <i class="sidenav-mini-icon"> PS </i>
+                    <span class="item-name">Product Supplier</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../dashboard/index-boxed-fancy.html">
+                <a class="nav-link" href="{{ route('product.index') }}">
                     <i class="icon">
                         <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
                             fill="currentColor">
@@ -118,32 +189,57 @@
                             </g>
                         </svg>
                     </i>
-                    <i class="sidenav-mini-icon"> B </i>
-                    <span class="item-name">Boxed Fancy</span>
+                    <i class="sidenav-mini-icon"> PL </i>
+                    <span class="item-name">Product List</span>
                 </a>
             </li>
         </ul>
     </li>
     <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="https://templates.iqonic.design/hope-ui/html/dist/"
-            target="_blank">
+        <a class="nav-link" data-bs-toggle="collapse" href="#transaction" role="button" aria-expanded="false"
+            aria-controls="transaction">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M21.9964 8.37513H17.7618C15.7911 8.37859 14.1947 9.93514 14.1911 11.8566C14.1884 13.7823 15.7867 15.3458 17.7618 15.3484H22V15.6543C22 19.0136 19.9636 21 16.5173 21H7.48356C4.03644 21 2 19.0136 2 15.6543V8.33786C2 4.97862 4.03644 3 7.48356 3H16.5138C19.96 3 21.9964 4.97862 21.9964 8.33786V8.37513ZM6.73956 8.36733H12.3796H12.3831H12.3902C12.8124 8.36559 13.1538 8.03019 13.152 7.61765C13.1502 7.20598 12.8053 6.87318 12.3831 6.87491H6.73956C6.32 6.87664 5.97956 7.20858 5.97778 7.61852C5.976 8.03019 6.31733 8.36559 6.73956 8.36733Z"
+                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
+                    <path opacity="0.4"
+                        d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
                         fill="currentColor"></path>
                     <path opacity="0.4"
-                        d="M16.0374 12.2966C16.2465 13.2478 17.0805 13.917 18.0326 13.8996H21.2825C21.6787 13.8996 22 13.5715 22 13.166V10.6344C21.9991 10.2297 21.6787 9.90077 21.2825 9.8999H17.9561C16.8731 9.90338 15.9983 10.8024 16 11.9102C16 12.0398 16.0128 12.1695 16.0374 12.2966Z"
+                        d="M22.0001 6.37867C22.0001 5.56214 21.3246 4.89844 20.4934 4.89844H13.9179C13.0857 4.89844 12.4102 5.56214 12.4102 6.37867C12.4102 7.1963 13.0857 7.86 13.9179 7.86H20.4934C21.3246 7.86 22.0001 7.1963 22.0001 6.37867Z"
                         fill="currentColor"></path>
-                    <circle cx="18" cy="11.8999" r="1" fill="currentColor"></circle>
+                    <path
+                        d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
+                        fill="currentColor"></path>
+                    <path
+                        d="M21.9998 17.3992C21.9998 19.2648 20.4609 20.7777 18.5609 20.7777C16.6621 20.7777 15.1221 19.2648 15.1221 17.3992C15.1221 15.5325 16.6621 14.0195 18.5609 14.0195C20.4609 14.0195 21.9998 15.5325 21.9998 17.3992Z"
+                        fill="currentColor"></path>
                 </svg>
             </i>
-            <span class="item-name">Design System<span
-                    class="badge rounded-pill bg-success item-name">UI</span></span>
+            <span class="item-name">Transaction</span>
+            <i class="right-icon">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </i>
         </a>
+        <ul class="sub-nav collapse" id="transaction" data-bs-parent="#sidebar-menu">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('transaction.index') }}">
+                    <i class="icon">
+                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <g>
+                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                            </g>
+                        </svg>
+                    </i>
+                    <i class="sidenav-mini-icon"> T </i>
+                    <span class="item-name">Transaction</span>
+                </a>
+            </li>
+        </ul>
     </li>
-    <li>
+    {{-- <li>
         <hr class="hr-horizontal" />
     </li>
     <li class="nav-item static-item">
@@ -156,8 +252,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-special" role="button" aria-expanded="false"
             aria-controls="sidebar-special">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M13.3051 5.88243V6.06547C12.8144 6.05584 12.3237 6.05584 11.8331 6.05584V5.89206C11.8331 5.22733 11.2737 4.68784 10.6064 4.68784H9.63482C8.52589 4.68784 7.62305 3.80152 7.62305 2.72254C7.62305 2.32755 7.95671 2 8.35906 2C8.77123 2 9.09508 2.32755 9.09508 2.72254C9.09508 3.01155 9.34042 3.24276 9.63482 3.24276H10.6064C12.0882 3.2524 13.2953 4.43736 13.3051 5.88243Z"
                         fill="currentColor"></path>
@@ -168,8 +263,8 @@
             </i>
             <span class="item-name">Special Pages</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -265,8 +360,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-auth" role="button" aria-expanded="false"
             aria-controls="sidebar-user">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M12.0865 22C11.9627 22 11.8388 21.9716 11.7271 21.9137L8.12599 20.0496C7.10415 19.5201 6.30481 18.9259 5.68063 18.2336C4.31449 16.7195 3.5544 14.776 3.54232 12.7599L3.50004 6.12426C3.495 5.35842 3.98931 4.67103 4.72826 4.41215L11.3405 2.10679C11.7331 1.96656 12.1711 1.9646 12.5707 2.09992L19.2081 4.32684C19.9511 4.57493 20.4535 5.25742 20.4575 6.02228L20.4998 12.6628C20.5129 14.676 19.779 16.6274 18.434 18.1581C17.8168 18.8602 17.0245 19.4632 16.0128 20.0025L12.4439 21.9088C12.3331 21.9686 12.2103 21.999 12.0865 22Z"
                         fill="currentColor"></path>
@@ -277,8 +371,8 @@
             </i>
             <span class="item-name">Authentication</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -360,8 +454,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-user" role="button" aria-expanded="false"
             aria-controls="sidebar-user">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M11.9488 14.54C8.49884 14.54 5.58789 15.1038 5.58789 17.2795C5.58789 19.4562 8.51765 20.0001 11.9488 20.0001C15.3988 20.0001 18.3098 19.4364 18.3098 17.2606C18.3098 15.084 15.38 14.54 11.9488 14.54Z"
                         fill="currentColor"></path>
@@ -384,8 +477,8 @@
             </i>
             <span class="item-name">Users</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -439,8 +532,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#utilities-error" role="button" aria-expanded="false"
             aria-controls="utilities-error">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M11.9912 18.6215L5.49945 21.864C5.00921 22.1302 4.39768 21.9525 4.12348 21.4643C4.0434 21.3108 4.00106 21.1402 4 20.9668V13.7087C4 14.4283 4.40573 14.8725 5.47299 15.37L11.9912 18.6215Z"
                         fill="currentColor"></path>
@@ -451,8 +543,8 @@
             </i>
             <span class="item-name">Utilities</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -502,8 +594,7 @@
     <li class="nav-item">
         <a class="nav-link" href="../dashboard/admin.html">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M7.7688 8.71387H16.2312C18.5886 8.71387 20.5 10.5831 20.5 12.8885V17.8254C20.5 20.1308 18.5886 22 16.2312 22H7.7688C5.41136 22 3.5 20.1308 3.5 17.8254V12.8885C3.5 10.5831 5.41136 8.71387 7.7688 8.71387ZM11.9949 17.3295C12.4928 17.3295 12.8891 16.9419 12.8891 16.455V14.2489C12.8891 13.772 12.4928 13.3844 11.9949 13.3844C11.5072 13.3844 11.1109 13.772 11.1109 14.2489V16.455C11.1109 16.9419 11.5072 17.3295 11.9949 17.3295Z"
                         fill="currentColor"></path>
@@ -527,8 +618,7 @@
     <li class="nav-item">
         <a class="nav-link" href="https://templates.iqonic.design/hope-ui/html/dist/#accordion">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M2 11.0786C2.05 13.4166 2.19 17.4156 2.21 17.8566C2.281 18.7996 2.642 19.7526 3.204 20.4246C3.986 21.3676 4.949 21.7886 6.292 21.7886C8.148 21.7986 10.194 21.7986 12.181 21.7986C14.176 21.7986 16.112 21.7986 17.747 21.7886C19.071 21.7886 20.064 21.3566 20.836 20.4246C21.398 19.7526 21.759 18.7896 21.81 17.8566C21.83 17.4856 21.93 13.1446 21.99 11.0786H2Z"
                         fill="currentColor"></path>
@@ -547,8 +637,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-widget" role="button" aria-expanded="false"
             aria-controls="sidebar-widget">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M21.25 13.4764C20.429 13.4764 19.761 12.8145 19.761 12.001C19.761 11.1865 20.429 10.5246 21.25 10.5246C21.449 10.5246 21.64 10.4463 21.78 10.3076C21.921 10.1679 22 9.97864 22 9.78146L21.999 7.10415C21.999 4.84102 20.14 3 17.856 3H6.144C3.86 3 2.001 4.84102 2.001 7.10415L2 9.86766C2 10.0648 2.079 10.2541 2.22 10.3938C2.36 10.5325 2.551 10.6108 2.75 10.6108C3.599 10.6108 4.239 11.2083 4.239 12.001C4.239 12.8145 3.571 13.4764 2.75 13.4764C2.336 13.4764 2 13.8093 2 14.2195V16.8949C2 19.158 3.858 21 6.143 21H17.857C20.142 21 22 19.158 22 16.8949V14.2195C22 13.8093 21.664 13.4764 21.25 13.4764Z"
                         fill="currentColor"></path>
@@ -559,8 +648,8 @@
             </i>
             <span class="item-name">widget</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -614,19 +703,17 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-maps" role="button" aria-expanded="false"
             aria-controls="sidebar-maps">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M8.53162 2.93677C10.7165 1.66727 13.402 1.68946 15.5664 2.99489C17.7095 4.32691 19.012 6.70418 18.9998 9.26144C18.95 11.8019 17.5533 14.19 15.8075 16.0361C14.7998 17.1064 13.6726 18.0528 12.4488 18.856C12.3228 18.9289 12.1848 18.9777 12.0415 19C11.9036 18.9941 11.7693 18.9534 11.6508 18.8814C9.78243 17.6746 8.14334 16.134 6.81233 14.334C5.69859 12.8314 5.06584 11.016 5 9.13442C4.99856 6.57225 6.34677 4.20627 8.53162 2.93677ZM9.79416 10.1948C10.1617 11.1008 11.0292 11.6918 11.9916 11.6918C12.6221 11.6964 13.2282 11.4438 13.6748 10.9905C14.1214 10.5371 14.3715 9.92064 14.3692 9.27838C14.3726 8.29804 13.7955 7.41231 12.9073 7.03477C12.0191 6.65723 10.995 6.86235 10.3133 7.55435C9.63159 8.24635 9.42664 9.28872 9.79416 10.1948Z"
                         fill="currentColor"></path>
-                    <ellipse opacity="0.4" cx="12" cy="21" rx="5" ry="1"
-                        fill="currentColor"></ellipse>
+                    <ellipse opacity="0.4" cx="12" cy="21" rx="5" ry="1" fill="currentColor"></ellipse>
                 </svg>
             </i>
             <span class="item-name">Maps</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -666,8 +753,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-form" role="button" aria-expanded="false"
             aria-controls="sidebar-form">
             <i class="icon">
-                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.4"
                         d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z"
                         fill="currentColor"></path>
@@ -678,8 +764,8 @@
             </i>
             <span class="item-name">Form</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -733,8 +819,7 @@
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-table" role="button" aria-expanded="false"
             aria-controls="sidebar-table">
             <i class="icon">
-                <svg class="icon-20" xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24"
-                    fill="none">
+                <svg class="icon-20" xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" fill="none">
                     <path d="M2 5C2 4.44772 2.44772 4 3 4H8.66667H21C21.5523 4 22 4.44772 22 5V8H15.3333H8.66667H2V5Z"
                         fill="currentColor" stroke="currentColor" />
                     <path
@@ -744,8 +829,8 @@
             </i>
             <span class="item-name">Table</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -790,14 +875,13 @@
                     <path
                         d="M8 10.5378C8 9.43327 8.89543 8.53784 10 8.53784H11.3333C12.4379 8.53784 13.3333 9.43327 13.3333 10.5378V19.8285C13.3333 20.9331 14.2288 21.8285 15.3333 21.8285H16C16 21.8285 12.7624 23.323 10.6667 22.9361C10.1372 22.8384 9.52234 22.5913 9.01654 22.3553C8.37357 22.0553 8 21.3927 8 20.6832V10.5378Z"
                         fill="currentColor" />
-                    <rect opacity="0.4" x="8" y="1" width="5" height="5" rx="2.5"
-                        fill="currentColor" />
+                    <rect opacity="0.4" x="8" y="1" width="5" height="5" rx="2.5" fill="currentColor" />
                 </svg>
             </i>
             <span class="item-name">Icons</span>
             <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </i>
@@ -845,5 +929,5 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> --}}
 </ul>

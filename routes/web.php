@@ -133,9 +133,9 @@ Route::get('/api/transaction/{order}/check-status', [TransactionController::clas
 // Route::get('transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
 
 // Export routes
-Route::get('export/transactions/pdf', [ExportController::class, 'exportTransactionsPdf'])->name('export.transactions.pdf');
-Route::get('export/transactions/excel', [ExportController::class, 'exportTransactionsExcel'])->name('export.transactions.excel');
-Route::get('export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print');
+Route::get('export/transactions/pdf', [ExportController::class, 'exportTransactionsPdf'])->name('export.transactions.pdf')->middleware('permission:create');
+Route::get('export/transactions/excel', [ExportController::class, 'exportTransactionsExcel'])->name('export.transactions.excel')->middleware('permission:create');
+Route::get('export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print')->middleware('permission:create');
 Route::get('export/receipt/{orderId}/pdf', [ExportController::class, 'exportReceiptPdf'])->name('export.receipt.pdf');
 Route::get('export/sales-report', [ExportController::class, 'exportSalesReport'])->name('export.sales-report.pdf');
 
