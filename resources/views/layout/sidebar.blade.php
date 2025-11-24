@@ -1,3 +1,20 @@
+@php
+    $hasCustomerRead = App\Helpers\PermissionHelper::hasPermission('read', 'customer');
+    $hasMemberRead = App\Helpers\PermissionHelper::hasPermission('read', 'membership');
+    $hasRoleRead = App\Helpers\PermissionHelper::hasPermission('read', 'role-permission');
+    $hasUserRead = App\Helpers\PermissionHelper::hasPermission('read', 'user');
+    $hasBrandRead = App\Helpers\PermissionHelper::hasPermission('read', 'brand');
+    $hasCategoryRead = App\Helpers\PermissionHelper::hasPermission('read', 'category');
+    $hasSupplierRead = App\Helpers\PermissionHelper::hasPermission('read', 'supplier');
+    $hasProductRead = App\Helpers\PermissionHelper::hasPermission('read', 'product');
+    $hasTransactionRead = App\Helpers\PermissionHelper::hasPermission('read', 'transaction');
+
+    $hasMasterData = $hasMemberRead || $hasRoleRead || $hasUserRead || $hasCustomerRead;
+
+    $hasStock = $hasBrandRead || $hasCategoryRead || $hasProductRead || $hasSupplierRead;
+
+    $hasTransaction = $hasTransactionRead;
+@endphp
 <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
     {{-- <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
@@ -23,45 +40,48 @@
     <li>
         <hr class="hr-horizontal">
     </li>
-    @if (
-            App\Helpers\PermissionHelper::hasPermission('read', 'membership') ||
-            App\Helpers\PermissionHelper::hasPermission('read', 'role-permission') ||
-            App\Helpers\PermissionHelper::hasPermission('read', 'user')
-        )
+    @if ($hasMasterData)
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#masterData" role="button" aria-expanded="false"
                 aria-controls="masterData">
                 <i class="icon">
-                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
-                        <path opacity="0.4"
-                            d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
+                    <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M11.9488 14.54C8.49884 14.54 5.58789 15.1038 5.58789 17.2795C5.58789 19.4562 8.51765 20.0001 11.9488 20.0001C15.3988 20.0001 18.3098 19.4364 18.3098 17.2606C18.3098 15.084 15.38 14.54 11.9488 14.54Z"
                             fill="currentColor"></path>
                         <path opacity="0.4"
-                            d="M22.0001 6.37867C22.0001 5.56214 21.3246 4.89844 20.4934 4.89844H13.9179C13.0857 4.89844 12.4102 5.56214 12.4102 6.37867C12.4102 7.1963 13.0857 7.86 13.9179 7.86H20.4934C21.3246 7.86 22.0001 7.1963 22.0001 6.37867Z"
+                            d="M11.949 12.467C14.2851 12.467 16.1583 10.5831 16.1583 8.23351C16.1583 5.88306 14.2851 4 11.949 4C9.61293 4 7.73975 5.88306 7.73975 8.23351C7.73975 10.5831 9.61293 12.467 11.949 12.467Z"
+                            fill="currentColor"></path>
+                        <path opacity="0.4"
+                            d="M21.0881 9.21923C21.6925 6.84176 19.9205 4.70654 17.664 4.70654C17.4187 4.70654 17.1841 4.73356 16.9549 4.77949C16.9244 4.78669 16.8904 4.802 16.8725 4.82902C16.8519 4.86324 16.8671 4.90917 16.8895 4.93889C17.5673 5.89528 17.9568 7.0597 17.9568 8.30967C17.9568 9.50741 17.5996 10.6241 16.9728 11.5508C16.9083 11.6462 16.9656 11.775 17.0793 11.7948C17.2369 11.8227 17.3981 11.8371 17.5629 11.8416C19.2059 11.8849 20.6807 10.8213 21.0881 9.21923Z"
                             fill="currentColor"></path>
                         <path
-                            d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
+                            d="M22.8094 14.817C22.5086 14.1722 21.7824 13.73 20.6783 13.513C20.1572 13.3851 18.747 13.205 17.4352 13.2293C17.4155 13.232 17.4048 13.2455 17.403 13.2545C17.4003 13.2671 17.4057 13.2887 17.4316 13.3022C18.0378 13.6039 20.3811 14.916 20.0865 17.6834C20.074 17.8032 20.1698 17.9068 20.2888 17.8888C20.8655 17.8059 22.3492 17.4853 22.8094 16.4866C23.0637 15.9589 23.0637 15.3456 22.8094 14.817Z"
+                            fill="currentColor"></path>
+                        <path opacity="0.4"
+                            d="M7.04459 4.77973C6.81626 4.7329 6.58077 4.70679 6.33543 4.70679C4.07901 4.70679 2.30701 6.84201 2.9123 9.21947C3.31882 10.8216 4.79355 11.8851 6.43661 11.8419C6.60136 11.8374 6.76343 11.8221 6.92013 11.7951C7.03384 11.7753 7.09115 11.6465 7.02668 11.551C6.3999 10.6234 6.04263 9.50765 6.04263 8.30991C6.04263 7.05904 6.43303 5.89462 7.11085 4.93913C7.13234 4.90941 7.14845 4.86348 7.12696 4.82926C7.10906 4.80135 7.07593 4.78694 7.04459 4.77973Z"
                             fill="currentColor"></path>
                         <path
-                            d="M21.9998 17.3992C21.9998 19.2648 20.4609 20.7777 18.5609 20.7777C16.6621 20.7777 15.1221 19.2648 15.1221 17.3992C15.1221 15.5325 16.6621 14.0195 18.5609 14.0195C20.4609 14.0195 21.9998 15.5325 21.9998 17.3992Z"
+                            d="M3.32156 13.5127C2.21752 13.7297 1.49225 14.1719 1.19139 14.8167C0.936203 15.3453 0.936203 15.9586 1.19139 16.4872C1.65163 17.4851 3.13531 17.8066 3.71195 17.8885C3.83104 17.9065 3.92595 17.8038 3.91342 17.6832C3.61883 14.9167 5.9621 13.6046 6.56918 13.3029C6.59425 13.2885 6.59962 13.2677 6.59694 13.2542C6.59515 13.2452 6.5853 13.2317 6.5656 13.2299C5.25294 13.2047 3.84358 13.3848 3.32156 13.5127Z"
                             fill="currentColor"></path>
                     </svg>
                 </i>
                 <span class="item-name">Master Data</span>
                 <i class="right-icon">
-                    <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
+                    <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </i>
             </a>
             <ul class="sub-nav collapse" id="masterData" data-bs-parent="#sidebar-menu">
-                @if (App\Helpers\PermissionHelper::hasPermission('read', 'user'))
+                @if ($hasUserRead)
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('user.index') }}">
                             <i class="icon">
-                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                                    fill="currentColor">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
                                     <g>
                                         <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
                                     </g>
@@ -74,12 +94,12 @@
                         </a>
                     </li>
                 @endif
-                @if (App\Helpers\PermissionHelper::hasPermission('read', 'role-permission'))
+                @if ($hasRoleRead)
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('role-permission.index') }}">
                             <i class="icon">
-                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                                    fill="currentColor">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
                                     <g>
                                         <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
                                     </g>
@@ -90,12 +110,28 @@
                         </a>
                     </li>
                 @endif
-                @if (App\Helpers\PermissionHelper::hasPermission('read', 'membership'))
+                @if ($hasCustomerRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('customer.index') }}">
+                            <i class="icon svg-icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> C </i>
+                            <span class="item-name">Customer</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($hasCustomerRead)
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('membership.index') }}">
                             <i class="icon svg-icon">
-                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                                    fill="currentColor">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
                                     <g>
                                         <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
                                     </g>
@@ -109,136 +145,141 @@
             </ul>
         </li>
     @endif
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#stock" role="button" aria-expanded="false"
-            aria-controls="stock">
-            <i class="icon">
-                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
-                    <path opacity="0.4"
-                        d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
-                        fill="currentColor"></path>
-                    <path opacity="0.4"
-                        d="M22.0001 6.37867C22.0001 5.56214 21.3246 4.89844 20.4934 4.89844H13.9179C13.0857 4.89844 12.4102 5.56214 12.4102 6.37867C12.4102 7.1963 13.0857 7.86 13.9179 7.86H20.4934C21.3246 7.86 22.0001 7.1963 22.0001 6.37867Z"
-                        fill="currentColor"></path>
-                    <path
-                        d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
-                        fill="currentColor"></path>
-                    <path
-                        d="M21.9998 17.3992C21.9998 19.2648 20.4609 20.7777 18.5609 20.7777C16.6621 20.7777 15.1221 19.2648 15.1221 17.3992C15.1221 15.5325 16.6621 14.0195 18.5609 14.0195C20.4609 14.0195 21.9998 15.5325 21.9998 17.3992Z"
-                        fill="currentColor"></path>
-                </svg>
-            </i>
-            <span class="item-name">Stock</span>
-            <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </i>
-        </a>
-        <ul class="sub-nav collapse" id="stock" data-bs-parent="#sidebar-menu">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('category.index') }}">
-                    <i class="icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> PC </i>
-                    <span class="item-name">Product Category</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('brand.index') }}">
-                    <i class="icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> PB </i>
-                    <span class="item-name">Product Brand</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('supplier.index') }}">
-                    <i class="icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> PS </i>
-                    <span class="item-name">Product Supplier</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('product.index') }}">
-                    <i class="icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> PL </i>
-                    <span class="item-name">Product List</span>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#transaction" role="button" aria-expanded="false"
-            aria-controls="transaction">
-            <i class="icon">
-                <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-20">
-                    <path opacity="0.4"
-                        d="M10.0833 15.958H3.50777C2.67555 15.958 2 16.6217 2 17.4393C2 18.2559 2.67555 18.9207 3.50777 18.9207H10.0833C10.9155 18.9207 11.5911 18.2559 11.5911 17.4393C11.5911 16.6217 10.9155 15.958 10.0833 15.958Z"
-                        fill="currentColor"></path>
-                    <path opacity="0.4"
-                        d="M22.0001 6.37867C22.0001 5.56214 21.3246 4.89844 20.4934 4.89844H13.9179C13.0857 4.89844 12.4102 5.56214 12.4102 6.37867C12.4102 7.1963 13.0857 7.86 13.9179 7.86H20.4934C21.3246 7.86 22.0001 7.1963 22.0001 6.37867Z"
-                        fill="currentColor"></path>
-                    <path
-                        d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
-                        fill="currentColor"></path>
-                    <path
-                        d="M21.9998 17.3992C21.9998 19.2648 20.4609 20.7777 18.5609 20.7777C16.6621 20.7777 15.1221 19.2648 15.1221 17.3992C15.1221 15.5325 16.6621 14.0195 18.5609 14.0195C20.4609 14.0195 21.9998 15.5325 21.9998 17.3992Z"
-                        fill="currentColor"></path>
-                </svg>
-            </i>
-            <span class="item-name">Transaction</span>
-            <i class="right-icon">
-                <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </i>
-        </a>
-        <ul class="sub-nav collapse" id="transaction" data-bs-parent="#sidebar-menu">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('transaction.index') }}">
-                    <i class="icon">
-                        <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <g>
-                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                            </g>
-                        </svg>
-                    </i>
-                    <i class="sidenav-mini-icon"> T </i>
-                    <span class="item-name">Transaction</span>
-                </a>
-            </li>
-        </ul>
-    </li>
+    @if ($hasStock)
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#stock" role="button" aria-expanded="false"
+                aria-controls="stock">
+                <i class="icon">
+                    <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.4"
+                            d="M16.8843 5.11485H13.9413C13.2081 5.11969 12.512 4.79355 12.0474 4.22751L11.0782 2.88762C10.6214 2.31661 9.9253 1.98894 9.19321 2.00028H7.11261C3.37819 2.00028 2.00001 4.19201 2.00001 7.91884V11.9474C1.99536 12.3904 21.9956 12.3898 21.9969 11.9474V10.7761C22.0147 7.04924 20.6721 5.11485 16.8843 5.11485Z"
+                            fill="currentColor"></path>
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M20.8321 6.54353C21.1521 6.91761 21.3993 7.34793 21.5612 7.81243C21.8798 8.76711 22.0273 9.77037 21.9969 10.7761V16.0292C21.9956 16.4717 21.963 16.9135 21.8991 17.3513C21.7775 18.1241 21.5057 18.8656 21.0989 19.5342C20.9119 19.8571 20.6849 20.1553 20.4231 20.4215C19.2383 21.5089 17.665 22.0749 16.0574 21.9921H7.93061C6.32049 22.0743 4.74462 21.5086 3.55601 20.4215C3.2974 20.1547 3.07337 19.8566 2.88915 19.5342C2.48475 18.8661 2.21869 18.1238 2.1067 17.3513C2.03549 16.9142 1.99981 16.4721 2 16.0292V10.7761C1.99983 10.3374 2.02357 9.89902 2.07113 9.46288C2.08113 9.38636 2.09614 9.31109 2.11098 9.23659C2.13573 9.11241 2.16005 8.99038 2.16005 8.86836C2.25031 8.34204 2.41496 7.83116 2.64908 7.35101C3.34261 5.86916 4.76525 5.11492 7.09481 5.11492H16.8754C18.1802 5.01401 19.4753 5.4068 20.5032 6.21522C20.6215 6.3156 20.7316 6.4254 20.8321 6.54353ZM6.97033 15.5412H17.0355H17.0533C17.2741 15.5507 17.4896 15.4717 17.6517 15.3217C17.8137 15.1716 17.9088 14.963 17.9157 14.7425C17.9282 14.5487 17.8644 14.3577 17.7379 14.2101C17.5924 14.0118 17.3618 13.8935 17.1155 13.8907H6.97033C6.51365 13.8907 6.14343 14.2602 6.14343 14.7159C6.14343 15.1717 6.51365 15.5412 6.97033 15.5412Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </i>
+                <span class="item-name">Stock</span>
+                <i class="right-icon">
+                    <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </i>
+            </a>
+            <ul class="sub-nav collapse" id="stock" data-bs-parent="#sidebar-menu">
+                @if ($hasCategoryRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('category.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> PC </i>
+                            <span class="item-name">Product Category</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($hasBrandRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('brand.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> PB </i>
+                            <span class="item-name">Product Brand</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($hasSupplierRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('supplier.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> PS </i>
+                            <span class="item-name">Product Supplier</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($hasProductRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('product.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> PL </i>
+                            <span class="item-name">Product List</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
+    @if ($hasTransaction)
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#transaction" role="button" aria-expanded="false"
+                aria-controls="transaction">
+                <i class="icon">
+                    <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M21.9964 8.37513H17.7618C15.7911 8.37859 14.1947 9.93514 14.1911 11.8566C14.1884 13.7823 15.7867 15.3458 17.7618 15.3484H22V15.6543C22 19.0136 19.9636 21 16.5173 21H7.48356C4.03644 21 2 19.0136 2 15.6543V8.33786C2 4.97862 4.03644 3 7.48356 3H16.5138C19.96 3 21.9964 4.97862 21.9964 8.33786V8.37513ZM6.73956 8.36733H12.3796H12.3831H12.3902C12.8124 8.36559 13.1538 8.03019 13.152 7.61765C13.1502 7.20598 12.8053 6.87318 12.3831 6.87491H6.73956C6.32 6.87664 5.97956 7.20858 5.97778 7.61852C5.976 8.03019 6.31733 8.36559 6.73956 8.36733Z"
+                            fill="currentColor"></path>
+                        <path opacity="0.4"
+                            d="M16.0374 12.2966C16.2465 13.2478 17.0805 13.917 18.0326 13.8996H21.2825C21.6787 13.8996 22 13.5715 22 13.166V10.6344C21.9991 10.2297 21.6787 9.90077 21.2825 9.8999H17.9561C16.8731 9.90338 15.9983 10.8024 16 11.9102C16 12.0398 16.0128 12.1695 16.0374 12.2966Z"
+                            fill="currentColor"></path>
+                        <circle cx="18" cy="11.8999" r="1" fill="currentColor"></circle>
+                    </svg>
+                </i>
+                <span class="item-name">Transaction</span>
+                <i class="right-icon">
+                    <svg class="icon-18" xmlns="http://www.w3.org/2000/svg" width="18" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </i>
+            </a>
+            <ul class="sub-nav collapse" id="transaction" data-bs-parent="#sidebar-menu">
+                @if ($hasTransactionRead)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('transaction.index') }}">
+                            <i class="icon">
+                                <svg class="icon-10" xmlns="http://www.w3.org/2000/svg" width="10"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                    </g>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon"> T </i>
+                            <span class="item-name">Transaction</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
     {{-- <li>
         <hr class="hr-horizontal" />
     </li>
