@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Customers;
+use App\Models\Membership;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $customerData = Customers::get();
+        $membershipData = Membership::get();
         $transactionData = Order::get();
         $productVariantData = ProductVariant::get();
         $supplierData = Supplier::get();
@@ -28,16 +30,22 @@ class DashboardController extends Controller
         $userData = Users::get();
         $user = auth()->guard('web')->user();
 
+        $getRole = Users::findOrFail($user->user_id);
+
         // dd($user->role_id);
 
-        switch ($user->role_id)
-        {
-            case $user->role_id = 1:
-                return view('dashboard.admin');
-            case $user->role_id = 2:
-                return view('dashboard.cashier');
-            case $user->role_id = 3:
-                return view('dashboard.warehouse');
-        }
+        return view('dashboard.index', compact(
+            'user',
+            'userData',
+            'customerData',
+            'membershipData',
+            'transactionData',
+            'productData',
+            'productVariantData',
+            'supplierData',
+            'brandData',
+            'categoryData',
+            'getRole'
+        ));
     }
 }

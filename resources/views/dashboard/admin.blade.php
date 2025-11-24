@@ -1,4 +1,0 @@
-@extends('layout.app')
-@section('title', 'Admin Dashboard')
-@section('content')
-@endsection

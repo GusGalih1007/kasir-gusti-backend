@@ -29,6 +29,7 @@ class Users extends Authenticatable
         'role_id',
         'status',
         'last_login',
+        'last_logout',
         'created_by',
         'updated_by'
     ];

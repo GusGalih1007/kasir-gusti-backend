@@ -40,7 +40,7 @@
                 </svg>
             </i>
         </div>
-        <div class="input-group search-input">
+        {{-- <div class="input-group search-input">
             <span class="input-group-text" id="search-input">
                 <svg class="icon-18" width="18" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +51,7 @@
                 </svg>
             </span>
             <input type="search" class="form-control" placeholder="Search..." />
-        </div>
+        </div> --}}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon">
@@ -378,17 +378,13 @@
                                 {{ auth()->guard('web')->check() ? auth()->guard('web')->user()->username : 'No Name' }}
                             </h6>
                             <p class="mb-0 caption-sub-title">
-                                {{-- {{ auth()->guard('web')->user()->role_id }} --}}
+                                @yield('user-header-role')
                             </p>
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li>
                             <a class="dropdown-item" href="#">Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Privacy
-                                Setting</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider" />
@@ -411,7 +407,7 @@
                     <div>
                         <h1>Hello {{ auth()->guard('web')->user()->username }}!</h1>
                         <p>
-                            Let's get the work done today!
+                            Let's get the job done today!
                         </p>
                     </div>
                     {{-- <div>

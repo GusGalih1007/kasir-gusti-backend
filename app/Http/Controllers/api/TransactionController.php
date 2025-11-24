@@ -192,7 +192,7 @@ class TransactionController extends Controller
             }
 
             return redirect()
-                ->route('transaction.index')
+                ->route('transaction.show', $order->order_id)
                 ->with('success', 'Transaction completed successfully! Order ID: '.$order->order_id);
 
         } catch (Exception $e) {
@@ -370,13 +370,13 @@ class TransactionController extends Controller
             Log::info('Calling Midtrans Transaction::status for: '.$midtransOrderId);
             $status = \Midtrans\Transaction::status($midtransOrderId);
 
-            Log::info('Midtrans API Response:', [
-                'order_id' => $order->order_id,
-                'midtrans_order_id' => $midtransOrderId,
-                'transaction_status' => $status->transaction_status,
-                'fraud_status' => $status->fraud_status ?? null,
-                'status_code' => $status->status_code ?? null,
-            ]);
+            // Log::info('Midtrans API Response:', [
+            //     'order_id' => $order->order_id,
+            //     'midtrans_order_id' => $midtransOrderId,
+            //     'transaction_status' => $status->transaction_status,
+            //     'fraud_status' => $status->fraud_status ?? null,
+            //     'status_code' => $status->status_code ?? null,
+            // ]);
 
             $this->updatePaymentStatusFromMidtrans($order, $status);
 

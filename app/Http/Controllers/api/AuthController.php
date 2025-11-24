@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResource;
+use App\Models\User;
 use App\Models\Users;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Illuminate\Support\Facades\Hash;
+
+use function Symfony\Component\Clock\now;
 
 class AuthController extends Controller
 {
@@ -57,13 +60,27 @@ class AuthController extends Controller
             return redirect()->back()->withErrors('Something went wrong, try again later');
         }
 
+        $lastLogin = Users::findOrFail(auth('web')->id());
+
+        $lastLogin->update([
+            'last_login' => now()
+        ]);
+
         return redirect('/');
     }
     public function logoutWeb()
     {
         try
         {
+            $user = Users::findOrFail(auth('web')->id());
+
             auth()->guard('web')->logout();
+
+            $user->update([
+                'last_logout' => now()
+            ]);
+
+
             return redirect()->route('login.form');
         } catch (Exception $e)
         {
