@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Helpers\GetUserRoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
@@ -20,7 +21,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $customerData = Customers::get();
-        $membershipData = Membership::get();
+        $membershipData = Membership::with('customer')->get();
         $transactionData = Order::get();
         $productVariantData = ProductVariant::get();
         $supplierData = Supplier::get();
@@ -30,9 +31,9 @@ class DashboardController extends Controller
         $userData = Users::get();
         $user = auth()->guard('web')->user();
 
-        $getRole = Users::findOrFail($user->user_id);
+        $getRole = GetUserRoleHelper::getRoleName();
 
-        // dd($user->role_id);
+        // dd($membershipData);
 
         return view('dashboard.index', compact(
             'user',

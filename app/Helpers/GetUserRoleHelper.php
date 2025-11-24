@@ -4,25 +4,24 @@ namespace App\Helpers;
 
 use App\Models\Users;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class GetUserRoleHelper
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public static function getRoleName()
     {
-        try
-        {
+        try {
             $user = Users::findOrFail(auth('web')->id());
 
-            $getRole = $user->role->role_id;
+            $getRoleName = $user->role->name;
 
-            return $getRole;
-        }
-        catch (Exception $e)
-        {
+            Log::info('Get role name from helper: '.$getRoleName);
 
+            return $getRoleName;
+        } catch (Exception $e) {
+            Log::error('Unexpected error when trying to get user role: '.$e->getMessage());
+
+            throw new Exception('Unexpected error when trying to get user role: '.$e->getMessage());
         }
     }
 }

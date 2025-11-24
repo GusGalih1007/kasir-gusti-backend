@@ -63,7 +63,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
                 {{-- Go Pro button --}}
-                {{-- <li class="me-0 me-xl-2"> 
+                {{-- <li class="me-0 me-xl-2">
                     <a class="btn btn-primary btn-sm d-flex gap-2 align-items-center" aria-current="page"
                         href="http://hopeui.iqonic.design/pro?utm_source=hopeui-free-demo&utm_medium=hopeui-free-demo&utm_campaign=hopeui-pro-launch"
                         target="_blank">
@@ -256,7 +256,7 @@
                     </div>
                 </li>
                 {{-- Mail --}}
-                {{-- <li class="nav-item dropdown"> 
+                {{-- <li class="nav-item dropdown">
                     <a href="#" class="nav-link" id="mail-drop" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <svg class="icon-24" width="24" viewBox="0 0 24 24" fill="none"
@@ -378,7 +378,7 @@
                                 {{ auth()->guard('web')->check() ? auth()->guard('web')->user()->username : 'No Name' }}
                             </h6>
                             <p class="mb-0 caption-sub-title">
-                                @yield('user-header-role')
+                                {{ App\Helpers\GetUserRoleHelper::getRoleName() }}
                             </p>
                         </div>
                     </a>
