@@ -14,6 +14,11 @@ class OrderDetail extends Model
 
     protected $fillable = ['order_id', 'product_id', 'variant_id', 'quantity', 'price_at_purchase', 'total_price'];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        // 'updated_at' => 'datetime'
+    ];
+
     public function product()
     {
         return $this->belongsTo(related: Product::class, foreignKey: 'product_id', ownerKey: 'product_id');

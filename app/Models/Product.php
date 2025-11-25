@@ -28,6 +28,11 @@ class Product extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
     public function variant()
     {
         return $this->hasMany(related: ProductVariant::class, foreignKey: 'product_id', localKey: 'product_id');

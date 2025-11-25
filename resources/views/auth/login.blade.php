@@ -9,51 +9,54 @@
                         <div class="col-md-10">
                             <div class="card card-transparent shadow-none d-flex justify-content-center mb-0 auth-card">
                                 <div class="card-body z-3 px-md-0 px-lg-4">
-                                    {{-- <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center mb-3"> --}}
+                                    @if(session('no-account'))
+                                        <div class="alert alert-danger">{{ session('no-account') }}</div>
+                                    @endif
+                                    @if(session('invalid-password'))
+                                        <div class="alert alert-danger">{{ session('invalid-password') }}</div>
+                                    @endif
+                                    @if(session('InActive'))
+                                        <div class="alert alert-danger">{{ session('InActive') }}</div>
+                                    @endif
+                                    {{-- <a href="{{ route('dashboard') }}"
+                                        class="navbar-brand d-flex align-items-center mb-3"> --}}
 
                                         <!--Logo start-->
                                         {{-- <div class="logo-main">
                                             <div class="logo-normal">
                                                 <svg class="text-primary icon-30" viewBox="0 0 30 30" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="-0.757324" y="19.2427" width="28" height="4"
-                                                        rx="2" transform="rotate(-45 -0.757324 19.2427)"
-                                                        fill="currentColor" />
-                                                    <rect x="7.72803" y="27.728" width="28" height="4"
-                                                        rx="2" transform="rotate(-45 7.72803 27.728)"
-                                                        fill="currentColor" />
-                                                    <rect x="10.5366" y="16.3945" width="16" height="4"
-                                                        rx="2" transform="rotate(45 10.5366 16.3945)"
-                                                        fill="currentColor" />
-                                                    <rect x="10.5562" y="-0.556152" width="28" height="4"
-                                                        rx="2" transform="rotate(45 10.5562 -0.556152)"
-                                                        fill="currentColor" />
+                                                    <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2"
+                                                        transform="rotate(-45 -0.757324 19.2427)" fill="currentColor" />
+                                                    <rect x="7.72803" y="27.728" width="28" height="4" rx="2"
+                                                        transform="rotate(-45 7.72803 27.728)" fill="currentColor" />
+                                                    <rect x="10.5366" y="16.3945" width="16" height="4" rx="2"
+                                                        transform="rotate(45 10.5366 16.3945)" fill="currentColor" />
+                                                    <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2"
+                                                        transform="rotate(45 10.5562 -0.556152)" fill="currentColor" />
                                                 </svg>
                                             </div>
                                             <div class="logo-mini">
                                                 <svg class="text-primary icon-30" viewBox="0 0 30 30" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="-0.757324" y="19.2427" width="28" height="4"
-                                                        rx="2" transform="rotate(-45 -0.757324 19.2427)"
-                                                        fill="currentColor" />
-                                                    <rect x="7.72803" y="27.728" width="28" height="4"
-                                                        rx="2" transform="rotate(-45 7.72803 27.728)"
-                                                        fill="currentColor" />
-                                                    <rect x="10.5366" y="16.3945" width="16" height="4"
-                                                        rx="2" transform="rotate(45 10.5366 16.3945)"
-                                                        fill="currentColor" />
-                                                    <rect x="10.5562" y="-0.556152" width="28" height="4"
-                                                        rx="2" transform="rotate(45 10.5562 -0.556152)"
-                                                        fill="currentColor" />
+                                                    <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2"
+                                                        transform="rotate(-45 -0.757324 19.2427)" fill="currentColor" />
+                                                    <rect x="7.72803" y="27.728" width="28" height="4" rx="2"
+                                                        transform="rotate(-45 7.72803 27.728)" fill="currentColor" />
+                                                    <rect x="10.5366" y="16.3945" width="16" height="4" rx="2"
+                                                        transform="rotate(45 10.5366 16.3945)" fill="currentColor" />
+                                                    <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2"
+                                                        transform="rotate(45 10.5562 -0.556152)" fill="currentColor" />
                                                 </svg>
                                             </div>
                                         </div> --}}
                                         <!--logo End-->
                                         {{-- <h4 class="logo-title ms-3">Hope UI</h4> --}}
-                                    {{-- </a> --}}
+                                        {{-- </a> --}}
                                     <h2 class="mb-2 text-center">Log-In</h2>
                                     <p class="text-center">Enter your credential to log-in</p>
-                                    <form action="{{ route('login.post') }}" class="needs-validation row g-3" method="POST" novalidate>
+                                    <form action="{{ route('login.post') }}" class="needs-validation row g-3" method="POST"
+                                        novalidate>
                                         {{ csrf_field() }}
                                         <div class="row">
                                             <div class="col-lg-12">
@@ -64,6 +67,11 @@
                                                     <div class="invalid-feedback">
                                                         Please provide your email
                                                     </div>
+                                                    @error('email')
+                                                        <div class="alert alert-danger">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
@@ -75,15 +83,20 @@
                                                     <div class="invalid-feedback">
                                                         Please provide your password
                                                     </div>
+                                                    @error('password')
+                                                        <div class="alert alert-danger">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             {{-- <div class="col-lg-12 d-flex justify-content-between">
-                                    <div class="form-check mb-3">
-                                       <input type="checkbox" class="form-check-input" id="customCheck1">
-                                       <label class="form-check-label" for="customCheck1">Remember Me</label>
-                                    </div>
-                                    <a href="recoverpw.html">Forgot Password?</a>
-                                 </div> --}}
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="customCheck1">
+                                                    <label class="form-check-label" for="customCheck1">Remember Me</label>
+                                                </div>
+                                                <a href="recoverpw.html">Forgot Password?</a>
+                                            </div> --}}
                                         </div>
                                         <div class="d-flex justify-content-center">
                                             <button type="submit" class="btn btn-primary">Sign In</button>
@@ -94,8 +107,7 @@
                         </div>
                     </div>
                     <div class="sign-bg">
-                        <svg width="280" height="230" viewBox="0 0 431 398" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg width="280" height="230" viewBox="0 0 431 398" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g opacity="0.05">
                                 <rect x="-157.085" y="193.773" width="543" height="77.5714" rx="38.7857"
                                     transform="rotate(-45 -157.085 193.773)" fill="#3B8AFF" />

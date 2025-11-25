@@ -25,6 +25,11 @@ class ProductVariant extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
     public function userCreator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'created_by', ownerKey: 'user_id');

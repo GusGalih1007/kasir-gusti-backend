@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ExportController;
+use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +29,14 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashb
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
 route::get('logout', [AuthController::class, 'logoutWeb'])->name('logout.user');
+
+
+// Profile Routes
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+
 
 
 // CATEGORY
@@ -63,6 +72,7 @@ route::delete('supplier/{id}', [SupplierController::class, 'destroy'])->name('su
 // CUSTOMER
 // route::resource('customer', CustomerController::class);
 route::get('customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('permission:read');
+route::get('customer/{id}', [CustomerController::class, 'show'])->name('customer.show')->middleware('permission:read');
 route::get('customer/create', [CustomerController::class, 'create'])->name('customer.create')->middleware('permission:create');
 route::post('customer', [CustomerController::class, 'store'])->name('customer.store')->middleware('permission:create');
 route::get('customer/{id}', [CustomerController::class, 'show'])->name('customer.show')->middleware('permission:read');
@@ -92,6 +102,9 @@ route::post('/role-permission/update-permission', [RoleController::class, 'updat
 // USER
 // route::resource('user', UserController::class);
 route::get('user', [UserController::class, 'index'])->name('user.index')->middleware('permission:read');
+route::get('user/{id}', [UserController::class, 'show'])->name('user.show')->middleware('permission:read');
+Route::patch('/user/{id}/activate', [UserController::class, 'activate'])->name('user.activate')->middleware('permission:update');
+Route::patch('/user/{id}/deactivate', [UserController::class, 'deactivate'])->name('user.deactivate')->middleware('permission:update');
 route::get('user/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:create');
 route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('permission:create');
 route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:update');
@@ -106,7 +119,7 @@ route::post('product', [ProductController::class, 'store'])->name('product.store
 route::get('product/{id}', [ProductController::class, 'show'])->name('product.show')->middleware('permission:read');
 route::get('product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit')->middleware('permission:update');
 route::put('product/{id}', [ProductController::class, 'update'])->name('product.update')->middleware('permission:update');
-route::delete('product/{id}', [ProductController::class, 'destry'])->name('product.destroy')->middleware('permission:delete');
+route::delete('product/{id}', [ProductController::class, 'destroy'])->name('product.destroy')->middleware('permission:delete');
 
 
 // PRODUCT VARIANT
@@ -138,29 +151,3 @@ Route::get('export/transactions/excel', [ExportController::class, 'exportTransac
 Route::get('export/transactions/print', [ExportController::class, 'exportTransactionsPrint'])->name('export.transactions.print')->middleware('permission:create');
 Route::get('export/receipt/{orderId}/pdf', [ExportController::class, 'exportReceiptPdf'])->name('export.receipt.pdf');
 Route::get('export/sales-report', [ExportController::class, 'exportSalesReport'])->name('export.sales-report.pdf');
-
-Route::get('debug/check-status/{order}', function($orderId) {
-    try {
-        $order = \App\Models\Order::with('payment')->find($orderId);
-
-        if (!$order) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order not found'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'order_id' => $order->order_id,
-            'payment_method' => $order->payment->payment_method,
-            'payment_status' => $order->payment->status,
-            'endpoint_working' => true
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});

@@ -49,11 +49,11 @@
                             <div class="invalid-feedback">
                                 Description is required
                             </div>
-                            {{-- @if ($errors->has('description'))
+                            @if ($errors->has('description'))
                                 <span class="alert alert-danger">
                                     {{ $errors->first('description') }}
                                 </span>
-                            @endif --}}
+                            @endif
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>

@@ -41,7 +41,7 @@ class UserController extends Controller
     {
         $user = null;
         $role = Role::all();
-        
+
         return view('user.form', compact('user', 'role'));
     }
 
@@ -109,14 +109,34 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $data = Users::findOrFail(id: $id);
+        $user = Users::with(['userCreator', 'userUpdator', 'role'])
+            ->findOrFail($id);
 
-        if ($data == null)
-        {
-            return response()->json(data: 'Data does not exist!', status: 200);
-        }
+        return view('user.show', compact('user'));
+    }
 
-        return new ApiResource(status: 200, message: 'Success', resource: $data);
+    /**
+     * Activate user
+     */
+    public function activate($id)
+    {
+        $user = Users::findOrFail($id);
+        $user->update(['status' => 'Active']);
+
+        return redirect()->route('user.show', $user->user_id)
+            ->with('success', 'User berhasil diaktifkan.');
+    }
+
+    /**
+     * Deactivate user
+     */
+    public function deactivate($id)
+    {
+        $user = Users::findOrFail($id);
+        $user->update(['status' => 'InActive']);
+
+        return redirect()->route('user.show', $user->user_id)
+            ->with('success', 'User berhasil dinon-aktifkan.');
     }
 
     public function edit($id)

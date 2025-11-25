@@ -89,14 +89,10 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $data = Customers::findOrFail(id: $id);
+        $customer = Customers::with(['userCreator', 'userUpdator', 'member', 'order'])
+            ->findOrFail($id);
 
-        if ($data == null) {
-            return redirect()->back()->with('Data does not exist!');
-            // return response()->json(data: 'Data does not exist!', status: 200);
-        }
-
-        return new ApiResource(status: 200, message: 'Success!', resource: $data);
+        return view('customer.show', compact('customer'));
     }
 
     public function edit($id)

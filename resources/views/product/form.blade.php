@@ -59,6 +59,11 @@
                                         {{ $item->name }}</option>
                                 @endforeach
                             </select>
+                            @if ($errors->has('brand'))
+                                <span class="alert alert-danger">
+                                    {{ $errors->first('brand') }}
+                                </span>
+                            @endif
                         </div>
                         <div class="col-4 form-group">
                             <label class="form-label" for="category">Category</label>
@@ -70,6 +75,11 @@
                                         {{ $item->name }}</option>
                                 @endforeach
                             </select>
+                            @if ($errors->has('category'))
+                                <span class="alert alert-danger">
+                                    {{ $errors->first('category') }}
+                                </span>
+                            @endif
                         </div>
                         <div class="col-4 form-group">
                             <label class="form-label" for="supplier">Supplier</label>
@@ -82,6 +92,11 @@
                                         {{ $item->name }}</option>
                                 @endforeach
                             </select>
+                            @if ($errors->has('supplier'))
+                                <span class="alert alert-danger">
+                                    {{ $errors->first('supplier') }}
+                                </span>
+                            @endif
                         </div>
                         <div class="col-12 form-group">
                             <div class="form-group">

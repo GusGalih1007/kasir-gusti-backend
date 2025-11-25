@@ -18,8 +18,8 @@ class MembershipSeeder extends Seeder
             'Benefit' => 'None',
             'discount' => 0,
             'expiration_period' => null,
-            'created_at' => null,
-            'updated_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
             'created_by' => null,
             'updated_by' => null,
         ]);

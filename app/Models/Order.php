@@ -14,6 +14,11 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'customer_id', 'change',  'discount', 'order_date', 'status', 'total_amount', 'created_by', 'created_at'];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        // 'updated_at' => 'datetime'
+    ];
+
     public function userCreator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'created_by', ownerKey: 'user_id');

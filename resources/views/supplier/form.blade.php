@@ -35,11 +35,11 @@
                             <div class="invalid-feedback">
                                 Description is required
                             </div>
-                            {{-- @if ($errors->has('description'))
+                            @if ($errors->has('description'))
                                 <span class="alert alert-danger">
                                     {{ $errors->first('description') }}
                                 </span>
-                            @endif --}}
+                            @endif
                         </div>
                         <div class="col-12 form-group">
                             <label class="form-label" for="alamat">Alamat</label>
@@ -47,11 +47,11 @@
                             <div class="invalid-feedback">
                                 Alamat is required
                             </div>
-                            {{-- @if ($errors->has('description'))
+                            @if ($errors->has('alamat'))
                                 <span class="alert alert-danger">
-                                    {{ $errors->first('description') }}
+                                    {{ $errors->first('alamat') }}
                                 </span>
-                            @endif --}}
+                            @endif
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-primary">Submit</button>

@@ -126,7 +126,7 @@
                         </a>
                     </li>
                 @endif
-                @if ($hasCustomerRead)
+                @if ($hasMemberRead)
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('membership.index') }}">
                             <i class="icon svg-icon">

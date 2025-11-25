@@ -20,8 +20,8 @@ class ProductVariantSeeder extends Seeder
             'price' => 3000.00,
             'sku' => 'SKU-NUMB-123',
             'stock_qty' => 100,
-            'created_at' => null,
-            'updated_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         ProductVariant::create([
             'variant_id' => null,
@@ -30,8 +30,8 @@ class ProductVariantSeeder extends Seeder
             'price' => 3000.00,
             'sku' => 'SKU-NUMB-456',
             'stock_qty' => 100,
-            'created_at' => null,
-            'updated_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }

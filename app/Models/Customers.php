@@ -13,6 +13,11 @@ class Customers extends Model
 
     protected $fillable = ['first_name','last_name', 'alamat', 'phone', 'email', 'is_member', 'membership_id', 'created_by', 'updated_by'];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
     public function userCreator()
     {
         return $this->belongsTo(related: Users::class, foreignKey: 'created_by', ownerKey: 'user_id');
@@ -26,5 +31,10 @@ class Customers extends Model
     public function member()
     {
         return $this->belongsTo(Membership::class, 'membership_id', 'membership_id');
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class, 'customer_id', 'customer_id');
     }
 }

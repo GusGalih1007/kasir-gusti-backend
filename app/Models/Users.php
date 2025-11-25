@@ -34,6 +34,13 @@ class Users extends Authenticatable
         'updated_by'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'last_login' => 'datetime',
+        'last_logout' => 'datetime'
+    ];
+
     public function getJwtIdentifier()
     {
         return $this->getKey();

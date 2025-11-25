@@ -23,8 +23,8 @@ class ProductSeeder extends Seeder
             'brand_id' => 1,
             'supplier_id' => 1,
             'is_available' => true,
-            'created_at' => null,
-            'updated_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }
