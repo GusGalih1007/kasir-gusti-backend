@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -17,6 +18,9 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
+
+        // dd($user);
+
         return view('profile.show', compact('user'));
     }
 
@@ -42,7 +46,21 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->user_id . ',user_id',
             'phone' => 'nullable|string|max:20',
             'username' => 'required|string|max:50|unique:users,username,' . $user->user_id . ',user_id',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp'
         ]);
+
+        $photoPath = $user->photo;
+
+        // Jika ada file yang diunggah
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+
+            $photoPath = $request->file('photo')->
+                store('user-profile', 'public'); // Simpan foto baru
+        }
 
         $user->update([
             'first_name' => $request->first_name,
@@ -51,6 +69,7 @@ class ProfileController extends Controller
             'phone' => $request->phone,
             'username' => $request->username,
             'updated_by' => $user->user_id,
+            'photo' => $photoPath
         ]);
 
         return redirect()->route('profile.show')

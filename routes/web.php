@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\IndonesiaLocationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,11 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashb
 route::get('login', [AuthController::class, 'loginPage'])->name('login.form');
 route::post('login', [AuthController::class, 'loginWeb'])->name('login.post');
 route::get('logout', [AuthController::class, 'logoutWeb'])->name('logout.user');
+
+// route::get('provinces', [IndonesiaLocationController::class, 'getProvinces'])->name('provinces');
+// route::get('cities', [IndonesiaLocationController::class, 'getCities'])->name('cities');
+// route::get('districts', [IndonesiaLocationController::class, 'getDistricts'])->name('districts');
+// route::get('villages', [IndonesiaLocationController::class, 'getVillages'])->name('villages');
 
 
 // Profile Routes
@@ -72,7 +78,6 @@ route::delete('supplier/{id}', [SupplierController::class, 'destroy'])->name('su
 // CUSTOMER
 // route::resource('customer', CustomerController::class);
 route::get('customer', [CustomerController::class, 'index'])->name('customer.index')->middleware('permission:read');
-route::get('customer/{id}', [CustomerController::class, 'show'])->name('customer.show')->middleware('permission:read');
 route::get('customer/create', [CustomerController::class, 'create'])->name('customer.create')->middleware('permission:create');
 route::post('customer', [CustomerController::class, 'store'])->name('customer.store')->middleware('permission:create');
 route::get('customer/{id}', [CustomerController::class, 'show'])->name('customer.show')->middleware('permission:read');
@@ -102,11 +107,11 @@ route::post('/role-permission/update-permission', [RoleController::class, 'updat
 // USER
 // route::resource('user', UserController::class);
 route::get('user', [UserController::class, 'index'])->name('user.index')->middleware('permission:read');
+route::get('user/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:create');
+route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('permission:create');
 route::get('user/{id}', [UserController::class, 'show'])->name('user.show')->middleware('permission:read');
 Route::patch('/user/{id}/activate', [UserController::class, 'activate'])->name('user.activate')->middleware('permission:update');
 Route::patch('/user/{id}/deactivate', [UserController::class, 'deactivate'])->name('user.deactivate')->middleware('permission:update');
-route::get('user/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:create');
-route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('permission:create');
 route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:update');
 route::put('user/{id}', [UserController::class, 'update'])->name('user.update')->middleware('permission:update');
 route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy')->middleware('permission:delete');

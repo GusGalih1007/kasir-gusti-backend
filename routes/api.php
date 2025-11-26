@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\IndonesiaLocationController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\PageRoleActionController;
 use App\Http\Controllers\Api\ProductController;
@@ -24,6 +25,12 @@ Route::get('products/{productId}/variants', [TransactionController::class, 'getV
 
 // Midtrans webhook
 Route::post('midtrans/notification', [TransactionController::class, 'midtransNotification']);
+
+// Laravolt Indonesia
+route::get('provinces', [IndonesiaLocationController::class, 'getProvinces'])->name('provinces');
+route::get('cities', [IndonesiaLocationController::class, 'getCities'])->name('cities');
+route::get('districts', [IndonesiaLocationController::class, 'getDistricts'])->name('districts');
+route::get('villages', [IndonesiaLocationController::class, 'getVillages'])->name('villages');
 // Check payment status
 // Route::get('transaction/{order}/check-status', [TransactionController::class, 'checkPaymentStatus'])->name('transaction.check-status');
 

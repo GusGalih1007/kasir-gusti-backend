@@ -38,7 +38,7 @@ class PageSeeder extends Seeder
         ]);
         Page::create([
             'page_code' => $faker->regexify('[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}-[A-Za-z0-9]{10}'),
-            'page_name' => 'Users',
+            'page_name' => 'User',
             'action'    => ['Read','Create','Update','Delete']
         ]);
         Page::create([

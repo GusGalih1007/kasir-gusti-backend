@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Membership extends Model
 {
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'memberships';
     protected $primaryKey = 'membership_id';

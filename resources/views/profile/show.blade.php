@@ -7,6 +7,32 @@
         <!-- Informasi Profil -->
         <div class="col-lg-8">
             <!-- Card Informasi Personal -->
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                    <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M7.67 2H16.34C19.73 2 22 4.38 22 7.92V16.091C22 19.62 19.73 22 16.34 22H7.67C4.28 22 2 19.62 2 16.091V7.92C2 4.38 4.28 2 7.67 2ZM11.43 14.99L16.18 10.24C16.52 9.9 16.52 9.35 16.18 9C15.84 8.66 15.28 8.66 14.94 9L10.81 13.13L9.06 11.38C8.72 11.04 8.16 11.04 7.82 11.38C7.48 11.72 7.48 12.27 7.82 12.62L10.2 14.99C10.37 15.16 10.59 15.24 10.81 15.24C11.04 15.24 11.26 15.16 11.43 14.99Z"
+                            fill="currentColor"></path>
+                    </svg>
+                    <div class="d-flex justify-content-between">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close text-right" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
+            @if (session('errors'))
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M7.67 1.99927H16.34C19.73 1.99927 22 4.37927 22 7.91927V16.0903C22 19.6203 19.73 21.9993 16.34 21.9993H7.67C4.28 21.9993 2 19.6203 2 16.0903V7.91927C2 4.37927 4.28 1.99927 7.67 1.99927ZM15.01 14.9993C15.35 14.6603 15.35 14.1103 15.01 13.7703L13.23 11.9903L15.01 10.2093C15.35 9.87027 15.35 9.31027 15.01 8.97027C14.67 8.62927 14.12 8.62927 13.77 8.97027L12 10.7493L10.22 8.97027C9.87 8.62927 9.32 8.62927 8.98 8.97027C8.64 9.31027 8.64 9.87027 8.98 10.2093L10.76 11.9903L8.98 13.7603C8.64 14.1103 8.64 14.6603 8.98 14.9993C9.15 15.1693 9.38 15.2603 9.6 15.2603C9.83 15.2603 10.05 15.1693 10.22 14.9993L12 13.2303L13.78 14.9993C13.95 15.1803 14.17 15.2603 14.39 15.2603C14.62 15.2603 14.84 15.1693 15.01 14.9993Z"
+                            fill="currentColor"></path>
+                    </svg>
+                    <div>
+                        {{ session('errors') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            @endif
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title mb-4 text-white">
@@ -15,6 +41,25 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-md-12 text-center mb-4">
+                            @if ($user->photo)
+                                <img src="{{ asset('storage/'. $user->photo) }}" alt="{{ $user->username }}"
+                                    class="img-fluid avatar avatar-50 avatar-rounded">
+                            @else
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/01.png') }}" alt="User-Profile"
+                                    class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded" />
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_1.png') }}" alt="User-Profile"
+                                    class="theme-color-purple-img img-fluid avatar avatar-50 avatar-rounded" />
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_2.png') }}" alt="User-Profile"
+                                    class="theme-color-blue-img img-fluid avatar avatar-50 avatar-rounded" />
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_4.png') }}" alt="User-Profile"
+                                    class="theme-color-green-img img-fluid avatar avatar-50 avatar-rounded" />
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_5.png') }}" alt="User-Profile"
+                                    class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded" />
+                                <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_3.png') }}" alt="User-Profile"
+                                    class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded" />
+                            @endif
+                        </div>
                         <div class="col-md-6">
                             <div class="info-item mb-3">
                                 <label class="fw-bold text-muted small">Username</label>
@@ -37,7 +82,7 @@
                             <div class="info-item mb-3">
                                 <label class="fw-bold text-muted small">Telepon</label>
                                 <p class="mb-0 fs-6">
-                                    @if($user->phone)
+                                    @if ($user->phone)
                                         <a href="tel:{{ $user->phone }}" class="text-decoration-none">
                                             {{ $user->phone }}
                                         </a>
@@ -72,7 +117,7 @@
                             <div class="info-item mb-3">
                                 <label class="fw-bold text-muted small">Status</label>
                                 <p class="mb-0">
-                                    @if($user->status == 'Active')
+                                    @if ($user->status == 'Active')
                                         <span class="badge bg-success fs-6">
                                             <i class="fas fa-check-circle me-1"></i>Aktif
                                         </span>
@@ -111,7 +156,7 @@
                             <div class="info-item mb-3">
                                 <label class="fw-bold text-muted small">Login Terakhir</label>
                                 <p class="mb-0 fs-6">
-                                    @if($user->last_login)
+                                    @if ($user->last_login)
                                         <span class="text-success">
                                             <i class="fas fa-sign-in-alt me-1"></i>
                                             {{ $user->last_login->format('d F Y H:i') }}
@@ -130,7 +175,7 @@
                             <div class="info-item mb-3">
                                 <label class="fw-bold text-muted small">Logout Terakhir</label>
                                 <p class="mb-0 fs-6">
-                                    @if($user->last_logout)
+                                    @if ($user->last_logout)
                                         <span class="text-warning">
                                             <i class="fas fa-sign-out-alt me-1"></i>
                                             {{ $user->last_logout->format('d F Y H:i') }}
@@ -170,7 +215,7 @@
                             <i class="fas fa-key me-2"></i>Ubah Password
                         </button>
 
-                        @if($user->last_login && $user->last_login->diffInDays() > 30)
+                        @if ($user->last_login && $user->last_login->diffInDays() > 30)
                             <div class="alert alert-warning">
                                 <small>
                                     <i class="fas fa-exclamation-triangle me-1"></i>
@@ -185,7 +230,7 @@
             <!-- Card Statistik -->
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="card-title mb-0">
+                    <h5 class="card-title mb-4 text-white">
                         <i class="fas fa-chart-bar me-2"></i>Statistik
                     </h5>
                 </div>

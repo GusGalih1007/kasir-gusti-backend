@@ -234,17 +234,6 @@
                                     <h1>{{ count($transactionData) }}</h1>
                                     <p class="mb-0">Orders Served</p>
                                 </div>
-                                <div>
-                                    <div class="badge bg-primary">
-                                        <svg class="icon-20" xmlns="http://www.w3.org/2000/svg" width="20px"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span>3.48%</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -382,14 +371,15 @@
                                 <div class="my-4">
                                     <div class="card-number">
                                         <span class="fs-5">Total Products: {{ count($productData) }}</span>
+                                        <span class="fs-5">Total Variant: {{ count($productVariantData) }}</span>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <p class="mb-0">Active Customers</p>
+                                    <p class="mb-0 text-dark">Active Customers</p>
                                     <p class="mb-0">This Month</p>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <h6>{{ count($customerData) }}</h6>
+                                    <h6 class="text-dark">{{ count($customerData) }}</h6>
                                     <h6 class="ms-5">
                                         {{ $customerData->where('created_at', '>=', now()->subMonth())->count() }}
                                     </h6>

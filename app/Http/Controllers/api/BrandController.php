@@ -16,7 +16,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::latest()->paginate(perPage: 5);
+        $data = Brand::get();
 
         // if ($data == null)
         // {

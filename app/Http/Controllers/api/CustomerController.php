@@ -8,6 +8,10 @@ use App\Models\Customers;
 use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Village;
 
 class CustomerController extends Controller
 {
@@ -26,8 +30,9 @@ class CustomerController extends Controller
     {
         $membership = Membership::get();
         $customer = null;
+        $provinces = Province::get();
 
-        return view('customer.form', compact('customer', 'membership'));
+        return view('customer.form', compact('customer', 'membership', 'provinces'));
     }
 
     /**
@@ -40,12 +45,20 @@ class CustomerController extends Controller
             rules: [
                 'first_name' => 'required|string|max:100',
                 'last_name' => 'nullable|string|max:100',
+                'provinsi' => 'required|numeric|exists:indonesia_provinces,id',
+                'kota' => 'required|numeric|exists:indonesia_cities,id',
+                'kecamatan' => 'required|numeric|exists:indonesia_districts,id',
+                'desa' => 'required|numeric|exists:indonesia_villages,id',
                 'alamat' => 'required|string',
                 'phone' => 'required|numeric|max_digits:15',
                 'email' => 'required|email',
                 'membership' => 'nullable|exists:memberships,membership_id',
             ],
         );
+
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate->errors())->withInput();
+        }
 
         $isMembership = false;
         $membershipId = null;
@@ -55,14 +68,19 @@ class CustomerController extends Controller
             $membershipId = $request->membership;
         }
 
-        if ($validate->fails()) {
-            return redirect()->back()->withErrors($validate->errors())->withInput();
-        }
+        $provinsi = Province::findOrFail($request->provinsi);
+        $kota = City::findOrFail($request->kota);
+        $kecamatan = District::findOrFail($request->kecamatan);
+        $desa = Village::findOrFail($request->desa);
 
         $data = Customers::create(
             attributes: [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
+                'province_code' => $provinsi->code,
+                'city_code' => $kota->code,
+                'district_code' => $kecamatan->code,
+                'village_code' => $desa->code,
                 'alamat' => $request->alamat,
                 'phone' => $request->phone,
                 'email' => $request->email,
@@ -98,9 +116,10 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $membership = Membership::get();
-        $customer = Customers::findOrFail($id);
+        $provinces = Province::get();
+        $customer = Customers::with(['province', 'city', 'district', 'village'])->findOrFail($id);
 
-        return view('customer.form', compact('membership', 'customer'));
+        return view('customer.form', compact('membership', 'customer', 'provinces'));
     }
 
     /**
@@ -118,6 +137,10 @@ class CustomerController extends Controller
             rules: [
                 'first_name' => 'required|string|max:100',
                 'last_name' => 'nullable|string|max:100',
+                'provinsi' => 'required|numeric|exists:indonesia_provinces,id',
+                'kota' => 'required|numeric|exists:indonesia_cities,id',
+                'kecamatan' => 'required|numeric|exists:indonesia_districts,id',
+                'desa' => 'required|numeric|exists:indonesia_villages,id',
                 'alamat' => 'required|string',
                 'phone' => 'required|numeric|max_digits:15',
                 'email' => 'required|email',
@@ -136,10 +159,19 @@ class CustomerController extends Controller
             // return response()->json(data: $validate->errors(), status: 422);
         }
 
+        $provinsi = Province::findOrFail($request->provinsi);
+        $kota = City::findOrFail($request->kota);
+        $kecamatan = District::findOrFail($request->kecamatan);
+        $desa = Village::findOrFail($request->desa);
+
         $data->update(
             attributes: [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
+                'province_code' => $provinsi->code,
+                'city_code' => $kota->code,
+                'district_code' => $kecamatan->code,
+                'village_code' => $desa->code,
                 'alamat' => $request->alamat,
                 'phone' => $request->phone,
                 'email' => $request->email,

@@ -4,14 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Village;
 
 class Customers extends Model
 {
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'customers';
     protected $primaryKey = 'customer_id';
 
-    protected $fillable = ['first_name','last_name', 'alamat', 'phone', 'email', 'is_member', 'membership_id', 'created_by', 'updated_by'];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'province_code',
+        'city_code',
+        'district_code',
+        'village_code',
+        'alamat',
+        'phone',
+        'email',
+        'is_member',
+        'membership_id',
+        'created_by',
+        'updated_by'
+    ];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -37,4 +55,25 @@ class Customers extends Model
     {
         return $this->hasMany(Order::class, 'customer_id', 'customer_id');
     }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_code', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_code', 'code');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_code', 'code');
+    }
+
 }

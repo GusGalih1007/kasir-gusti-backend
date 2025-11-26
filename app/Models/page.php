@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Page extends Model
 {
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'pages';
     protected $primaryKey = 'page_code';

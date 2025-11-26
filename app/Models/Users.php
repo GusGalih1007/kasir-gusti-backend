@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Users extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'users';
     protected $primaryKey = 'user_id';
@@ -28,6 +28,7 @@ class Users extends Authenticatable
         'phone',
         'role_id',
         'status',
+        'photo',
         'last_login',
         'last_logout',
         'created_by',

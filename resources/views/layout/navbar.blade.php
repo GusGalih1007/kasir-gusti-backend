@@ -30,7 +30,7 @@
                 </div>
             </div>
             <!--logo End-->
-            <h4 class="logo-title">Hope UI</h4>
+            <h4 class="logo-title">Kasir Gusti</h4>
         </a>
         <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
             <i class="icon">
@@ -359,20 +359,27 @@
                     </div>
                 </li> --}}
                 <li class="nav-item dropdown custom-drop">
-                    <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/01.png') }}" alt="User-Profile"
-                            class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded" />
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_1.png') }}" alt="User-Profile"
-                            class="theme-color-purple-img img-fluid avatar avatar-50 avatar-rounded" />
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_2.png') }}" alt="User-Profile"
-                            class="theme-color-blue-img img-fluid avatar avatar-50 avatar-rounded" />
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_4.png') }}" alt="User-Profile"
-                            class="theme-color-green-img img-fluid avatar avatar-50 avatar-rounded" />
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_5.png') }}" alt="User-Profile"
-                            class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded" />
-                        <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_3.png') }}" alt="User-Profile"
-                            class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded" />
+                    <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        @if (App\Helpers\GetUserRoleHelper::getPhotoName())
+                            <img src="{{ asset('storage/' . App\Helpers\GetUserRoleHelper::getPhotoName()) }}" alt="{{ auth('web')->user()->username }}"
+                                class="img-fluid avatar avatar-50 avatar-rounded">
+                        @else
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/01.png') }}" alt="User-Profile"
+                                class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded" />
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_1.png') }}" alt="User-Profile"
+                                class="theme-color-purple-img img-fluid avatar avatar-50 avatar-rounded" />
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_2.png') }}" alt="User-Profile"
+                                class="theme-color-blue-img img-fluid avatar avatar-50 avatar-rounded" />
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_4.png') }}" alt="User-Profile"
+                                class="theme-color-green-img img-fluid avatar avatar-50 avatar-rounded" />
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_5.png') }}"
+                                alt="User-Profile"
+                                class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded" />
+                            <img src="{{ asset('hope-ui/html/assets/images/avatars/avtar_3.png') }}"
+                                alt="User-Profile"
+                                class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded" />
+                        @endif
                         <div class="caption ms-3 d-none d-md-block">
                             <h6 class="mb-0 caption-title">
                                 {{ auth()->guard('web')->check() ? auth()->guard('web')->user()->username : 'No Name' }}

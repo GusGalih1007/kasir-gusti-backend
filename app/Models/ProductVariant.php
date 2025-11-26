@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'product_variants';
     protected $primaryKey = 'variant_id';

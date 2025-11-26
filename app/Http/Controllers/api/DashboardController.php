@@ -18,15 +18,15 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $customerData = Customers::get();
-        $membershipData = Membership::with('customer')->get();
-        $transactionData = Order::get();
-        $productVariantData = ProductVariant::get();
-        $supplierData = Supplier::get();
-        $brandData = Brand::get();
-        $categoryData = Category::get();
-        $productData = Product::get();
-        $userData = Users::get();
+        $customerData = Customers::orderBy('created_at', 'desc')->get();
+        $membershipData = Membership::orderBy('created_at', 'desc')->with('customer')->get();
+        $transactionData = Order::orderBy('created_at', 'desc')->get();
+        $productVariantData = ProductVariant::orderBy('created_at', 'desc')->get();
+        $supplierData = Supplier::orderBy('created_at', 'desc')->get();
+        $brandData = Brand::orderBy('created_at', 'desc')->get();
+        $categoryData = Category::orderBy('created_at', 'desc')->get();
+        $productData = Product::orderBy('created_at', 'desc')->get();
+        $userData = Users::orderBy('created_at', 'desc')->get();
         $user = auth()->guard('web')->user();
 
         $getRole = GetUserRoleHelper::getRoleName();

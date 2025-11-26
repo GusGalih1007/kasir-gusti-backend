@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Laravolt\Indonesia\Models\Province;
 
 class TransactionController extends Controller
 {
@@ -59,8 +60,9 @@ class TransactionController extends Controller
         $product = Product::with('variant')->get();
         $membership = Membership::get();
         $category = Category::get();
+        $provinces = Province::get();
 
-        return view('transaction.form', compact('customer', 'product', 'category', 'membership'));
+        return view('transaction.form', compact('customer', 'product', 'category', 'membership', 'provinces'));
     }
 
     /**

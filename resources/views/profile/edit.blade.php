@@ -12,7 +12,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('profile.update') }}" method="POST">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -86,6 +86,19 @@
                                     <input type="text" class="form-control"
                                         value="{{ $user->role->name ?? 'Tidak ada role' }}" readonly>
                                     <div class="form-text">Role tidak dapat diubah dari halaman ini</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="photo" class="form-label">Photo Profile</label>
+                                    <input type="file" name="photo" class="form-control">
+                                    @error('photo')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">Opsional</div>
                                 </div>
                             </div>
                         </div>

@@ -96,7 +96,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Created By</strong></td>
-                                            <td>: {{ $order->userCreator->name ?? 'System' }}</td>
+                                            <td>: {{ $order->userId->username ?? 'System' }}</td>
                                         </tr>
                                     </table>
                                 </div>
